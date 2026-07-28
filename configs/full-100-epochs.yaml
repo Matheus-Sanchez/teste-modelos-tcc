@@ -16,7 +16,8 @@ suite:
     svhn: [42]
     gtsrb: [42]
     fer2013: [42]
-  normalizations: [unit_interval, zscore]
+  # Protocolo final: z-score com os quatro modos de balanceamento.
+  normalizations: [zscore]
   balance_modes: [all_raw, undersample, oversample, class_weight]
   train_fraction: 0.70
   validation_fraction: 0.15
