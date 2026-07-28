@@ -1,0 +1,33 @@
+# Layout padrão criado por scripts/fetch_datasets.py --all.
+# Os caminhos são relativos a esta pasta configs/.
+datasets:
+  mnist:
+    adapter: mnist
+    root: ../datasets/mnist
+  fashion_mnist:
+    adapter: fashion_mnist
+    root: ../datasets/fashion_mnist
+  kmnist:
+    adapter: kmnist
+    root: ../datasets/kmnist
+  emnist_balanced:
+    adapter: emnist_balanced
+    root: ../datasets/emnist_balanced
+  cifar10:
+    adapter: cifar10
+    root: ../datasets/cifar10
+  cifar100_coarse:
+    adapter: cifar100_coarse
+    root: ../datasets/cifar100_coarse
+  cinic10:
+    adapter: cinic10
+    root: ../datasets/cinic10
+  svhn:
+    adapter: svhn
+    root: ../datasets/svhn
+  gtsrb:
+    adapter: gtsrb
+    root: ../datasets/gtsrb
+  fer2013:
+    adapter: fer2013
+    root: ../datasets/fer2013

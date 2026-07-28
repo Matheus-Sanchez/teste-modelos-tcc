@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tcc-dataset-benchmark"
+version = "0.1.0"
+description = "Suíte local, retomável e observável para benchmarks de classificação de imagens."
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+license = {text = "MIT"}
+authors = [{name = "TCC Dataset Benchmark"}]
+dependencies = [
+  "numpy>=1.26,<3",
+  "pandas>=2.1,<3",
+  "scikit-learn>=1.4,<2",
+  "Pillow>=10,<12",
+  "PyYAML>=6,<7",
+  "psutil>=5.9,<8",
+  "matplotlib>=3.8,<4",
+  "scipy>=1.10,<2",
+  "nvidia-ml-py>=12,<13",
+]
+
+[project.optional-dependencies]
+wsl-gpu = ["tensorflow[and-cuda]==2.21.0"]
+windows-smoke = ["tensorflow==2.21.0"]
+dev = ["pytest>=8,<9"]
+
+[project.scripts]
+tcc-benchmark = "tcc_benchmark.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"

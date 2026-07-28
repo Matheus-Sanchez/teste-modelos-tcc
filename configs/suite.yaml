@@ -1,0 +1,24 @@
+suite:
+  # Caminho relativo a este arquivo: mantém artefatos na raiz do projeto.
+  output_root: ../artifacts
+  seeds: [42, 43, 44, 45, 46]
+  normalizations: [unit_interval, zscore]
+  balance_modes: [all_raw, undersample, oversample, class_weight]
+  train_fraction: 0.70
+  validation_fraction: 0.15
+  test_fraction: 0.15
+  hardware_interval_seconds: 5.0
+  training:
+    max_epochs: 50
+    batch_size: 64
+    learning_rate: 0.0003
+    extra_fraction: 2.0
+    dtype_policy: mixed_float16
+    keras_verbose: 1
+    default_image_size: 64
+    image_size_overrides: {gtsrb: 128}
+    augmentation: {flip_lr: true, brightness_delta: 0.03, contrast_lower: 0.92, contrast_upper: 1.08, translate_frac: 0.05, zoom_min: 0.96, zoom_max: 1.04, noise_std: 0.005, cutout_prob: 0.25, cutout_max_frac: 0.08}
+    early_stopping_patience: 10
+    reduce_lr_factor: 0.3
+    reduce_lr_patience: 4
+    reduce_lr_min_lr: 0.0000001
