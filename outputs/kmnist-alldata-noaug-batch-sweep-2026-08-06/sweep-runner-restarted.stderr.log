@@ -1,0 +1,488 @@
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1785990312.293088     399 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1785990314.677714     399 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1785990321.026811     399 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1785990331.031025     399 gpu_device.cc:2043] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 5657 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3050, pci bus id: 0000:01:00.0, compute capability: 8.6
+E0000 00:00:1785990338.136682     399 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+E0000 00:00:1785990338.153767     399 util.cc:131] oneDNN supports DT_HALF only on platforms with AVX-512. Falling back to the default Eigen-based implementation if present.
+I0000 00:00:1785990342.466151     547 generator_dataset_op.cc:213] Memory patch applied: M_TRIM_THRESHOLD=128 kb was set.
+I0000 00:00:1785990352.429501     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 11405 of 49000
+I0000 00:00:1785990372.429313     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 30543 of 49000
+I0000 00:00:1785990382.429986     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42894 of 49000
+I0000 00:00:1785990389.280178     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785990389.368765     461 cuda_dnn.cc:461] Loaded cuDNN version 92400
+E0000 00:00:1785990646.951368     399 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+I0000 00:00:1785990803.588332     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 8993 of 49000
+I0000 00:00:1785990823.586600     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 27148 of 49000
+I0000 00:00:1785990842.727697     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785991147.731386     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12433 of 49000
+I0000 00:00:1785991167.731551     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 35549 of 49000
+I0000 00:00:1785991180.602377     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785991425.892757     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15103 of 49000
+I0000 00:00:1785991445.893013     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43248 of 49000
+I0000 00:00:1785991450.078504     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785991665.528078     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14279 of 49000
+I0000 00:00:1785991675.528625     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29585 of 49000
+I0000 00:00:1785991689.416271     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785991907.344719     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13683 of 49000
+I0000 00:00:1785991927.344299     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41792 of 49000
+I0000 00:00:1785991932.803523     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785992145.470766     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14141 of 49000
+I0000 00:00:1785992155.469482     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29209 of 49000
+I0000 00:00:1785992169.265270     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785992390.582189     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13861 of 49000
+I0000 00:00:1785992410.581596     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 37687 of 49000
+I0000 00:00:1785992421.516264     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785992663.807613     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14412 of 49000
+I0000 00:00:1785992683.807171     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40807 of 49000
+I0000 00:00:1785992689.121029     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785992916.839649     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14369 of 49000
+I0000 00:00:1785992936.839342     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43098 of 49000
+I0000 00:00:1785992940.935701     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785993170.294556     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14480 of 49000
+I0000 00:00:1785993190.294055     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42022 of 49000
+I0000 00:00:1785993194.735139     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785993417.464314     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14701 of 49000
+I0000 00:00:1785993437.464312     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42624 of 49000
+I0000 00:00:1785993442.187908     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785993667.247156     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12966 of 49000
+I0000 00:00:1785993687.247785     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40617 of 49000
+I0000 00:00:1785993693.848056     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785993915.234593     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13395 of 49000
+I0000 00:00:1785993925.234774     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28086 of 49000
+I0000 00:00:1785993942.275528     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785994173.037252     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14621 of 49000
+I0000 00:00:1785994193.037642     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39705 of 49000
+I0000 00:00:1785994199.942555     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785994433.090387     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13545 of 49000
+I0000 00:00:1785994453.090164     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42396 of 49000
+I0000 00:00:1785994456.956847     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785994672.572824     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14107 of 49000
+I0000 00:00:1785994682.572785     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28530 of 49000
+I0000 00:00:1785994697.398512     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785994915.068488     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14242 of 49000
+I0000 00:00:1785994935.082038     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39923 of 49000
+I0000 00:00:1785994955.081977     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43486 of 49000
+I0000 00:00:1785994962.238593     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785995157.525266     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15783 of 49000
+I0000 00:00:1785995177.525020     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 45132 of 49000
+I0000 00:00:1785995180.172153     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785995379.004454     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15844 of 49000
+I0000 00:00:1785995399.004788     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 45063 of 49000
+I0000 00:00:1785995401.685594     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785995593.623933     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13688 of 49000
+I0000 00:00:1785995603.624447     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28178 of 49000
+I0000 00:00:1785995618.942356     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785995811.770368     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12394 of 49000
+I0000 00:00:1785995821.770018     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 25382 of 49000
+I0000 00:00:1785995841.234744     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785996042.900587     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13774 of 49000
+I0000 00:00:1785996062.899774     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 37904 of 49000
+I0000 00:00:1785996070.929498     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785996269.319925     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14365 of 49000
+I0000 00:00:1785996289.319923     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43031 of 49000
+I0000 00:00:1785996292.854768     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785996484.908728     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15021 of 49000
+I0000 00:00:1785996504.908333     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43023 of 49000
+I0000 00:00:1785996509.237426     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785996701.169901     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13800 of 49000
+I0000 00:00:1785996711.169399     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29007 of 49000
+I0000 00:00:1785996725.441639     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785996917.301796     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15044 of 49000
+I0000 00:00:1785996927.301656     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 30656 of 49000
+I0000 00:00:1785996940.685718     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785997141.187333     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13512 of 49000
+I0000 00:00:1785997151.187042     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28428 of 49000
+I0000 00:00:1785997166.233317     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785997362.016742     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13057 of 49000
+I0000 00:00:1785997372.016001     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 27720 of 49000
+I0000 00:00:1785997388.506261     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785997597.039850     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14067 of 49000
+I0000 00:00:1785997617.039346     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42234 of 49000
+I0000 00:00:1785997621.076979     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785997826.334404     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13808 of 49000
+I0000 00:00:1785997846.334415     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42079 of 49000
+I0000 00:00:1785997851.450663     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785998055.410079     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14357 of 49000
+I0000 00:00:1785998065.409878     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28874 of 49000
+I0000 00:00:1785998080.273333     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785998284.256247     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14427 of 49000
+I0000 00:00:1785998304.255949     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41655 of 49000
+I0000 00:00:1785998309.812062     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785998513.174936     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14073 of 49000
+I0000 00:00:1785998533.174269     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41685 of 49000
+I0000 00:00:1785998537.912968     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785998740.048568     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12733 of 49000
+I0000 00:00:1785998760.048453     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39221 of 49000
+I0000 00:00:1785998767.909526     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785998966.486410     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12805 of 49000
+I0000 00:00:1785998986.486746     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40572 of 49000
+I0000 00:00:1785998993.231312     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785999195.396419     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13608 of 49000
+I0000 00:00:1785999205.396219     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 27270 of 49000
+I0000 00:00:1785999222.025216     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785999424.436539     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14356 of 49000
+I0000 00:00:1785999444.436575     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41823 of 49000
+I0000 00:00:1785999449.671768     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785999653.712391     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13898 of 49000
+I0000 00:00:1785999673.712688     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39330 of 49000
+I0000 00:00:1785999681.128761     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1785999877.225544     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 12851 of 49000
+I0000 00:00:1785999897.225497     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39912 of 49000
+I0000 00:00:1785999903.537118     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786000096.020483     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13912 of 49000
+I0000 00:00:1786000116.020617     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42492 of 49000
+I0000 00:00:1786000120.655177     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786000314.516448     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13632 of 49000
+I0000 00:00:1786000334.516639     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41732 of 49000
+I0000 00:00:1786000339.098142     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786000532.095117     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14891 of 49000
+I0000 00:00:1786000552.095248     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42550 of 49000
+I0000 00:00:1786000556.812078     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786000748.494432     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14908 of 49000
+I0000 00:00:1786000768.494331     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43259 of 49000
+I0000 00:00:1786000772.551345     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786000965.644563     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13869 of 49000
+I0000 00:00:1786000975.644814     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28379 of 49000
+I0000 00:00:1786000990.526337     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786001181.256892     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14718 of 49000
+I0000 00:00:1786001201.257312     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41137 of 49000
+I0000 00:00:1786001206.298278     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786001395.608159     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15685 of 49000
+I0000 00:00:1786001415.608561     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 44123 of 49000
+I0000 00:00:1786001419.111130     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786001610.590163     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13697 of 49000
+I0000 00:00:1786001620.590120     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28706 of 49000
+I0000 00:00:1786001633.690426     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786001824.469538     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14131 of 49000
+I0000 00:00:1786001844.469886     547 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43772 of 49000
+I0000 00:00:1786001848.136094     547 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+E0000 00:00:1786002029.760728     399 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+I0000 00:00:1786002048.422028    2561 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 14810380630554259851
+I0000 00:00:1786002048.422155    2561 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 12590194599541855931
+I0000 00:00:1786002048.422171    2561 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 15895075496560348814
+/home/msduda/.venvs/tcc-benchmark/lib/python3.10/site-packages/keras/src/trainers/epoch_iterator.py:164: UserWarning: Your input ran out of data; interrupting training. Make sure that your dataset or generator can generate at least `steps_per_epoch * epochs` batches. You may need to use the `.repeat()` function when building your dataset.
+  self._interrupted_warning()
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786002100.300180    2578 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1786002100.647883    2578 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786002103.143393    2578 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1786002107.142289    2578 gpu_device.cc:2043] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 5657 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3050, pci bus id: 0000:01:00.0, compute capability: 8.6
+E0000 00:00:1786002110.846653    2578 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+E0000 00:00:1786002110.852744    2578 util.cc:131] oneDNN supports DT_HALF only on platforms with AVX-512. Falling back to the default Eigen-based implementation if present.
+I0000 00:00:1786002116.185112    2719 generator_dataset_op.cc:213] Memory patch applied: M_TRIM_THRESHOLD=128 kb was set.
+I0000 00:00:1786002126.178045    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13527 of 49000
+I0000 00:00:1786002146.178516    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40631 of 49000
+I0000 00:00:1786002152.473035    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786002152.513554    2639 cuda_dnn.cc:461] Loaded cuDNN version 92400
+E0000 00:00:1786002240.400151    2578 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+I0000 00:00:1786002294.371222    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14242 of 49000
+I0000 00:00:1786002314.371472    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43078 of 49000
+I0000 00:00:1786002318.819423    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786002454.553052    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14191 of 49000
+I0000 00:00:1786002474.552954    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41939 of 49000
+I0000 00:00:1786002479.756834    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786002616.694804    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14266 of 49000
+I0000 00:00:1786002626.694557    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29590 of 49000
+I0000 00:00:1786002640.570210    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786002776.057920    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13969 of 49000
+I0000 00:00:1786002786.057180    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28863 of 49000
+I0000 00:00:1786002800.559096    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786002934.753450    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13929 of 49000
+I0000 00:00:1786002944.753416    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28522 of 49000
+I0000 00:00:1786002959.334512    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003092.832022    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14017 of 49000
+I0000 00:00:1786003102.831931    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28940 of 49000
+I0000 00:00:1786003116.978452    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003251.548391    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13958 of 49000
+I0000 00:00:1786003261.548454    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29147 of 49000
+I0000 00:00:1786003275.762288    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003410.018990    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14347 of 49000
+I0000 00:00:1786003420.018982    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29514 of 49000
+I0000 00:00:1786003433.916377    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003568.935839    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14060 of 49000
+I0000 00:00:1786003578.935784    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29454 of 49000
+I0000 00:00:1786003592.736233    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003732.845755    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15114 of 49000
+I0000 00:00:1786003752.845514    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42958 of 49000
+I0000 00:00:1786003757.152520    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786003891.683972    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15029 of 49000
+I0000 00:00:1786003911.683386    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42962 of 49000
+I0000 00:00:1786003915.854026    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004051.808995    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14733 of 49000
+I0000 00:00:1786004071.808927    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42980 of 49000
+I0000 00:00:1786004076.163075    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004211.001282    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15176 of 49000
+I0000 00:00:1786004231.000209    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 44202 of 49000
+I0000 00:00:1786004234.552792    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004370.327710    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15622 of 49000
+I0000 00:00:1786004390.327837    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43348 of 49000
+I0000 00:00:1786004394.072510    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004529.011470    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14890 of 49000
+I0000 00:00:1786004549.011299    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43149 of 49000
+I0000 00:00:1786004553.123733    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004688.192875    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15193 of 49000
+I0000 00:00:1786004708.193191    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43724 of 49000
+I0000 00:00:1786004711.282548    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786004846.938059    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15140 of 49000
+I0000 00:00:1786004866.937152    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43329 of 49000
+I0000 00:00:1786004870.251567    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005005.488179    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14363 of 49000
+I0000 00:00:1786005025.487527    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43072 of 49000
+I0000 00:00:1786005028.981154    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005163.523077    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14868 of 49000
+I0000 00:00:1786005183.523630    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43123 of 49000
+I0000 00:00:1786005187.066658    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005321.384139    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14306 of 49000
+I0000 00:00:1786005341.384248    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42762 of 49000
+I0000 00:00:1786005344.918777    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005480.928925    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14192 of 49000
+I0000 00:00:1786005500.928738    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41911 of 49000
+I0000 00:00:1786005505.383606    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005639.654003    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13944 of 49000
+I0000 00:00:1786005659.653753    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43334 of 49000
+I0000 00:00:1786005663.661509    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005798.048352    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14052 of 49000
+I0000 00:00:1786005818.047981    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43034 of 49000
+I0000 00:00:1786005822.243642    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786005956.874587    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14056 of 49000
+I0000 00:00:1786005976.874765    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43001 of 49000
+I0000 00:00:1786005981.239817    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006115.749353    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14136 of 49000
+I0000 00:00:1786006135.749357    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43036 of 49000
+I0000 00:00:1786006139.981098    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006276.305035    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14189 of 49000
+I0000 00:00:1786006296.305074    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43590 of 49000
+I0000 00:00:1786006300.042309    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006436.085264    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14286 of 49000
+I0000 00:00:1786006456.084526    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43655 of 49000
+I0000 00:00:1786006459.915289    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006593.365510    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14123 of 49000
+I0000 00:00:1786006613.364663    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43450 of 49000
+I0000 00:00:1786006617.451916    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006751.949761    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14261 of 49000
+I0000 00:00:1786006771.950055    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43506 of 49000
+I0000 00:00:1786006775.902355    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786006911.826365    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15709 of 49000
+I0000 00:00:1786006931.826380    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 44234 of 49000
+I0000 00:00:1786006935.394220    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007068.198945    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15116 of 49000
+I0000 00:00:1786007088.199174    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43156 of 49000
+I0000 00:00:1786007092.417382    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007227.384483    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14998 of 49000
+I0000 00:00:1786007247.384158    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43349 of 49000
+I0000 00:00:1786007251.319896    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007386.537630    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14813 of 49000
+I0000 00:00:1786007406.538162    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43525 of 49000
+I0000 00:00:1786007410.455643    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007545.919879    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14812 of 49000
+I0000 00:00:1786007565.919611    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43236 of 49000
+I0000 00:00:1786007569.345465    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007703.686880    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15032 of 49000
+I0000 00:00:1786007723.686888    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43708 of 49000
+I0000 00:00:1786007726.848061    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786007862.486057    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13793 of 49000
+I0000 00:00:1786007882.485782    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41604 of 49000
+I0000 00:00:1786007887.014362    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008020.523061    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14090 of 49000
+I0000 00:00:1786008040.523163    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42829 of 49000
+I0000 00:00:1786008044.322716    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008178.949404    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14278 of 49000
+I0000 00:00:1786008198.949331    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42402 of 49000
+I0000 00:00:1786008202.935204    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008338.461141    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13968 of 49000
+I0000 00:00:1786008358.461336    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43097 of 49000
+I0000 00:00:1786008362.543742    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008495.868247    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14372 of 49000
+I0000 00:00:1786008515.868590    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 44217 of 49000
+I0000 00:00:1786008519.263107    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008654.740738    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14055 of 49000
+I0000 00:00:1786008674.741025    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43070 of 49000
+I0000 00:00:1786008678.841730    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008813.613824    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14006 of 49000
+I0000 00:00:1786008833.613729    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43264 of 49000
+I0000 00:00:1786008837.681096    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786008972.439062    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14223 of 49000
+I0000 00:00:1786008992.439235    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43701 of 49000
+I0000 00:00:1786008996.195939    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009131.480342    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14102 of 49000
+I0000 00:00:1786009151.481674    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43398 of 49000
+I0000 00:00:1786009155.312068    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009289.868909    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14099 of 49000
+I0000 00:00:1786009309.868960    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43224 of 49000
+I0000 00:00:1786009313.922232    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009449.079206    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14079 of 49000
+I0000 00:00:1786009469.079699    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43110 of 49000
+I0000 00:00:1786009473.246654    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009610.091943    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13825 of 49000
+I0000 00:00:1786009620.091931    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29126 of 49000
+I0000 00:00:1786009634.039314    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009768.933252    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14139 of 49000
+I0000 00:00:1786009778.933134    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 29499 of 49000
+I0000 00:00:1786009792.699553    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786009927.451305    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13856 of 49000
+I0000 00:00:1786009937.450695    2719 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28781 of 49000
+I0000 00:00:1786009951.657168    2719 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+E0000 00:00:1786010077.157014    2578 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+I0000 00:00:1786010092.850877    4554 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 8422919727772607349
+I0000 00:00:1786010092.850919    4554 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 6439253945236572478
+I0000 00:00:1786010092.850924    4554 local_rendezvous.cc:432] Local rendezvous recv item cancelled. Key hash: 4841576228680846166
+/home/msduda/.venvs/tcc-benchmark/lib/python3.10/site-packages/keras/src/trainers/epoch_iterator.py:164: UserWarning: Your input ran out of data; interrupting training. Make sure that your dataset or generator can generate at least `steps_per_epoch * epochs` batches. You may need to use the `.repeat()` function when building your dataset.
+  self._interrupted_warning()
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786010123.859468    4571 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1786010123.945325    4571 cpu_feature_guard.cc:227] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1786010125.512791    4571 port.cc:153] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+I0000 00:00:1786010129.007938    4571 gpu_device.cc:2043] Created device /job:localhost/replica:0/task:0/device:GPU:0 with 5657 MB memory:  -> device: 0, name: NVIDIA GeForce RTX 3050, pci bus id: 0000:01:00.0, compute capability: 8.6
+E0000 00:00:1786010133.122612    4571 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+E0000 00:00:1786010133.128638    4571 util.cc:131] oneDNN supports DT_HALF only on platforms with AVX-512. Falling back to the default Eigen-based implementation if present.
+I0000 00:00:1786010138.867038    4712 generator_dataset_op.cc:213] Memory patch applied: M_TRIM_THRESHOLD=128 kb was set.
+I0000 00:00:1786010148.855092    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13158 of 49000
+I0000 00:00:1786010158.855972    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 26588 of 49000
+I0000 00:00:1786010176.368022    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010176.420707    4630 cuda_dnn.cc:461] Loaded cuDNN version 92400
+E0000 00:00:1786010227.453393    4571 node_def_util.cc:682] NodeDef mentions attribute use_unbounded_threadpool which is not in the op definition: Op<name=MapDataset; signature=input_dataset:variant, other_arguments: -> handle:variant; attr=f:func; attr=Targuments:list(type),min=0; attr=output_types:list(type),min=1; attr=output_shapes:list(shape),min=1; attr=use_inter_op_parallelism:bool,default=true; attr=preserve_cardinality:bool,default=false; attr=force_synchronous:bool,default=false; attr=metadata:string,default=""> This may be expected if your graph generating binary is newer  than this binary. Unknown attributes will be ignored. NodeDef: {{node ParallelMapDatasetV2/_5}}
+I0000 00:00:1786010274.852907    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14076 of 49000
+I0000 00:00:1786010284.852941    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28603 of 49000
+I0000 00:00:1786010300.179317    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010390.393764    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13441 of 49000
+I0000 00:00:1786010400.394089    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28350 of 49000
+I0000 00:00:1786010416.494964    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010537.083474    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 11956 of 49000
+I0000 00:00:1786010557.083392    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39437 of 49000
+I0000 00:00:1786010564.486361    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010654.812225    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13959 of 49000
+I0000 00:00:1786010674.812072    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41430 of 49000
+I0000 00:00:1786010679.808278    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010770.815950    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15147 of 49000
+I0000 00:00:1786010790.816502    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43103 of 49000
+I0000 00:00:1786010795.325177    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786010884.589923    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13695 of 49000
+I0000 00:00:1786010904.589809    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41574 of 49000
+I0000 00:00:1786010910.148576    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011000.060390    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15121 of 49000
+I0000 00:00:1786011020.061117    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42519 of 49000
+I0000 00:00:1786011024.775563    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011115.479880    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13195 of 49000
+I0000 00:00:1786011125.480115    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 26907 of 49000
+I0000 00:00:1786011142.574200    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011230.783692    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13136 of 49000
+I0000 00:00:1786011250.784273    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40298 of 49000
+I0000 00:00:1786011257.498621    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011347.583712    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13448 of 49000
+I0000 00:00:1786011367.582897    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40096 of 49000
+I0000 00:00:1786011373.668676    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011464.927809    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14634 of 49000
+I0000 00:00:1786011484.928530    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41362 of 49000
+I0000 00:00:1786011490.869489    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011579.397292    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13309 of 49000
+I0000 00:00:1786011599.397572    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40380 of 49000
+I0000 00:00:1786011605.726253    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011695.693240    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13419 of 49000
+I0000 00:00:1786011715.693186    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 39997 of 49000
+I0000 00:00:1786011721.850633    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011811.500383    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14421 of 49000
+I0000 00:00:1786011831.499261    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40638 of 49000
+I0000 00:00:1786011837.759544    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786011928.364918    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13154 of 49000
+I0000 00:00:1786011938.364784    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 27449 of 49000
+I0000 00:00:1786011955.024994    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012043.922793    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13431 of 49000
+I0000 00:00:1786012063.922800    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40723 of 49000
+I0000 00:00:1786012070.188551    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012160.964807    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14659 of 49000
+I0000 00:00:1786012180.964813    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40487 of 49000
+I0000 00:00:1786012187.562268    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012277.091340    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13789 of 49000
+I0000 00:00:1786012287.091567    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28291 of 49000
+I0000 00:00:1786012302.462601    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012391.658393    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13547 of 49000
+I0000 00:00:1786012411.658455    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42048 of 49000
+I0000 00:00:1786012416.772574    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012506.525874    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14903 of 49000
+I0000 00:00:1786012526.525944    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41296 of 49000
+I0000 00:00:1786012532.408302    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012622.035907    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13406 of 49000
+I0000 00:00:1786012632.036186    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28069 of 49000
+I0000 00:00:1786012647.532875    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012736.160548    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13316 of 49000
+I0000 00:00:1786012756.160814    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40391 of 49000
+I0000 00:00:1786012762.010434    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012852.621029    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14476 of 49000
+I0000 00:00:1786012872.619415    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41058 of 49000
+I0000 00:00:1786012878.775455    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786012967.068938    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13970 of 49000
+I0000 00:00:1786012987.068315    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41491 of 49000
+I0000 00:00:1786012992.838138    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013082.574242    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13537 of 49000
+I0000 00:00:1786013102.575170    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41379 of 49000
+I0000 00:00:1786013107.475899    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013196.804179    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14031 of 49000
+I0000 00:00:1786013206.804070    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28715 of 49000
+I0000 00:00:1786013221.755172    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013311.172566    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13549 of 49000
+I0000 00:00:1786013331.172698    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41825 of 49000
+I0000 00:00:1786013336.322437    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013426.840382    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14982 of 49000
+I0000 00:00:1786013446.840227    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42445 of 49000
+I0000 00:00:1786013450.907633    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013540.764746    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13699 of 49000
+I0000 00:00:1786013550.764185    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28356 of 49000
+I0000 00:00:1786013566.177846    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013655.978481    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14046 of 49000
+I0000 00:00:1786013675.978436    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42476 of 49000
+I0000 00:00:1786013680.851844    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013770.299128    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 15120 of 49000
+I0000 00:00:1786013790.299176    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 43230 of 49000
+I0000 00:00:1786013794.326984    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013883.411697    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14033 of 49000
+I0000 00:00:1786013893.411526    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28713 of 49000
+I0000 00:00:1786013908.339105    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786013998.978118    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13615 of 49000
+I0000 00:00:1786014018.978035    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42570 of 49000
+I0000 00:00:1786014023.627940    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014113.206000    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14671 of 49000
+I0000 00:00:1786014133.206093    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41819 of 49000
+I0000 00:00:1786014138.710602    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014227.396359    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13785 of 49000
+I0000 00:00:1786014247.396134    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42076 of 49000
+I0000 00:00:1786014252.223914    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014342.726004    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13338 of 49000
+I0000 00:00:1786014362.726228    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 40583 of 49000
+I0000 00:00:1786014368.205501    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014457.848450    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13870 of 49000
+I0000 00:00:1786014467.848605    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28299 of 49000
+I0000 00:00:1786014483.309205    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014571.893711    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13504 of 49000
+I0000 00:00:1786014591.893486    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41289 of 49000
+I0000 00:00:1786014597.649811    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014686.454960    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14671 of 49000
+I0000 00:00:1786014706.455199    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41420 of 49000
+I0000 00:00:1786014711.374403    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014802.457075    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13700 of 49000
+I0000 00:00:1786014812.457091    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28434 of 49000
+I0000 00:00:1786014827.186242    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786014916.566272    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13697 of 49000
+I0000 00:00:1786014936.567165    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42009 of 49000
+I0000 00:00:1786014941.761620    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786015032.932025    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14956 of 49000
+I0000 00:00:1786015052.931796    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42536 of 49000
+I0000 00:00:1786015057.062048    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786015146.583595    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14059 of 49000
+I0000 00:00:1786015156.583177    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28879 of 49000
+I0000 00:00:1786015171.079446    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786015261.556840    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13687 of 49000
+I0000 00:00:1786015281.556193    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 41901 of 49000
+I0000 00:00:1786015286.802534    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786015377.357245    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 14849 of 49000
+I0000 00:00:1786015397.356897    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 42731 of 49000
+I0000 00:00:1786015402.037706    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.
+I0000 00:00:1786015489.983409    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 13722 of 49000
+I0000 00:00:1786015499.983993    4712 shuffle_dataset_op.cc:453] ShuffleDatasetV3:4: Filling up shuffle buffer (this may take a while): 28183 of 49000
+I0000 00:00:1786015515.106423    4712 shuffle_dataset_op.cc:483] Shuffle buffer filled.

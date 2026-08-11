@@ -19,9 +19,6 @@ datasets:
   cifar100_coarse:
     adapter: cifar100_coarse
     root: ../datasets/cifar100_coarse
-  cinic10:
-    adapter: cinic10
-    root: ../datasets/cinic10
   svhn:
     adapter: svhn
     root: ../datasets/svhn

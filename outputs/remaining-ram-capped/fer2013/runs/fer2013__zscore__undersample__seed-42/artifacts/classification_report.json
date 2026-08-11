@@ -1,0 +1,94 @@
+{
+  "class_names": [
+    "angry",
+    "disgust",
+    "fear",
+    "happy",
+    "sad",
+    "surprise",
+    "neutral"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "angry",
+      "f1": 0.23474801061007958,
+      "label": 0,
+      "precision": 0.23137254901960785,
+      "recall": 0.23822341857335128,
+      "support": 743
+    },
+    {
+      "class_index": 1,
+      "class_name": "disgust",
+      "f1": 0.16149068322981364,
+      "label": 1,
+      "precision": 0.09252669039145907,
+      "recall": 0.6341463414634146,
+      "support": 82
+    },
+    {
+      "class_index": 2,
+      "class_name": "fear",
+      "f1": 0.1796759941089838,
+      "label": 2,
+      "precision": 0.20677966101694914,
+      "recall": 0.15885416666666666,
+      "support": 768
+    },
+    {
+      "class_index": 3,
+      "class_name": "happy",
+      "f1": 0.47446722959388826,
+      "label": 3,
+      "precision": 0.517998244073749,
+      "recall": 0.43768545994065283,
+      "support": 1348
+    },
+    {
+      "class_index": 4,
+      "class_name": "sad",
+      "f1": 0.21758380771663505,
+      "label": 4,
+      "precision": 0.25671641791044775,
+      "recall": 0.18880351262349068,
+      "support": 911
+    },
+    {
+      "class_index": 5,
+      "class_name": "surprise",
+      "f1": 0.45718654434250766,
+      "label": 5,
+      "precision": 0.422316384180791,
+      "recall": 0.49833333333333335,
+      "support": 600
+    },
+    {
+      "class_index": 6,
+      "class_name": "neutral",
+      "f1": 0.3024494142705006,
+      "label": 6,
+      "precision": 0.29957805907172996,
+      "recall": 0.3053763440860215,
+      "support": 930
+    }
+  ],
+  "test": {
+    "accuracy": 0.31512448903753254,
+    "balanced_accuracy": 0.35163179666956157,
+    "generated_at": "2026-08-02T10:45:14.200+00:00",
+    "loss": 1.814693570137024,
+    "macro_f1": 0.2896573834103441,
+    "n_samples": 5382,
+    "run_id": "fer2013__zscore__undersample__seed-42"
+  }
+}

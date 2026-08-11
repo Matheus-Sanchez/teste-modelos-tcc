@@ -1,7 +1,7 @@
 # TCC Dataset Benchmark
 
 Suíte local e retomável para comparar o comportamento da mesma CNN treinada do
-zero em dez datasets de classificação de imagens. Os dados ficam somente na
+zero em nove datasets de classificação de imagens. Os dados ficam somente na
 subpasta `datasets/` do projeto e não são versionados pelo Git.
 
 Para o mapa de chamadas, explicação arquivo a arquivo e guia de alterações
@@ -10,13 +10,15 @@ manuais, leia [docs/GUIA_TECNICO.md](docs/GUIA_TECNICO.md).
 ## Escopo fixo
 
 - Datasets: MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10,
-  CIFAR-100 (superclasses), CINIC-10, SVHN, GTSRB e FER2013.
-- O perfil final atual produz 112 runs: MNIST usa cinco seeds e os outros nove
-  datasets usam a seed 42; todos têm 2 normalizações e 4 balanceamentos.
+  CIFAR-100 (superclasses), SVHN, GTSRB e FER2013.
+- O perfil final atual produz 36 runs: uma seed (42), normalização z-score e
+  quatro modos de balanceamento para cada dataset.
 - Divisão determinística nova de 70/15/15; validação e teste nunca recebem
   oversampling, undersampling ou pesos.
 - CNN herdada apenas em topologia, sem pesos pré-treinados. Entradas têm 64 px,
   exceto GTSRB com 128 px; canais permanecem nativos.
+- No perfil WSL, o cache de pré-processamento é limitado a 2 GiB e os buffers
+  de shuffle dividem um orçamento total de 1 GiB, para preservar a RAM do host.
 
 ## Instalação
 
@@ -120,6 +122,10 @@ bash scripts/wsl-gpu-env.sh tcc-benchmark run --all --suite configs/full-100-epo
 # matriz de 100 épocas. Não promove a matriz se qualquer run curta falhar.
 bash scripts/wsl-gpu-env.sh python scripts/supervise_benchmarks.py
 
+# Benchmark KMNIST de quantização: FP32, FP16, INT8-QAT, INT4-QAT e INT8-PTQ.
+# Cada variante fica em uma saída isolada e --resume continua somente o que falta.
+bash scripts/wsl-gpu-env.sh python scripts/run_kmnist_quantization_benchmark.py --resume
+
 # Recria somente a consolidação HTML/CSV/JSON/PNG de uma base.
 tcc-benchmark report --output-root artifacts --dataset mnist
 
@@ -141,7 +147,38 @@ Cada linha de `checkpoints/epoch_metrics.csv` inclui
 augmentação, divididos pelo tempo total da época. Para comparar batches,
 compare essa métrica a partir da segunda época, com o mesmo dataset e protocolo.
 
+O perfil `kmnist-quantization.yaml` fixa KMNIST em `all_raw`, sem augmentação,
+split 70/15/15, seed 42, batch 256 e 50 épocas. FP32, FP16 e as duas variantes
+QAT são treinadas separadamente; INT8-PTQ é convertido do checkpoint FP32. O
+INT4-QAT é fake quantization W4A8 para pesquisa: seus números de tamanho físico
+e desempenho são explicitamente rotulados como estimados/emulados.
+
 ## Artefatos
+
+## Backup consolidado e organização das saídas
+
+O backup consolidado do projeto usa uma única raiz no HDD:
+
+```text
+G:\repos\teste-modelos-tcc\
+```
+
+O código e as configurações vêm de `C:\source\repos\teste-modelos-tcc`; os
+resultados externos vêm de `E:\tcc-benchmark\outputs`. Ambos devem ser
+preservados dentro dessa mesma raiz, reunindo os resultados em `outputs/` sem
+alterar o nome das pastas de experimento. `node_modules/` não faz parte do
+backup, pois pode ser recriado a partir dos arquivos de dependência.
+
+| Pasta | Conteúdo |
+|---|---|
+| `outputs/` | Runs, checkpoints, telemetria, relatórios e análises de experimentos. |
+| `output/` | Entregáveis portáteis, incluindo relatórios PDF. |
+| `artifacts/` | Artefatos auxiliares gerados por ferramentas do projeto. |
+| `docs/` | Guias técnicos e documentação do backup. |
+
+Veja [docs/BACKUP_ESTRUTURA.md](docs/BACKUP_ESTRUTURA.md) para o procedimento
+de sincronização e [outputs/README.md](outputs/README.md) para a convenção das
+saídas.
 
 Cada run fica em:
 

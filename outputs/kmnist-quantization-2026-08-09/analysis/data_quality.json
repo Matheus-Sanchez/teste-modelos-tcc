@@ -1,0 +1,30 @@
+{
+  "generated_at": "2026-08-09T23:38:02.951228+00:00",
+  "checks": {
+    "top_level_status_completed": true,
+    "zero_reported_failures": true,
+    "all_five_variants_present": true,
+    "all_variant_statuses_completed": true,
+    "all_training_runs_have_50_epochs": true,
+    "all_training_summaries_report_50_epochs": true,
+    "fixed_batch_256": true,
+    "augmentation_disabled": true,
+    "memory_growth_enabled": true,
+    "same_split_fingerprint": true,
+    "same_source_fingerprint": true,
+    "same_70_15_15_sizes": true
+  },
+  "passed": true,
+  "epoch_row_counts": {
+    "fp16": 50,
+    "fp32": 50,
+    "int4_qat": 50,
+    "int8_qat": 50
+  },
+  "warnings": [
+    "A telemetria registrou menos de 50 eventos `epoch_end` em FP32 (47). Os CSVs de época e os `training_summary.json` registram as 50 épocas; por isso este é um aviso de instrumentação, não uma evidência de treino incompleto.",
+    "A conversão LiteRT FP16 falhou; não há métrica de inferência LiteRT/CPU nem tamanho LiteRT para FP16.",
+    "INT4-QAT é fake quantização experimental/emulada; o tamanho de 4 bits é estimado e não representa um artefato LiteRT INT4 implantável.",
+    "O LiteRT INT8-PTQ contém tensores float32 auxiliares; ele é classificado como grafo híbrido/float_or_hybrid, não como INT8 integral."
+  ]
+}

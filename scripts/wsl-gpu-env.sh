@@ -22,6 +22,9 @@ fi
 
 # The runner also requests memory growth, but exporting this before TensorFlow
 # starts prevents an eager full-VRAM allocation during any auxiliary command.
-export TF_FORCE_GPU_ALLOW_GROWTH="${TF_FORCE_GPU_ALLOW_GROWTH:-true}"
+# Quantization runs are isolated and compare VRAM under the same policy.  Do
+# not inherit a caller's false value, which would make TensorFlow reserve all
+# VRAM before the benchmark can configure memory growth.
+export TF_FORCE_GPU_ALLOW_GROWTH=true
 
 exec "$@"

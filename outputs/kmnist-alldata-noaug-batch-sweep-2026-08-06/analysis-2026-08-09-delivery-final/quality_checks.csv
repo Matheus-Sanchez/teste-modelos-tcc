@@ -1,0 +1,481 @@
+batch_size,check,passed,severity_if_failed,detail,result
+16,required_files,True,critical,all required files present,Aprovado
+16,status_completed,True,critical,completed,Aprovado
+16,batch_matches_config,True,critical,"config=16, folder=16",Aprovado
+16,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+16,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+16,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+16,timing_summary_reconciled,False,medium,"epoch_sum=9339.067793, summary=9128.275393",Falhou
+16,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+16,full_telemetry_coverage,True,medium,telemetry_epoch_end=49/50,Aprovado
+16,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+16,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+16,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+32,required_files,True,critical,all required files present,Aprovado
+32,status_completed,True,critical,completed,Aprovado
+32,batch_matches_config,True,critical,"config=32, folder=32",Aprovado
+32,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+32,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+32,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+32,timing_summary_reconciled,True,medium,"epoch_sum=6692.640527, summary=6692.640527",Aprovado
+32,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+32,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+32,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+32,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+32,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+48,required_files,True,critical,all required files present,Aprovado
+48,status_completed,True,critical,completed,Aprovado
+48,batch_matches_config,True,critical,"config=48, folder=48",Aprovado
+48,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+48,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+48,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+48,timing_summary_reconciled,False,medium,"epoch_sum=4794.671928, summary=372.509121",Falhou
+48,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+48,full_telemetry_coverage,False,medium,telemetry_epoch_end=4/50,Falhou
+48,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+48,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+48,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+64,required_files,True,critical,all required files present,Aprovado
+64,status_completed,True,critical,completed,Aprovado
+64,batch_matches_config,True,critical,"config=64, folder=64",Aprovado
+64,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+64,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+64,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+64,timing_summary_reconciled,False,medium,"epoch_sum=4357.781384, summary=3536.326803",Falhou
+64,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+64,full_telemetry_coverage,False,medium,telemetry_epoch_end=41/50,Falhou
+64,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+64,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+64,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+80,required_files,True,critical,all required files present,Aprovado
+80,status_completed,True,critical,completed,Aprovado
+80,batch_matches_config,True,critical,"config=80, folder=80",Aprovado
+80,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+80,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+80,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+80,timing_summary_reconciled,True,medium,"epoch_sum=3908.647331, summary=3908.647331",Aprovado
+80,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+80,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+80,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+80,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+80,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+96,required_files,True,critical,all required files present,Aprovado
+96,status_completed,True,critical,completed,Aprovado
+96,batch_matches_config,True,critical,"config=96, folder=96",Aprovado
+96,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+96,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+96,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+96,timing_summary_reconciled,True,medium,"epoch_sum=3676.805033, summary=3676.805033",Aprovado
+96,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+96,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+96,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+96,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+96,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+112,required_files,True,critical,all required files present,Aprovado
+112,status_completed,True,critical,completed,Aprovado
+112,batch_matches_config,True,critical,"config=112, folder=112",Aprovado
+112,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+112,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+112,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+112,timing_summary_reconciled,True,medium,"epoch_sum=3285.090226, summary=3285.090226",Aprovado
+112,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+112,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+112,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+112,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+112,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+128,required_files,True,critical,all required files present,Aprovado
+128,status_completed,True,critical,completed,Aprovado
+128,batch_matches_config,True,critical,"config=128, folder=128",Aprovado
+128,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+128,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+128,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+128,timing_summary_reconciled,True,medium,"epoch_sum=3278.580903, summary=3278.580903",Aprovado
+128,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+128,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+128,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+128,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+128,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+144,required_files,True,critical,all required files present,Aprovado
+144,status_completed,True,critical,completed,Aprovado
+144,batch_matches_config,True,critical,"config=144, folder=144",Aprovado
+144,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+144,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+144,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+144,timing_summary_reconciled,True,medium,"epoch_sum=3013.634536, summary=3013.634536",Aprovado
+144,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+144,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+144,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+144,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+144,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+160,required_files,True,critical,all required files present,Aprovado
+160,status_completed,True,critical,completed,Aprovado
+160,batch_matches_config,True,critical,"config=160, folder=160",Aprovado
+160,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+160,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+160,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+160,timing_summary_reconciled,True,medium,"epoch_sum=3052.360617, summary=3052.360617",Aprovado
+160,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+160,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+160,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+160,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+160,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+176,required_files,True,critical,all required files present,Aprovado
+176,status_completed,True,critical,completed,Aprovado
+176,batch_matches_config,True,critical,"config=176, folder=176",Aprovado
+176,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+176,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+176,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+176,timing_summary_reconciled,True,medium,"epoch_sum=2940.093739, summary=2940.093739",Aprovado
+176,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+176,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+176,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+176,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+176,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+192,required_files,True,critical,all required files present,Aprovado
+192,status_completed,True,critical,completed,Aprovado
+192,batch_matches_config,True,critical,"config=192, folder=192",Aprovado
+192,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+192,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+192,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+192,timing_summary_reconciled,True,medium,"epoch_sum=2672.721626, summary=2672.721626",Aprovado
+192,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+192,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+192,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+192,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+192,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+208,required_files,True,critical,all required files present,Aprovado
+208,status_completed,True,critical,completed,Aprovado
+208,batch_matches_config,True,critical,"config=208, folder=208",Aprovado
+208,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+208,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+208,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+208,timing_summary_reconciled,True,medium,"epoch_sum=2664.063121, summary=2664.063121",Aprovado
+208,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+208,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+208,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+208,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+208,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+224,required_files,True,critical,all required files present,Aprovado
+224,status_completed,True,critical,completed,Aprovado
+224,batch_matches_config,True,critical,"config=224, folder=224",Aprovado
+224,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+224,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+224,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+224,timing_summary_reconciled,False,medium,"epoch_sum=2913.595924, summary=531.780862",Falhou
+224,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+224,full_telemetry_coverage,False,medium,telemetry_epoch_end=7/50,Falhou
+224,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+224,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+224,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+240,required_files,True,critical,all required files present,Aprovado
+240,status_completed,True,critical,completed,Aprovado
+240,batch_matches_config,True,critical,"config=240, folder=240",Aprovado
+240,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+240,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+240,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+240,timing_summary_reconciled,True,medium,"epoch_sum=3602.795848, summary=3602.795848",Aprovado
+240,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+240,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+240,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+240,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+240,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+256,required_files,True,critical,all required files present,Aprovado
+256,status_completed,True,critical,completed,Aprovado
+256,batch_matches_config,True,critical,"config=256, folder=256",Aprovado
+256,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+256,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+256,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+256,timing_summary_reconciled,True,medium,"epoch_sum=2916.746530, summary=2916.746530",Aprovado
+256,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+256,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+256,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+256,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+256,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+272,required_files,True,critical,all required files present,Aprovado
+272,status_completed,True,critical,completed,Aprovado
+272,batch_matches_config,True,critical,"config=272, folder=272",Aprovado
+272,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+272,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+272,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+272,timing_summary_reconciled,True,medium,"epoch_sum=3682.902883, summary=3682.902883",Aprovado
+272,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+272,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+272,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+272,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+272,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+288,required_files,True,critical,all required files present,Aprovado
+288,status_completed,True,critical,completed,Aprovado
+288,batch_matches_config,True,critical,"config=288, folder=288",Aprovado
+288,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+288,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+288,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+288,timing_summary_reconciled,True,medium,"epoch_sum=3185.195177, summary=3185.195177",Aprovado
+288,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+288,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+288,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+288,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+288,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+304,required_files,True,critical,all required files present,Aprovado
+304,status_completed,True,critical,completed,Aprovado
+304,batch_matches_config,True,critical,"config=304, folder=304",Aprovado
+304,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+304,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+304,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+304,timing_summary_reconciled,True,medium,"epoch_sum=2895.559002, summary=2895.559002",Aprovado
+304,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+304,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+304,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+304,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+304,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+320,required_files,True,critical,all required files present,Aprovado
+320,status_completed,True,critical,completed,Aprovado
+320,batch_matches_config,True,critical,"config=320, folder=320",Aprovado
+320,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+320,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+320,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+320,timing_summary_reconciled,True,medium,"epoch_sum=2950.462451, summary=2950.462451",Aprovado
+320,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+320,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+320,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+320,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+320,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+336,required_files,True,critical,all required files present,Aprovado
+336,status_completed,True,critical,completed,Aprovado
+336,batch_matches_config,True,critical,"config=336, folder=336",Aprovado
+336,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+336,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+336,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+336,timing_summary_reconciled,True,medium,"epoch_sum=2688.863678, summary=2688.863678",Aprovado
+336,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+336,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+336,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+336,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+336,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+352,required_files,True,critical,all required files present,Aprovado
+352,status_completed,True,critical,completed,Aprovado
+352,batch_matches_config,True,critical,"config=352, folder=352",Aprovado
+352,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+352,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+352,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+352,timing_summary_reconciled,True,medium,"epoch_sum=2682.174615, summary=2682.174615",Aprovado
+352,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+352,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+352,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+352,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+352,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+368,required_files,True,critical,all required files present,Aprovado
+368,status_completed,True,critical,completed,Aprovado
+368,batch_matches_config,True,critical,"config=368, folder=368",Aprovado
+368,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+368,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+368,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+368,timing_summary_reconciled,True,medium,"epoch_sum=2611.636406, summary=2611.636406",Aprovado
+368,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+368,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+368,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+368,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+368,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+384,required_files,True,critical,all required files present,Aprovado
+384,status_completed,True,critical,completed,Aprovado
+384,batch_matches_config,True,critical,"config=384, folder=384",Aprovado
+384,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+384,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+384,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+384,timing_summary_reconciled,True,medium,"epoch_sum=2720.342751, summary=2720.342751",Aprovado
+384,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+384,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+384,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+384,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+384,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+400,required_files,True,critical,all required files present,Aprovado
+400,status_completed,True,critical,completed,Aprovado
+400,batch_matches_config,True,critical,"config=400, folder=400",Aprovado
+400,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+400,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+400,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+400,timing_summary_reconciled,True,medium,"epoch_sum=2732.449691, summary=2732.449691",Aprovado
+400,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+400,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+400,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+400,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+400,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+416,required_files,True,critical,all required files present,Aprovado
+416,status_completed,True,critical,completed,Aprovado
+416,batch_matches_config,True,critical,"config=416, folder=416",Aprovado
+416,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+416,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+416,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+416,timing_summary_reconciled,True,medium,"epoch_sum=2554.944254, summary=2554.944254",Aprovado
+416,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+416,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+416,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+416,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+416,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+432,required_files,True,critical,all required files present,Aprovado
+432,status_completed,True,critical,completed,Aprovado
+432,batch_matches_config,True,critical,"config=432, folder=432",Aprovado
+432,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+432,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+432,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+432,timing_summary_reconciled,True,medium,"epoch_sum=2536.722320, summary=2536.722320",Aprovado
+432,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+432,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+432,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+432,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+432,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+448,required_files,True,critical,all required files present,Aprovado
+448,status_completed,True,critical,completed,Aprovado
+448,batch_matches_config,True,critical,"config=448, folder=448",Aprovado
+448,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+448,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+448,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+448,timing_summary_reconciled,True,medium,"epoch_sum=2648.904492, summary=2648.904492",Aprovado
+448,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+448,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+448,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+448,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+448,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+464,required_files,True,critical,all required files present,Aprovado
+464,status_completed,True,critical,completed,Aprovado
+464,batch_matches_config,True,critical,"config=464, folder=464",Aprovado
+464,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+464,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+464,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+464,timing_summary_reconciled,True,medium,"epoch_sum=2601.869652, summary=2601.869652",Aprovado
+464,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+464,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+464,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+464,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+464,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+480,required_files,True,critical,all required files present,Aprovado
+480,status_completed,True,critical,completed,Aprovado
+480,batch_matches_config,True,critical,"config=480, folder=480",Aprovado
+480,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+480,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+480,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+480,timing_summary_reconciled,True,medium,"epoch_sum=2577.366231, summary=2577.366231",Aprovado
+480,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+480,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+480,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+480,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+480,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+496,required_files,True,critical,all required files present,Aprovado
+496,status_completed,True,critical,completed,Aprovado
+496,batch_matches_config,True,critical,"config=496, folder=496",Aprovado
+496,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+496,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+496,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+496,timing_summary_reconciled,True,medium,"epoch_sum=2610.718518, summary=2610.718518",Aprovado
+496,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+496,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+496,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+496,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+496,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+512,required_files,True,critical,all required files present,Aprovado
+512,status_completed,True,critical,completed,Aprovado
+512,batch_matches_config,True,critical,"config=512, folder=512",Aprovado
+512,epoch_count_matches_summary,True,critical,"csv=50, summary=50, expected=50",Aprovado
+512,epoch_sequence,True,high,"first=[1], last=[50]",Aprovado
+512,prediction_count,True,critical,"predictions=10500, support=10500",Aprovado
+512,timing_summary_reconciled,True,medium,"epoch_sum=2629.296122, summary=2629.296122",Aprovado
+512,full_timing_coverage,True,high,timed_epochs=50/50,Aprovado
+512,full_telemetry_coverage,True,medium,telemetry_epoch_end=50/50,Aprovado
+512,neutral_augmentation,True,critical,extra_fraction=0.0,Aprovado
+512,fixed_split_counts,True,critical,"train=49000, val=10500, test=10500",Aprovado
+512,finite_headline_metrics,True,critical,"accuracy, balanced accuracy, macro-F1 and loss are finite",Aprovado
+16,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+16,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+16,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+32,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+32,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+32,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+48,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+48,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+48,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+64,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+64,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+64,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+80,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+80,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+80,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+96,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+96,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+96,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+112,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+112,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+112,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+128,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+128,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+128,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+144,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+144,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+144,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+160,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+160,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+160,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+176,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+176,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+176,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+192,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+192,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+192,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+208,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+208,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+208,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+224,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+224,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+224,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+240,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+240,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+240,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+256,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+256,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+256,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+272,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+272,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+272,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+288,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+288,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+288,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+304,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+304,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+304,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+320,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+320,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+320,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+336,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+336,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+336,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+352,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+352,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+352,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+368,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+368,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+368,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+384,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+384,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+384,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+400,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+400,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+400,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+416,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+416,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+416,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+432,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+432,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+432,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+448,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+448,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+448,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+464,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+464,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+464,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+480,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+480,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+480,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+496,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+496,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+496,common_source,True,critical,distinct_source_fingerprints=1,Aprovado
+512,constant_protocol_except_batch,True,critical,distinct_signatures=1,Aprovado
+512,common_split,True,critical,distinct_split_fingerprints=1,Aprovado
+512,common_source,True,critical,distinct_source_fingerprints=1,Aprovado

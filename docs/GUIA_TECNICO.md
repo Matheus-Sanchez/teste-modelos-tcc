@@ -89,6 +89,8 @@ suite:
 | default_image_size | Resolução padrão. | A CNN exige no mínimo 64 por conter cinco pools. |
 | image_size_overrides | Exceções por dataset, atualmente GTSRB=128. | Aumenta VRAM e tempo. |
 | augmentation | Flip, brilho, contraste, translação, zoom, ruído e cutout. | Só vale para treino; flip pode ser inadequado em alguns dados. |
+| preprocess_cache_max_mib | Só mantém em RAM um conjunto já decodificado quando sua estimativa cabe nesse teto. | Aumentar pode acelerar épocas, mas não limita o shuffle. |
+| shuffle_buffer_max_mib | Orçamento total para os buffers de shuffle; com augmentação ele é dividido entre os fluxos raw e aumentado. `0` preserva o shuffle completo. | Use 512–1024 no WSL quando a RAM for limitada; reduz picos sem mudar batch, modelo ou augmentação. |
 | early_stopping_patience | Épocas sem melhora de Macro-F1 antes de parar. | Muda o total efetivo de épocas. |
 | reduce_lr_* | Redução de LR em platô. | Muda a trajetória de otimização. |
 
@@ -313,3 +315,22 @@ wsl.exe -d Ubuntu-22.04 -- bash -lc "cd /mnt/c/source/repos/teste-modelos-tcc &&
 
 Se houver OOM, o runner registra a run como failed e não reduz batch, resolução ou épocas automaticamente. Corrija o YAML, escolha uma saída nova e rode smoke antes de reiniciar.
 
+## 9. Backup consolidado
+
+Para restaurar o projeto sem separar código e resultados, mantenha uma cópia
+consolidada em `G:\repos\teste-modelos-tcc`. A raiz combina:
+
+- `C:\source\repos\teste-modelos-tcc`: código, configurações, documentos,
+  notebooks e resultados já mantidos dentro do repositório;
+- `E:\tcc-benchmark\outputs`: resultados produzidos no segundo SSD, copiados
+  para `outputs/` na raiz consolidada.
+
+Não mova nem renomeie pastas de experimento ao consolidar: seus caminhos são
+parte das referências usadas por scripts de análise. A separação é funcional:
+`outputs/` guarda resultados de execução; `output/` guarda entregáveis finais;
+`artifacts/` guarda produtos auxiliares. `node_modules/` fica fora do backup e
+deve ser recriado com o gerenciador de pacotes do respectivo aplicativo.
+
+O backup é incremental e não apaga arquivos já presentes no HDD. A estrutura
+detalhada e o procedimento de conferência estão em
+[BACKUP_ESTRUTURA.md](BACKUP_ESTRUTURA.md).

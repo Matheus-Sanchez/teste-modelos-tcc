@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    {
+      "dataset": "kmnist",
+      "report_path": "kmnist/report.html",
+      "run_count": 1,
+      "status_counts": {
+        "completed": 1
+      }
+    }
+  ],
+  "generated_at": "2026-08-08T03:58:56.544+00:00",
+  "schema_version": 1
+}

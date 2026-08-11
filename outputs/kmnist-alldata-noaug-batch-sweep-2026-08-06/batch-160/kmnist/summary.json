@@ -1,0 +1,60 @@
+{
+  "dataset": "kmnist",
+  "generated_at": "2026-08-07T16:38:36.926+00:00",
+  "run_count": 1,
+  "runs": [
+    {
+      "attempt": 1,
+      "balance_mode": "all_raw",
+      "balance_no_op": true,
+      "config_fingerprint": "8ac6c4bb91e4ac28a867b0fd77293ec260f711f1e31fdefbbd4beebbbb948635",
+      "mean_epoch_seconds": 61.04721233593998,
+      "normalization": "unit_interval",
+      "output_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "peak_cpu_percent": 17.1,
+      "peak_gpu_memory_used_bytes": 2988675072.0,
+      "peak_gpu_utilization_percent": 72.0,
+      "peak_process_rss_bytes": 3824910336.0,
+      "peak_ram_used_bytes": 3719163904.0,
+      "raw_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "report_path": "runs/kmnist__unit_interval__all_raw__seed-42/artifacts/report.html",
+      "run_id": "kmnist__unit_interval__all_raw__seed-42",
+      "seed": 42,
+      "split_fingerprint": "161c642197f73a5c2a9888f8f889988f3853ec4a3aa1a4101c2c1fe0d3478f81",
+      "status": "completed",
+      "telemetry_samples": 793,
+      "test_accuracy": 0.9780952380952381,
+      "test_balanced_accuracy": 0.9780952380952381,
+      "test_loss": 0.12144479900598526,
+      "test_macro_f1": 0.9780822783036976,
+      "test_samples": 10500,
+      "training_total_seconds": 3052.3606167969992
+    }
+  ],
+  "schema_version": 1,
+  "status_counts": {
+    "completed": 1
+  }
+}

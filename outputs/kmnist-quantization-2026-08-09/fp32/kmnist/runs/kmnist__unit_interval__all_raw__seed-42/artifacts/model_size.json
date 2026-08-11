@@ -1,0 +1,28 @@
+{
+  "efficiency_interpretation": "measured",
+  "estimated_deployment_parameter_bytes": 804236,
+  "estimated_weight_bits": 32,
+  "litert": {
+    "bytes": 852504,
+    "input_dtypes": [
+      "float32"
+    ],
+    "mode": "fp32",
+    "output_dtypes": [
+      "float32"
+    ],
+    "path": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09/fp32/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/fp32.tflite",
+    "quantization_validity": "float_or_hybrid",
+    "status": "completed",
+    "tensor_dtypes": {
+      "float32": 249,
+      "int32": 17
+    }
+  },
+  "non_quantized_parameter_count": 1994,
+  "quantizable_parameter_count": 199065,
+  "quantization_validity": "float_or_hybrid",
+  "serialized_litert_bytes": 852504,
+  "serialized_model_bytes": 2601313,
+  "variant": "fp32"
+}

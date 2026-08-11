@@ -1,0 +1,37 @@
+suite:
+  output_root: /mnt/e/tcc-benchmark/outputs/kmnist-alldata-noaug-batch-sweep-2026-08-06/batch-048
+  seeds:
+  - 42
+  normalizations:
+  - unit_interval
+  balance_modes:
+  - all_raw
+  train_fraction: 0.7
+  validation_fraction: 0.15
+  test_fraction: 0.15
+  hardware_interval_seconds: 5.0
+  training:
+    max_epochs: 50
+    batch_size: 48
+    learning_rate: 0.0003
+    extra_fraction: 0.0
+    dtype_policy: mixed_float16
+    keras_verbose: 1
+    default_image_size: 64
+    image_size_overrides:
+      gtsrb: 128
+    augmentation:
+      flip_lr: false
+      brightness_delta: 0.0
+      contrast_lower: 1.0
+      contrast_upper: 1.0
+      translate_frac: 0.0
+      zoom_min: 1.0
+      zoom_max: 1.0
+      noise_std: 0.0
+      cutout_prob: 0.0
+      cutout_max_frac: 0.0
+    early_stopping_patience: 50
+    reduce_lr_factor: 0.3
+    reduce_lr_patience: 50
+    reduce_lr_min_lr: 1.0e-07

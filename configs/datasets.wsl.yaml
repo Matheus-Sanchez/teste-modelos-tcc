@@ -8,7 +8,6 @@ datasets:
   emnist_balanced: {adapter: emnist_balanced, root: /home/msduda/datasets-tcc/emnist_balanced}
   cifar10: {adapter: cifar10, root: /home/msduda/datasets-tcc/cifar10}
   cifar100_coarse: {adapter: cifar100_coarse, root: /home/msduda/datasets-tcc/cifar100_coarse}
-  cinic10: {adapter: cinic10, root: /home/msduda/datasets-tcc/cinic10}
   svhn: {adapter: svhn, root: /home/msduda/datasets-tcc/svhn}
   gtsrb: {adapter: gtsrb, root: /home/msduda/datasets-tcc/gtsrb}
   fer2013: {adapter: fer2013, root: /home/msduda/datasets-tcc/fer2013}

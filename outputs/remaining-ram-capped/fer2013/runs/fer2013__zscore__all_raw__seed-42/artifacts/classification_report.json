@@ -1,0 +1,94 @@
+{
+  "class_names": [
+    "angry",
+    "disgust",
+    "fear",
+    "happy",
+    "sad",
+    "surprise",
+    "neutral"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "angry",
+      "f1": 0.42344827586206896,
+      "label": 0,
+      "precision": 0.43422913719943423,
+      "recall": 0.41318977119784656,
+      "support": 743
+    },
+    {
+      "class_index": 1,
+      "class_name": "disgust",
+      "f1": 0.3333333333333333,
+      "label": 1,
+      "precision": 0.59375,
+      "recall": 0.23170731707317074,
+      "support": 82
+    },
+    {
+      "class_index": 2,
+      "class_name": "fear",
+      "f1": 0.3085188027628549,
+      "label": 2,
+      "precision": 0.37570093457943926,
+      "recall": 0.26171875,
+      "support": 768
+    },
+    {
+      "class_index": 3,
+      "class_name": "happy",
+      "f1": 0.7264185037947236,
+      "label": 3,
+      "precision": 0.7082452431289641,
+      "recall": 0.7455489614243324,
+      "support": 1348
+    },
+    {
+      "class_index": 4,
+      "class_name": "sad",
+      "f1": 0.4123711340206186,
+      "label": 4,
+      "precision": 0.38872691933916426,
+      "recall": 0.43907793633369924,
+      "support": 911
+    },
+    {
+      "class_index": 5,
+      "class_name": "surprise",
+      "f1": 0.6677419354838708,
+      "label": 5,
+      "precision": 0.646875,
+      "recall": 0.69,
+      "support": 600
+    },
+    {
+      "class_index": 6,
+      "class_name": "neutral",
+      "f1": 0.5056410256410256,
+      "label": 6,
+      "precision": 0.48333333333333334,
+      "recall": 0.5301075268817205,
+      "support": 930
+    }
+  ],
+  "test": {
+    "accuracy": 0.5274990709773318,
+    "balanced_accuracy": 0.47305003755868136,
+    "generated_at": "2026-08-02T10:39:11.582+00:00",
+    "loss": 1.2571990489959717,
+    "macro_f1": 0.4824961444140708,
+    "n_samples": 5382,
+    "run_id": "fer2013__zscore__all_raw__seed-42"
+  }
+}

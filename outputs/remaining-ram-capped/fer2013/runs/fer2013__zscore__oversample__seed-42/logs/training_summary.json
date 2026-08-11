@@ -1,0 +1,13 @@
+{
+  "epochs_completed": 44,
+  "evaluation_seconds": 7.532313115996658,
+  "fit_seconds_current_attempt": 3090.242255297999,
+  "max_epochs": 100,
+  "mean_epoch_seconds": 68.46504187361346,
+  "mean_train_examples_per_second": 1942.283901406331,
+  "median_train_examples_per_second": 1960.8651457596688,
+  "selected_checkpoint": "/mnt/e/tcc-benchmark/outputs/remaining-ram-capped/fer2013/runs/fer2013__zscore__oversample__seed-42/checkpoints/best.keras",
+  "total_seconds": 3012.461842438992,
+  "training_seconds": 3012.461842438992,
+  "wall_seconds_current_attempt": 3119.563222594006
+}

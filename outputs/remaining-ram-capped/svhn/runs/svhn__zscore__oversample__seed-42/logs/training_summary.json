@@ -1,0 +1,13 @@
+{
+  "epochs_completed": 42,
+  "evaluation_seconds": 17.14564730899292,
+  "fit_seconds_current_attempt": 20472.368485535007,
+  "max_epochs": 100,
+  "mean_epoch_seconds": 483.82131694516664,
+  "mean_train_examples_per_second": 826.5763641107894,
+  "median_train_examples_per_second": 843.0913493163687,
+  "selected_checkpoint": "/mnt/c/source/repos/teste-modelos-tcc/outputs/remaining-ram-capped/svhn/runs/svhn__zscore__oversample__seed-42/checkpoints/best.keras",
+  "total_seconds": 20320.495311697,
+  "training_seconds": 20320.495311697,
+  "wall_seconds_current_attempt": 20550.611656368004
+}
