@@ -1,0 +1,94 @@
+{
+  "class_names": [
+    "angry",
+    "disgust",
+    "fear",
+    "happy",
+    "sad",
+    "surprise",
+    "neutral"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "angry",
+      "f1": 0.3131672597864769,
+      "label": 0,
+      "precision": 0.3323262839879154,
+      "recall": 0.2960969044414536,
+      "support": 743
+    },
+    {
+      "class_index": 1,
+      "class_name": "disgust",
+      "f1": 0.39568345323741,
+      "label": 1,
+      "precision": 0.28061224489795916,
+      "recall": 0.6707317073170732,
+      "support": 82
+    },
+    {
+      "class_index": 2,
+      "class_name": "fear",
+      "f1": 0.19732441471571907,
+      "label": 2,
+      "precision": 0.2757009345794392,
+      "recall": 0.15364583333333334,
+      "support": 768
+    },
+    {
+      "class_index": 3,
+      "class_name": "happy",
+      "f1": 0.6461780929866037,
+      "label": 3,
+      "precision": 0.6890756302521008,
+      "recall": 0.6083086053412463,
+      "support": 1348
+    },
+    {
+      "class_index": 4,
+      "class_name": "sad",
+      "f1": 0.3283422459893048,
+      "label": 4,
+      "precision": 0.32012513034410844,
+      "recall": 0.33699231613611413,
+      "support": 911
+    },
+    {
+      "class_index": 5,
+      "class_name": "surprise",
+      "f1": 0.6191904047976012,
+      "label": 5,
+      "precision": 0.5626702997275205,
+      "recall": 0.6883333333333334,
+      "support": 600
+    },
+    {
+      "class_index": 6,
+      "class_name": "neutral",
+      "f1": 0.44890340643957066,
+      "label": 6,
+      "precision": 0.3965375103050289,
+      "recall": 0.5172043010752688,
+      "support": 930
+    }
+  ],
+  "test": {
+    "accuracy": 0.4485321441843181,
+    "balanced_accuracy": 0.4673304287111176,
+    "generated_at": "2026-08-02T12:08:17.413+00:00",
+    "loss": 1.4095174074172974,
+    "macro_f1": 0.42125561113609805,
+    "n_samples": 5382,
+    "run_id": "fer2013__zscore__class_weight__seed-42"
+  }
+}

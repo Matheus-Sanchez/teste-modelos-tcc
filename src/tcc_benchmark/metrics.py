@@ -54,7 +54,10 @@ class ClassificationMetrics:
 
     accuracy: float
     balanced_accuracy: float
+    macro_precision: float
+    macro_recall: float
     macro_f1: float
+    macro_ovr_auc: float | None
     per_class: dict[int, PerClassMetrics]
     confusion_matrix: np.ndarray
 
@@ -62,7 +65,10 @@ class ClassificationMetrics:
         payload: dict[str, Any] = {
             "accuracy": float(self.accuracy),
             "balanced_accuracy": float(self.balanced_accuracy),
+            "macro_precision": float(self.macro_precision),
+            "macro_recall": float(self.macro_recall),
             "macro_f1": float(self.macro_f1),
+            "macro_ovr_auc": float(self.macro_ovr_auc) if self.macro_ovr_auc is not None else None,
             "per_class": {str(label): values.to_dict() for label, values in self.per_class.items()},
         }
         if include_confusion_matrix:
@@ -106,6 +112,7 @@ def classification_metrics(
     np.add.at(matrix, (truth, predictions), 1)
     class_values: dict[int, PerClassMetrics] = {}
     f1_values: list[float] = []
+    precision_values: list[float] = []
     recalls: list[float] = []
     for label in range(classes):
         true_positive = int(matrix[label, label])
@@ -119,11 +126,28 @@ def classification_metrics(
             label=label, support=support, precision=float(precision), recall=float(recall), f1=float(f1)
         )
         f1_values.append(float(f1))
+        precision_values.append(float(precision))
         recalls.append(float(recall))
+    macro_ovr_auc: float | None = None
+    if raw_predictions.ndim == 2:
+        try:
+            from sklearn.metrics import roc_auc_score
+
+            probabilities = np.asarray(raw_predictions, dtype=np.float64)
+            macro_ovr_auc = float(
+                roc_auc_score(truth, probabilities, labels=np.arange(classes), multi_class="ovr", average="macro")
+            )
+        except ValueError:
+            # AUC is mathematically undefined if a caller passes a subset that
+            # misses a class. The full benchmark split always includes all classes.
+            macro_ovr_auc = None
     return ClassificationMetrics(
         accuracy=float(np.trace(matrix) / len(truth)),
         balanced_accuracy=float(np.mean(recalls)),
+        macro_precision=float(np.mean(precision_values)),
+        macro_recall=float(np.mean(recalls)),
         macro_f1=float(np.mean(f1_values)),
+        macro_ovr_auc=macro_ovr_auc,
         per_class=class_values,
         confusion_matrix=matrix,
     )
@@ -136,6 +160,7 @@ class EvaluationResult:
     keras_metrics: dict[str, float]
     classification: ClassificationMetrics
     y_true: np.ndarray
+    logits: np.ndarray
     probabilities: np.ndarray
 
     def to_dict(self, *, include_predictions: bool = False) -> dict[str, Any]:
@@ -145,6 +170,7 @@ class EvaluationResult:
         }
         if include_predictions:
             payload["y_true"] = self.y_true.astype(int).tolist()
+            payload["logits"] = self.logits.astype(float).tolist()
             payload["probabilities"] = self.probabilities.astype(float).tolist()
         return payload
 
@@ -155,12 +181,18 @@ def _split_batch(batch: Any) -> tuple[Any, Any]:
     return batch[0], batch[1]
 
 
-def collect_predictions(model: Any, dataset: Any) -> tuple[np.ndarray, np.ndarray]:
-    """Collect sparse labels and model probabilities without test-time augmentation."""
+def _softmax(values: np.ndarray) -> np.ndarray:
+    shifted = values - values.max(axis=1, keepdims=True)
+    exponentials = np.exp(shifted)
+    return exponentials / exponentials.sum(axis=1, keepdims=True)
+
+
+def collect_model_outputs(model: Any, dataset: Any) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Collect sparse labels, logits and probabilities without test-time augmentation."""
 
     require_tensorflow()
     labels: list[np.ndarray] = []
-    probabilities: list[np.ndarray] = []
+    logits: list[np.ndarray] = []
     for batch in dataset:
         images, targets = _split_batch(batch)
         predicted = model(images, training=False)
@@ -168,10 +200,18 @@ def collect_predictions(model: Any, dataset: Any) -> tuple[np.ndarray, np.ndarra
         if target_values.ndim == 2 and target_values.shape[-1] > 1:
             target_values = target_values.argmax(axis=1)
         labels.append(np.asarray(target_values, dtype=np.int64).reshape(-1))
-        probabilities.append(np.asarray(predicted.numpy() if hasattr(predicted, "numpy") else predicted, dtype=np.float32))
+        logits.append(np.asarray(predicted.numpy() if hasattr(predicted, "numpy") else predicted, dtype=np.float32))
     if not labels:
         raise ValueError("O dataset de avaliação não contém lotes.")
-    return np.concatenate(labels), np.concatenate(probabilities)
+    joined_logits = np.concatenate(logits)
+    return np.concatenate(labels), joined_logits, _softmax(joined_logits)
+
+
+def collect_predictions(model: Any, dataset: Any) -> tuple[np.ndarray, np.ndarray]:
+    """Compatibility helper returning labels and softmax probabilities."""
+
+    labels, _logits, probabilities = collect_model_outputs(model, dataset)
+    return labels, probabilities
 
 
 def evaluate_model(model: Any, dataset: Any, *, num_classes: int) -> EvaluationResult:
@@ -180,11 +220,12 @@ def evaluate_model(model: Any, dataset: Any, *, num_classes: int) -> EvaluationR
     require_tensorflow()
     evaluated = model.evaluate(dataset, verbose=0, return_dict=True)
     keras_metrics = {str(key): float(value) for key, value in evaluated.items()}
-    y_true, probabilities = collect_predictions(model, dataset)
+    y_true, logits, probabilities = collect_model_outputs(model, dataset)
     return EvaluationResult(
         keras_metrics=keras_metrics,
         classification=classification_metrics(y_true, probabilities, num_classes=num_classes),
         y_true=y_true,
+        logits=logits,
         probabilities=probabilities,
     )
 

@@ -1,0 +1,9 @@
+{
+  "attempt": 1,
+  "detail": "Treino e avaliação concluídos",
+  "error": null,
+  "run_id": "svhn__zscore__undersample__seed-42",
+  "status": "completed",
+  "status_updated_at": "2026-07-31T17:24:16.436+00:00",
+  "updated_at": "2026-07-31T17:24:16.436+00:00"
+}

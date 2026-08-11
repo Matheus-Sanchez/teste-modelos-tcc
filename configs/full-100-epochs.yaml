@@ -12,7 +12,6 @@ suite:
     emnist_balanced: [42]
     cifar10: [42]
     cifar100_coarse: [42]
-    cinic10: [42]
     svhn: [42]
     gtsrb: [42]
     fer2013: [42]

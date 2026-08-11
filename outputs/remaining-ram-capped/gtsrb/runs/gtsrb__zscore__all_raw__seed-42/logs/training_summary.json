@@ -1,0 +1,13 @@
+{
+  "epochs_completed": 72,
+  "evaluation_seconds": 19.30999203799729,
+  "fit_seconds_current_attempt": 19017.402102922002,
+  "max_epochs": 100,
+  "mean_epoch_seconds": 260.18260687604175,
+  "mean_train_examples_per_second": 317.0000731323629,
+  "median_train_examples_per_second": 317.59469643236207,
+  "selected_checkpoint": "/mnt/e/tcc-benchmark/outputs/remaining-ram-capped/gtsrb/runs/gtsrb__zscore__all_raw__seed-42/checkpoints/best.keras",
+  "total_seconds": 18733.147695075008,
+  "training_seconds": 18733.147695075008,
+  "wall_seconds_current_attempt": 19061.887723393003
+}

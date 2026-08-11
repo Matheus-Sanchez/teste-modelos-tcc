@@ -6,6 +6,7 @@ from typing import Any
 
 from .config import DEFAULT_TRAINING_SETTINGS
 from .data import require_tensorflow
+from .quantization import FakeQuantize, QATDense, QATSeparableConv2D
 
 
 LEGACY_FILTERS: tuple[int, ...] = (32, 48, 64, 96, 128)
@@ -54,6 +55,7 @@ def build_legacy_cnn(
     num_classes: int,
     name: str = "legacy_scratch_cnn",
     dtype_policy: str = DEFAULT_TRAINING_SETTINGS.dtype_policy,
+    qat_weight_bits: int | None = None,
 ) -> Any:
     """Build the old CNN topology from scratch with dynamic I/O dimensions.
 
@@ -75,6 +77,8 @@ def build_legacy_cnn(
     if num_classes < 2:
         raise ValueError("num_classes deve ser pelo menos 2 para classificação.")
     set_dtype_policy(dtype_policy)
+    if qat_weight_bits is not None and int(qat_weight_bits) not in {4, 8}:
+        raise ValueError("qat_weight_bits deve ser 4, 8 ou nulo.")
     layers = tensorflow.keras.layers
     if not hasattr(layers, "GroupNormalization"):
         raise RuntimeError(
@@ -83,9 +87,12 @@ def build_legacy_cnn(
         )
 
     inputs = layers.Input(shape=(image_size, image_size, channels), dtype="float32", name="image")
-    x = inputs
+    qat_bits = int(qat_weight_bits) if qat_weight_bits is not None else None
+    x = FakeQuantize(num_bits=8, name="input_fake_quant")(inputs) if qat_bits else inputs
     for index, filters in enumerate(LEGACY_FILTERS, start=1):
-        x = layers.SeparableConv2D(
+        convolution = QATSeparableConv2D if qat_bits else layers.SeparableConv2D
+        quantized_arguments = {"weight_bits": qat_bits} if qat_bits else {}
+        x = convolution(
             filters,
             5,
             strides=2 if index == 1 else 1,
@@ -94,10 +101,12 @@ def build_legacy_cnn(
             depthwise_initializer="he_normal",
             pointwise_initializer="he_normal",
             name=f"block{index}_sepconv5",
+            **quantized_arguments,
         )(x)
         x = layers.GroupNormalization(groups=16, axis=-1, name=f"block{index}_gn1")(x)
         x = layers.Activation("swish", name=f"block{index}_swish1")(x)
-        x = layers.SeparableConv2D(
+        x = FakeQuantize(num_bits=8, name=f"block{index}_fake_quant1")(x) if qat_bits else x
+        x = convolution(
             filters,
             3,
             strides=1,
@@ -106,21 +115,28 @@ def build_legacy_cnn(
             depthwise_initializer="he_normal",
             pointwise_initializer="he_normal",
             name=f"block{index}_sepconv3",
+            **quantized_arguments,
         )(x)
         x = layers.GroupNormalization(groups=16, axis=-1, name=f"block{index}_gn2")(x)
         x = layers.Activation("swish", name=f"block{index}_swish2")(x)
+        x = FakeQuantize(num_bits=8, name=f"block{index}_fake_quant2")(x) if qat_bits else x
         x = layers.MaxPooling2D(2, name=f"block{index}_pool")(x)
 
     gap = layers.GlobalAveragePooling2D(name="global_average_pool")(x)
     gmp = layers.GlobalMaxPooling2D(name="global_max_pool")(x)
     x = layers.Concatenate(name="global_pool_concat")((gap, gmp))
     x = layers.Dropout(0.4, name="dropout1")(x)
-    x = layers.Dense(256, activation="silu", name="dense1")(x)
+    dense = QATDense if qat_bits else layers.Dense
+    dense_arguments = {"weight_bits": qat_bits} if qat_bits else {}
+    x = dense(256, activation="silu", name="dense1", **dense_arguments)(x)
+    x = FakeQuantize(num_bits=8, name="dense1_fake_quant")(x) if qat_bits else x
     x = layers.Dropout(0.4, name="dropout2")(x)
-    x = layers.Dense(256, activation="silu", name="dense2")(x)
+    x = dense(256, activation="silu", name="dense2", **dense_arguments)(x)
+    x = FakeQuantize(num_bits=8, name="dense2_fake_quant")(x) if qat_bits else x
     x = layers.Dropout(0.4, name="dropout3")(x)
-    outputs = layers.Dense(num_classes, activation="softmax", dtype="float32", name="predictions")(x)
-    return tensorflow.keras.Model(inputs=inputs, outputs=outputs, name=name)
+    logits = dense(num_classes, activation=None, dtype="float32", name="logits", **dense_arguments)(x)
+    logits = FakeQuantize(num_bits=8, name="logits_fake_quant")(logits) if qat_bits else logits
+    return tensorflow.keras.Model(inputs=inputs, outputs=logits, name=name)
 
 
 def compile_legacy_cnn(
@@ -137,7 +153,7 @@ def compile_legacy_cnn(
     set_dtype_policy(dtype_policy)
     model.compile(
         optimizer=tensorflow.keras.optimizers.Adam(learning_rate=float(learning_rate)),
-        loss=tensorflow.keras.losses.SparseCategoricalCrossentropy(),
+        loss=tensorflow.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=[tensorflow.keras.metrics.SparseCategoricalAccuracy(name="accuracy")],
         jit_compile=False,
     )
@@ -151,17 +167,22 @@ def build_and_compile_legacy_cnn(
     num_classes: int,
     learning_rate: float = DEFAULT_TRAINING_SETTINGS.learning_rate,
     dtype_policy: str = DEFAULT_TRAINING_SETTINGS.dtype_policy,
+    qat_weight_bits: int | None = None,
     seed: int | None = None,
 ) -> Any:
     """Convenience constructor used by the runner for one fully fresh run."""
 
     if seed is not None:
-        set_training_seed(int(seed))
+        # TensorFlow's GPU implementation does not provide a deterministic
+        # gradient for FakeQuantWithMinMaxVars. QAT still uses the same fixed
+        # seed/split, but must not enable the global determinism switch.
+        set_training_seed(int(seed), enable_op_determinism=qat_weight_bits is None)
     model = build_legacy_cnn(
         image_size=image_size,
         channels=channels,
         num_classes=num_classes,
         dtype_policy=dtype_policy,
+        qat_weight_bits=qat_weight_bits,
     )
     return compile_legacy_cnn(model, learning_rate=learning_rate, dtype_policy=dtype_policy)
 

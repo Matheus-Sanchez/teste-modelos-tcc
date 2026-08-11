@@ -1,0 +1,18 @@
+{
+  "bytes": 312000,
+  "input_dtypes": [
+    "int8"
+  ],
+  "mode": "int8",
+  "output_dtypes": [
+    "int8"
+  ],
+  "path": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09/int8_qat/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/int8_qat.tflite",
+  "quantization_validity": "float_or_hybrid",
+  "status": "completed",
+  "tensor_dtypes": {
+    "float32": 40,
+    "int32": 40,
+    "int8": 240
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "datasets": [
+    {
+      "dataset": "fer2013",
+      "report_path": "fer2013/report.html",
+      "run_count": 4,
+      "status_counts": {
+        "completed": 4
+      }
+    },
+    {
+      "dataset": "gtsrb",
+      "report_path": "gtsrb/report.html",
+      "run_count": 4,
+      "status_counts": {
+        "completed": 4
+      }
+    },
+    {
+      "dataset": "svhn",
+      "report_path": "svhn/report.html",
+      "run_count": 4,
+      "status_counts": {
+        "completed": 4
+      }
+    }
+  ],
+  "generated_at": "2026-08-02T12:08:20.487+00:00",
+  "schema_version": 1
+}

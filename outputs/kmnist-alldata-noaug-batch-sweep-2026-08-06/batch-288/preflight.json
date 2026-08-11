@@ -1,0 +1,103 @@
+{
+  "cpu": {
+    "logical_cores": 12,
+    "memory_available_bytes": 15751999488,
+    "memory_total_bytes": 16619085824,
+    "physical_cores": 6
+  },
+  "disks": [
+    {
+      "exists": true,
+      "free_bytes": 998271246336,
+      "path": "/home/msduda/datasets-tcc/kmnist",
+      "total_bytes": 1081101176832
+    },
+    {
+      "exists": false,
+      "free_bytes": 207210778624,
+      "path": "/mnt/e/tcc-benchmark/outputs/kmnist-alldata-noaug-batch-sweep-2026-08-06/batch-288",
+      "total_bytes": 1000186310656
+    }
+  ],
+  "errors": [],
+  "nvidia_smi": {
+    "available": true,
+    "gpus": [
+      {
+        "driver_version": "610.88",
+        "memory_total_mib": 8192,
+        "memory_used_mib": 3753,
+        "name": "NVIDIA GeForce RTX 3050",
+        "utilization_percent": 33
+      }
+    ]
+  },
+  "ok": true,
+  "packages": {
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "psutil": "7.2.2",
+    "pynvml": null,
+    "scikit-learn": "1.7.2",
+    "tensorflow": "2.21.0"
+  },
+  "platform": {
+    "cwd": "/mnt/c/source/repos/teste-modelos-tcc",
+    "machine": "x86_64",
+    "python": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "system": "Linux"
+  },
+  "tensorflow": {
+    "build_info": {
+      "cpu_compiler": "clang",
+      "cuda_compute_capabilities": [
+        "sm_60",
+        "sm_70",
+        "sm_80",
+        "sm_89",
+        "compute_90"
+      ],
+      "cuda_version": "12.5.1",
+      "cudnn_version": "9",
+      "is_cuda_build": true,
+      "is_rocm_build": false,
+      "is_tensorrt_build": false
+    },
+    "gpus": [
+      "/physical_device:GPU:0"
+    ],
+    "installed": true,
+    "version": "2.21.0"
+  },
+  "training": {
+    "augmentation": {
+      "brightness_delta": 0.0,
+      "contrast_lower": 1.0,
+      "contrast_upper": 1.0,
+      "cutout_max_frac": 0.0,
+      "cutout_prob": 0.0,
+      "flip_lr": false,
+      "noise_std": 0.0,
+      "translate_frac": 0.0,
+      "zoom_max": 1.0,
+      "zoom_min": 1.0
+    },
+    "batch_size": 288,
+    "default_image_size": 64,
+    "dtype_policy": "mixed_float16",
+    "early_stopping_patience": 50,
+    "extra_fraction": 0.0,
+    "image_size_overrides": {
+      "gtsrb": 128
+    },
+    "keras_verbose": 1,
+    "learning_rate": 0.0003,
+    "max_epochs": 50,
+    "preprocess_cache_max_mib": 0,
+    "reduce_lr_factor": 0.3,
+    "reduce_lr_min_lr": 1e-07,
+    "reduce_lr_patience": 50,
+    "shuffle_buffer_max_mib": 0
+  }
+}

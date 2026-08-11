@@ -1,0 +1,17 @@
+{
+  "bytes": 852504,
+  "input_dtypes": [
+    "float32"
+  ],
+  "mode": "fp32",
+  "output_dtypes": [
+    "float32"
+  ],
+  "path": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09/fp32/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/fp32.tflite",
+  "quantization_validity": "float_or_hybrid",
+  "status": "completed",
+  "tensor_dtypes": {
+    "float32": 249,
+    "int32": 17
+  }
+}

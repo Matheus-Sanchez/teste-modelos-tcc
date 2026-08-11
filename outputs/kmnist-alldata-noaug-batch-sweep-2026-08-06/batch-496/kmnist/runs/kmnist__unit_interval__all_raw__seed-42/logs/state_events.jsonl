@@ -1,0 +1,3 @@
+{"event":"initialized","status":"pending","timestamp":"2026-08-08T09:46:34.473+00:00"}
+{"attempt":1,"detail":"Iniciando","error":null,"event":"status_changed","from_status":"pending","status":"running","timestamp":"2026-08-08T09:46:34.575+00:00"}
+{"attempt":1,"detail":"Treino e avaliação concluídos","error":null,"event":"status_changed","from_status":"running","status":"completed","timestamp":"2026-08-08T10:44:19.874+00:00"}

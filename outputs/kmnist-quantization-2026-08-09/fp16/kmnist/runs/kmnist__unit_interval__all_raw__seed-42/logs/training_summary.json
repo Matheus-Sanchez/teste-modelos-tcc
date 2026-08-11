@@ -1,0 +1,19 @@
+{
+  "epochs_completed": 50,
+  "evaluation_seconds": 18.805310263999672,
+  "fit_seconds_current_attempt": 3379.119965716,
+  "max_epochs": 50,
+  "mean_epoch_seconds": 56.563991765260006,
+  "mean_train_examples_per_second": 869.5623851713692,
+  "median_train_examples_per_second": 877.5743803435444,
+  "selected_checkpoint": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09/fp16/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+  "tensorflow_gpu_memory_after": {
+    "GPU:0": {
+      "current": 5811200,
+      "peak": 337601792
+    }
+  },
+  "total_seconds": 2828.1995882630004,
+  "training_seconds": 2828.1995882630004,
+  "wall_seconds_current_attempt": 3401.6482214350003
+}

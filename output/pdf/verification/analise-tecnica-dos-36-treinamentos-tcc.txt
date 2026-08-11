@@ -1,0 +1,482 @@
+Data Analytics report                                                                                           Aug 2, 2026, 6:05 PM UTC
+
+Análise técnica dos 36 treinamentos do TCC
+Auditoria consolidada de desempenho, tempo, hardware, qualidade e comparabilidade.
+
+
+
+Resumo técnico
+A suíte canônica terminou: 36 de 36 runs estão com status completed, reunindo 2.486 epochs e 88,86 horas de
+treinamento efetivo. Não é necessário executar comando de retomada. Os avisos exibidos ao fim do FER2013 não
+invalidaram o run: o epoch 46 foi registrado integralmente, o early stopping ocorreu na janela prevista e checkpoint,
+avaliação e previsões finais estão presentes.
+
+Source: Resumo consolidado da auditoria
+Table: outputs/training-analysis-2026-08-02/analysis_overview.json
+
+
+
+
+    Runs concluídos                                    Horas                                    Epochs
+
+    36                                                 88.86                                    2,486
+    Conclusão da suíte canônica                        Custo total de treinamento               Volume efetivamente registrado
+
+      Planejados 36                                    Source: Resumo consolidado               Source: Resumo consolidado
+                                                       da auditoria                             da auditoria
+    Source: Resumo consolidado                         Table: outputs/training-analysis-2026-   Table: outputs/training-analysis-2026-
+    da auditoria                                       08-02/analysis_overview.json             08-02/analysis_overview.json
+    Table: outputs/training-analysis-2026-
+    08-02/analysis_overview.json
+
+
+
+
+    Macro-F1                                           RAM                                      VRAM (GiB)
+
+    99.7%                                              58.9%                                    7.64
+    Melhor macro-F1 de teste                           Maior uso de RAM observado               Maior alocação de VRAM observada
+
+    Source: Resumo consolidado                         Source: Resumo consolidado               Source: Resumo consolidado
+    da auditoria                                       da auditoria                             da auditoria
+    Table: outputs/training-analysis-2026-             Table: outputs/training-analysis-2026-   Table: outputs/training-analysis-2026-
+    08-02/analysis_overview.json                       08-02/analysis_overview.json             08-02/analysis_overview.json
+
+
+
+
+Desempenho de teste
+O maior macro-F1 foi 99,6749%, no GTSRB com oversampling. A melhor estratégia dependeu do dataset:
+undersampling venceu CIFAR-10, EMNIST Balanced e KMNIST; oversampling venceu CIFAR-100 Coarse, FER2013 e
+GTSRB; pesos de classe venceu MNIST; e o baseline sem balanceamento venceu Fashion-MNIST e SVHN. Em vários
+casos a diferença foi pequena, portanto a escolha deve considerar também custo e estabilidade por classe.
+
+Source: Métricas consolidadas por run
+Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+  Macro-F1 de teste por dataset e balanceamento
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+      100%
+
+
+
+           75%
+Macro-F1
+
+
+
+
+           50%
+
+
+
+           25%
+
+
+
+           0%
+                 CIFAR-10      CIFAR-100        EMNIST          Fashion       FER2013          GTSRB     KMNIST        MNIST   SVHN
+                                 Coarse         Balanced        -MNIST
+                                                                                  Dataset
+
+                                  Sem balanceamento             Pesos de classe        Oversampling    Undersampling
+
+
+  Efeito do balanceamento
+  Na média dos nove datasets, oversampling ficou praticamente neutro contra o baseline (−0,009 ponto percentual de
+  macro-F1), enquanto undersampling perdeu 4,00 pontos percentuais em média. Essa perda é concentrada no FER2013
+  (−19,28 p.p.) e no GTSRB (−13,69 p.p.), onde descartar exemplos prejudicou classes difíceis. Pesos de classe foi
+  exatamente equivalente ao baseline nos datasets já balanceados e caiu nos mais desbalanceados, especialmente no
+  FER2013.
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+  Variação de macro-F1 contra o baseline sem balanceamento
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+         7,5%
+
+
+
+                   0%
+Δ macro-F1
+
+
+
+
+              -7,5%
+
+
+
+              -15%
+
+
+
+             -22,5%
+                           CIFAR-10     CIFAR-100     EMNIST        Fashion         FER2013     GTSRB         KMNIST     MNIST   SVHN
+                                          Coarse      Balanced      -MNIST
+                                                                                    Dataset
+
+                                                      Pesos de classe       Oversampling      Undersampling
+
+
+  Tempo e eficiência
+  O run mais demorado foi GTSRB com oversampling, com 9,90 h; o mais curto foi FER2013 com undersampling, com 4
+  ,21 min, porque o conjunto efetivo foi drasticamente reduzido. Os 36 runs somaram 88,86 h. GTSRB e SVHN dominam
+  o custo, enquanto os datasets 28×28 e 64×64 têm epochs muito mais curtos.
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+
+  Tempo de treinamento por dataset e balanceamento
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+       10
+
+
+
+             7,5
+Horas
+
+
+
+
+              5
+
+
+
+             2,5
+
+
+
+              0
+                        CIFAR-10      CIFAR-100     EMNIST        Fashion        FER2013       GTSRB          KMNIST     MNIST   SVHN
+                                        Coarse      Balanced      -MNIST
+                                                                                 Dataset
+
+                                          Sem balanceamento       Pesos de classe       Oversampling     Undersampling
+  Uso de hardware
+  A telemetria da NVIDIA GeForce RTX 3050 de 8 GB registrou pico de 7,64 GiB de VRAM, RAM do sistema em 58,9%,
+  RSS do processo em 9,14 GiB e GPU a no máximo 61 °C. A utilização média ponderada da GPU foi apenas 25,0%, sinal
+  de que parte do tempo foi limitada pelo carregamento/preprocessamento de dados ou pela CPU. Não há evidência de
+  OOM ou disco cheio nos runs concluídos. Os 12 runs finais (SVHN, GTSRB e FER2013) estão no disco E:, enquanto os 24
+  anteriores permanecem no C:; esta análise consolida os dois locais.
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+
+  Throughput e utilização média da GPU por run
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+       3.000
+
+
+
+             2.250
+Exemplos/s
+
+
+
+
+             1.500
+
+
+
+              750
+
+
+
+                0
+                     0                          9                          18                     27                     36
+                                                                      GPU média (%)
+
+              CIFAR-10   CIFAR-100 Coarse           EMNIST Balanced   Fashion-MNIST   FER2013   GTSRB   KMNIST   MNIST
+                                                                      SVHN
+
+
+  Detalhamento completo por run
+  As três tabelas seguintes cobrem os 36 runs: métricas de teste, epochs e tempo, e telemetria de hardware. Para runs
+  retomados, o tempo canônico é a soma dos registros por epoch, evitando subcontagem no resumo da tentativa final.
+
+  Source: Métricas consolidadas por run
+  Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+Métricas de teste dos 36 runs
+
+Source: Métricas consolidadas por run
+Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+Dataset               Balanceamento                Accuracy   Balanced acc.   Macro-F1   Δ vs baseline   Melhor epoch   Epochs   Amost
+
+GTSRB                 Oversampling                   99.5%          99.7%       99.7%         +0.3%               51       61
+
+GTSRB                 Sem balanceamento              99.4%          99.4%       99.4%             0%              62       72
+
+MNIST                 Pesos de classe                  99%            99%        99%          +0.1%               48       58
+
+MNIST                 Sem balanceamento              98.9%          98.9%       98.9%             0%              45       55
+
+MNIST                 Undersampling                  98.9%          98.9%       98.9%            -0%              63       73
+
+MNIST                 Oversampling                   98.9%          98.9%       98.9%            -0%              34       44
+
+GTSRB                 Pesos de classe                98.3%          98.8%       98.6%          -0.8%              80       90
+
+KMNIST                Undersampling                  98.5%          98.5%       98.5%         +0.3%               59       69
+
+KMNIST                Oversampling                   98.4%          98.4%       98.4%         +0.1%               40       50
+
+KMNIST                Sem balanceamento              98.3%          98.3%       98.3%             0%              33       43
+
+KMNIST                Pesos de classe                98.3%          98.3%       98.3%             0%              33       43
+
+Fashion-MNIST         Sem balanceamento              92.1%          92.1%       92.1%             0%              43       53
+
+Fashion-MNIST         Pesos de classe                92.1%          92.1%       92.1%             0%              43       53
+
+SVHN                  Sem balanceamento              92.4%          91.9%        92%              0%              77       87
+
+Fashion-MNIST         Undersampling                    92%            92%        92%           -0.1%              41       51
+                                                                                                                                   
+
+
+36 results · Showing first 15
+Tempo e volume de treinamento dos 36 runs
+
+Source: Métricas consolidadas por run
+Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+Dataset                  Balanceamento                Epochs       Melhor   Treino (h)   Média/epoch (s)   Até melhor (h)   Exemplos/s   Exe
+
+GTSRB                    Oversampling                         61      51          9.9            584.14             8.33       347.82
+
+SVHN                     Pesos de classe                 100          97         8.84            336.01             8.57       655.26
+
+SVHN                     Sem balanceamento                    87      77         7.77            321.56             6.91       648.42
+
+GTSRB                    Pesos de classe                      90      80         6.38            255.23             5.66       323.11
+
+SVHN                     Oversampling                         42      32         5.64            483.82             4.33       822.95
+
+GTSRB                    Sem balanceamento                    72      62          5.2            260.18             4.47       316.96
+
+SVHN                     Undersampling                        80      70         4.46            200.49              3.9       655.09
+
+EMNIST Balanced          Pesos de classe                      95      85         3.29            124.83             2.95     2,213.89
+
+EMNIST Balanced          Undersampling                   100         100         3.24            116.61             3.24     2,369.87
+
+EMNIST Balanced          Sem balanceamento                    95      85         3.22            121.99             2.89     2,265.51
+
+EMNIST Balanced          Oversampling                         91      81         3.02            119.62             2.68     2,310.39
+
+CIFAR-100 Coarse         Undersampling                        96      86         2.03             76.12             1.82     1,655.36
+
+CIFAR-10                 Oversampling                         91      81         1.93             76.39             1.72     1,649.46
+
+CIFAR-100 Coarse         Oversampling                         85      75         1.79             75.68             1.58     1,664.98
+
+CIFAR-10                 Undersampling                        85      75         1.73             73.48             1.52     1,714.76
+                                                                                                                                         
+
+
+36 results · Showing first 15
+Telemetria de hardware dos 36 runs
+
+Source: Métricas consolidadas por run
+Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+Dataset                  Balanceamento                GPU média (%)   GPU p95 (%)   VRAM máx. (GiB)   RAM média (%)   RAM máx. (%)
+
+GTSRB                    Pesos de classe                      26.68           97              7.64           54.56            57.1
+
+GTSRB                    Undersampling                        34.58           98                7.6          47.32            53.6
+
+GTSRB                    Oversampling                         23.01         96.2              7.13           55.62            58.9
+
+GTSRB                    Sem balanceamento                    22.48           96              6.93           47.75            51.5
+
+SVHN                     Pesos de classe                      16.65           50                 5           37.14            41.2
+
+CIFAR-10                 Sem balanceamento                    26.21           51              4.92           45.05            48.2
+
+CIFAR-10                 Oversampling                         27.13           53              4.87           46.12            48.3
+
+CIFAR-10                 Pesos de classe                      27.35           53              4.72           46.57             49
+
+CIFAR-100 Coarse         Undersampling                        28.18           55              4.61           48.91            51.3
+
+CIFAR-100 Coarse         Oversampling                         25.13           50              4.57           49.55            51.7
+
+CIFAR-10                 Undersampling                         27.9           56              4.57           45.49            47.9
+
+CIFAR-100 Coarse         Sem balanceamento                    23.75           50              4.41             48.4            51
+
+EMNIST Balanced          Pesos de classe                      32.84           60                4.4          37.25            39.2
+
+MNIST                    Sem balanceamento                    32.34         60.2              4.36           20.16            21.7
+
+FER2013                  Pesos de classe                      31.64           60              4.34           21.35            21.9
+                                                                                                                               
+
+
+36 results · Showing first 15
+
+
+Interpretação dos avisos finais do FER2013
+No run fer2013__zscore__class_weight__seed-42, o melhor checkpoint ocorreu no epoch 36 e o treinamento
+encerrou no 46, exatamente após os 10 epochs de paciência do early stopping. O log mostra 148/148 batches no
+epoch 46. A mensagem input ran out of data apareceu durante o encerramento do iterador;
+use_unbounded_threadpool foi explicitamente ignorado pelo TensorFlow e os cancelamentos de rendezvous são
+compatíveis com a desmontagem do pipeline. Como os artefatos de teste foram gravados e o status final é completed,
+não há razão técnica para repetir esse run.
+
+Source: Histórico completo por epoch
+   Table: outputs/training-analysis-2026-08-02/epoch_metrics_all.csv
+
+
+   Val macro-F1 do FER2013 ao longo dos epochs
+
+   Source: Histórico completo por epoch
+   Table: outputs/training-analysis-2026-08-02/epoch_metrics_all.csv
+        60%
+
+
+
+               45%
+Val macro-F1
+
+
+
+
+               30%
+
+
+
+               15%
+
+
+
+               0%
+                     1 2 3 4 5 6 7 8 9   11   13   15   17   19    21   23   25    27 29   31   33   35   37   39   41   43   45   47   49   51   54
+                                                                                  Epoch
+
+                                     Sem balanceamento            Undersampling       Oversampling        Pesos de classe
+
+
+   Comportamento por classe
+   As métricas macro escondem diferenças importantes. No FER2013, fear permanece entre as classes mais difíceis; no
+   CIFAR-10, cat; e no SVHN, os dígitos 8 e 6. O undersampling do GTSRB derrubou especialmente a classe 0. A tabela
+   resume os extremos; o CSV de apoio contém precisão, recall, F1 e suporte de todas as classes.
+
+   Source: Métricas completas por classe
+   Table: outputs/training-analysis-2026-08-02/per_class_metrics.csv
+Classes de maior e menor F1 em cada run
+
+Source: Métricas completas por classe
+Table: outputs/training-analysis-2026-08-02/per_class_metrics.csv
+
+Dataset                  Balanceamento                Pior classe                F1 pior   Suporte   Melhor classe   F1 melhor   Supor
+
+FER2013                  Undersampling                disgust                    16.1%         82    happy             47.4%      1,34
+
+FER2013                  Pesos de classe              fear                       19.7%        768    happy             64.6%      1,34
+
+CIFAR-100 Coarse         Undersampling                reptiles                   28.2%        450    trees             79.2%        45
+
+CIFAR-100 Coarse         Sem balanceamento            non-insect_invertebrates   29.8%        450    trees             77.5%        45
+
+CIFAR-100 Coarse         Pesos de classe              non-insect_invertebrates   29.8%        450    trees             77.5%        45
+
+FER2013                  Sem balanceamento            fear                       30.9%        768    happy             72.6%      1,34
+
+CIFAR-100 Coarse         Oversampling                 reptiles                     32%        450    trees             77.3%        45
+
+FER2013                  Oversampling                 fear                       32.8%        768    happy             69.1%      1,34
+
+EMNIST Balanced          Oversampling                 21                         49.6%        420    32                98.1%        42
+
+EMNIST Balanced          Sem balanceamento            21                         51.5%        420    32                98.8%        42
+
+EMNIST Balanced          Pesos de classe              21                         51.5%        420    32                98.8%        42
+
+CIFAR-10                 Oversampling                 cat                        52.4%        900    automobile        84.3%        90
+
+EMNIST Balanced          Undersampling                21                         53.1%        420    32                99.2%        42
+
+CIFAR-10                 Undersampling                cat                        53.7%        900    ship              84.5%        90
+
+GTSRB                    Undersampling                0                          54.5%         31    16                99.3%         6
+                                                                                                                                   
+
+
+36 results · Showing first 15
+
+
+Escopo, método e qualidade dos dados
+Foram incluídos somente os 36 runs canônicos da suíte atual: nove datasets, quatro modos, normalização z-score e
+seed 42. Tentativas interrompidas antigas e o CINIC-10, que não pertence mais à suíte, foram excluídos. A auditoria
+executou 396 verificações de arquivos, status, sequência de epochs, previsões, suporte, checkpoints, tempos e valores
+finitos. Não houve falha crítica ou alta. A única falha média foi a subcontagem do resumo de tempo do SVHN com
+pesos de classe; o histórico completo por epoch resolve essa diferença sem afetar o modelo ou suas métricas.
+
+Source: Controles de qualidade e comparabilidade
+Table: outputs/training-analysis-2026-08-02/quality_checks.csv
+Comparabilidade interna por dataset
+
+Source: Controles de qualidade e comparabilidade
+Table: outputs/training-analysis-2026-08-02/quality_checks.csv
+
+Dataset                  Splits distintos    Fontes distintas     Batches distintos   Versões TF   Limites shuffle   Comparável
+
+CIFAR-10                                1                     1                  1            1                 1            1
+
+CIFAR-100 Coarse                        1                     1                  1            1                 1            1
+
+EMNIST Balanced                         1                     1                  1            1                 1            1
+
+Fashion-MNIST                           1                     1                  1            1                 1            1
+
+FER2013                                 1                     1                  1            1                 1            1
+
+GTSRB                                   1                     1                  1            1                 1            1
+
+KMNIST                                  1                     1                  1            1                 1            1
+
+MNIST                                   1                     1                  1            1                 1            1
+
+SVHN                                    1                     1                  1            1                 1            1
+
+
+Limitações e robustez
+Cada configuração foi executada com uma única seed (42), então diferenças pequenas devem ser tratadas como
+descritivas, não como evidência estatística de superioridade. Os seis primeiros datasets não registraram explicitamente o
+limite de shuffle em MiB; SVHN, GTSRB e FER2013 usaram limite de 1.024 MiB. Isso não quebra as comparações entre os
+quatro modos do mesmo dataset, mas recomenda cautela ao comparar eficiência absoluta entre datasets de fases
+distintas.
+
+Source: Métricas consolidadas por run
+Table: outputs/training-analysis-2026-08-02/run_metrics.csv
+
+
+
+Recomendações
+     1. Use sem balanceamento como baseline padrão e escolha outra estratégia apenas quando o ganho por classe ou
+        macro-F1 justificar o custo.
+     2. Prefira oversampling a undersampling nos datasets fortemente desbalanceados; para FER2013, o ganho global é
+        pequeno, mas merece análise específica da classe fear.
+     3. Evite undersampling no GTSRB e FER2013.
+     4. Para conclusões do TCC, repita as configurações candidatas com pelo menos 3–5 seeds e relate média e desvio-
+        padrão/intervalo de confiança.
+     5. Para reduzir tempo, faça profiling do pipeline tf.data: a GPU média de 25% mostra margem para prefetch,
+        paralelismo e cache mais eficientes.
+Próximas perguntas
+Vale confirmar se os ganhos de CIFAR-100, GTSRB e KMNIST persistem em outras seeds; medir o custo energético por
+run; e testar se focal loss ou augmentação direcionada melhora as classes raras do FER2013 sem o custo do
+oversampling integral.
+

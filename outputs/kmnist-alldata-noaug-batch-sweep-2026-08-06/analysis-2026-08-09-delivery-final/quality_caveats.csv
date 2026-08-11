@@ -1,0 +1,4 @@
+batch_size,issue,severity,evidence,implication
+48,Cobertura parcial de telemetria,Média para hardware; baixa para qualidade do modelo,4/50 eventos epoch_end,Picos observados não representam necessariamente a execução inteira.
+64,Cobertura parcial de telemetria,Média para hardware; baixa para qualidade do modelo,41/50 eventos epoch_end,Picos observados não representam necessariamente a execução inteira.
+224,Cobertura parcial de telemetria,Média para hardware; baixa para qualidade do modelo,7/50 eventos epoch_end,Picos observados não representam necessariamente a execução inteira.

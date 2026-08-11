@@ -10,7 +10,6 @@ suite:
     emnist_balanced: [42]
     cifar10: [42]
     cifar100_coarse: [42]
-    cinic10: [42]
     svhn: [42]
     gtsrb: [42]
     fer2013: [42]
@@ -33,6 +32,9 @@ suite:
     # Cache somente conjuntos decodificados estimados em até 2 GiB. A cache é
     # anterior à augmentação; imagens aumentadas continuam variando por época.
     preprocess_cache_max_mib: 2048
+    # Orçamento total dos dois buffers de shuffle (raw e augmentado). Impede
+    # que datasets grandes esgotem a RAM do Windows/WSL.
+    shuffle_buffer_max_mib: 1024
     early_stopping_patience: 10
     reduce_lr_factor: 0.3
     reduce_lr_patience: 4

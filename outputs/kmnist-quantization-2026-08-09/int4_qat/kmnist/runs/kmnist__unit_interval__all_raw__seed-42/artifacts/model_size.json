@@ -1,0 +1,10 @@
+{
+  "efficiency_interpretation": "emulated_int4",
+  "estimated_deployment_parameter_bytes": 107621,
+  "estimated_weight_bits": 4,
+  "non_quantized_parameter_count": 2022,
+  "quantizable_parameter_count": 199065,
+  "quantization_validity": "emulated_int4",
+  "serialized_model_bytes": 2644729,
+  "variant": "int4_qat"
+}

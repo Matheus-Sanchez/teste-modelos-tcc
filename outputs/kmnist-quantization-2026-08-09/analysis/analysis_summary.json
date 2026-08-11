@@ -1,0 +1,28 @@
+{
+  "input_root": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09",
+  "output_dir": "/mnt/e/tcc-benchmark/outputs/kmnist-quantization-2026-08-09/analysis",
+  "queue_status": "completed",
+  "quality_passed": true,
+  "key_findings": [
+    "Melhor acurácia: INT4-QAT (emulado) (98.010%).",
+    "INT8-QAT: -0.133% de diferença de acurácia contra FP32.",
+    "INT8-PTQ: 0.297 MiB e 3610.4 exemplos/s em LiteRT/CPU; validade float_or_hybrid.",
+    "INT4-QAT é um resultado numérico emulado, não um artefato INT4 LiteRT implantável."
+  ],
+  "generated_charts": [
+    "01_test_metrics.png",
+    "02_validation_convergence.png",
+    "03_training_time_and_vram.png",
+    "04_litert_efficiency.png"
+  ],
+  "source_artifacts": [
+    "manifest.json",
+    "status.json",
+    "training_summary.json",
+    "epoch_metrics.csv",
+    "test_metrics.json",
+    "model_size.json",
+    "litert_benchmark.json",
+    "telemetry/summary.json"
+  ]
+}

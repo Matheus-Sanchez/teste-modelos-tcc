@@ -1,0 +1,127 @@
+{
+  "class_names": [
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "0",
+      "f1": 0.9791073124406459,
+      "label": 0,
+      "precision": 0.9763257575757576,
+      "recall": 0.981904761904762,
+      "support": 1050
+    },
+    {
+      "class_index": 1,
+      "class_name": "1",
+      "f1": 0.9781783681214421,
+      "label": 1,
+      "precision": 0.9744801512287334,
+      "recall": 0.981904761904762,
+      "support": 1050
+    },
+    {
+      "class_index": 2,
+      "class_name": "2",
+      "f1": 0.9632458233890215,
+      "label": 2,
+      "precision": 0.9655502392344497,
+      "recall": 0.960952380952381,
+      "support": 1050
+    },
+    {
+      "class_index": 3,
+      "class_name": "3",
+      "f1": 0.9796305068687826,
+      "label": 3,
+      "precision": 0.9745523091423186,
+      "recall": 0.9847619047619047,
+      "support": 1050
+    },
+    {
+      "class_index": 4,
+      "class_name": "4",
+      "f1": 0.9769673704414586,
+      "label": 4,
+      "precision": 0.9845261121856866,
+      "recall": 0.9695238095238096,
+      "support": 1050
+    },
+    {
+      "class_index": 5,
+      "class_name": "5",
+      "f1": 0.9810246679316887,
+      "label": 5,
+      "precision": 0.9773156899810964,
+      "recall": 0.9847619047619047,
+      "support": 1050
+    },
+    {
+      "class_index": 6,
+      "class_name": "6",
+      "f1": 0.9726880689985624,
+      "label": 6,
+      "precision": 0.9787849566055931,
+      "recall": 0.9666666666666667,
+      "support": 1050
+    },
+    {
+      "class_index": 7,
+      "class_name": "7",
+      "f1": 0.9838403041825095,
+      "label": 7,
+      "precision": 0.9819734345351043,
+      "recall": 0.9857142857142858,
+      "support": 1050
+    },
+    {
+      "class_index": 8,
+      "class_name": "8",
+      "f1": 0.9823389021479714,
+      "label": 8,
+      "precision": 0.9846889952153111,
+      "recall": 0.98,
+      "support": 1050
+    },
+    {
+      "class_index": 9,
+      "class_name": "9",
+      "f1": 0.9866793529971456,
+      "label": 9,
+      "precision": 0.9857414448669202,
+      "recall": 0.9876190476190476,
+      "support": 1050
+    }
+  ],
+  "test": {
+    "accuracy": 0.9783809523809524,
+    "balanced_accuracy": 0.9783809523809524,
+    "generated_at": "2026-08-07T20:37:38.742+00:00",
+    "loss": 0.11563931405544281,
+    "macro_f1": 0.9783700677519228,
+    "n_samples": 10500,
+    "run_id": "kmnist__unit_interval__all_raw__seed-42"
+  }
+}

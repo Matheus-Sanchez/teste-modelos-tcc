@@ -1,0 +1,5 @@
+severity_if_failed,result,checks
+critical,Aprovado,352
+high,Aprovado,64
+medium,Aprovado,57
+medium,Falhou,7

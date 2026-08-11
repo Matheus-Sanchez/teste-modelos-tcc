@@ -103,12 +103,25 @@ def test_tensorflow_model_and_pipeline_when_profile_is_installed(tmp_path) -> No
     assert batch_images.dtype.name == "float16"
     assert batch_labels.dtype.name == "int32"
 
+    _, capped_info = build_tf_dataset(
+        np.zeros((1000, 13, 17, 1), dtype=np.uint8),
+        np.zeros(1000, dtype=np.int32),
+        image_size=64,
+        channels=1,
+        batch_size=4,
+        training=True,
+        extra_fraction=0.5,
+        shuffle_buffer_max_mib=1,
+    )
+    # The 1 MiB budget is split between raw and augmented shuffle streams.
+    assert capped_info.shuffle_buffer_examples == 31
+
     model = build_and_compile_legacy_cnn(image_size=64, channels=1, num_classes=3, seed=42)
     assert model.input_shape == (None, 64, 64, 1)
     assert model.output_shape == (None, 3)
     assert tf.keras.mixed_precision.global_policy().name == "mixed_float16"
     assert model.get_layer("block1_sepconv5").compute_dtype == "float16"
-    assert model.get_layer("predictions").compute_dtype == "float32"
+    assert model.get_layer("logits").compute_dtype == "float32"
     validation = dataset.take(info.batches)
     history = model.fit(
         dataset,
@@ -125,6 +138,31 @@ def test_tensorflow_model_and_pipeline_when_profile_is_installed(tmp_path) -> No
     callbacks = make_training_callbacks(validation_data=dataset, num_classes=3, run_dir=tmp_path)
     names = {type(callback).__name__ for callback in callbacks}
     assert {"EpochMetricsCallback", "ModelCheckpoint", "EarlyStopping", "ReduceLROnPlateau", "BackupAndRestore"} <= names
+
+
+def test_qat_models_use_fake_quantized_weights_when_tensorflow_is_installed() -> None:
+    try:
+        import tensorflow as tf
+    except ImportError:
+        return
+
+    from tcc_benchmark.model import build_and_compile_legacy_cnn
+    from tcc_benchmark.quantization import FakeQuantize, QATDense, QATSeparableConv2D
+
+    for bits in (4, 8):
+        model = build_and_compile_legacy_cnn(
+            image_size=64,
+            channels=1,
+            num_classes=3,
+            dtype_policy="float32",
+            qat_weight_bits=bits,
+            seed=42,
+        )
+        assert model.output_shape == (None, 3)
+        assert any(isinstance(layer, FakeQuantize) for layer in model.layers)
+        assert any(isinstance(layer, QATSeparableConv2D) for layer in model.layers)
+        assert any(isinstance(layer, QATDense) for layer in model.layers)
+    tf.keras.backend.clear_session()
 
 
 def test_backup_and_restore_resumes_after_simulated_interrupt_when_tensorflow_is_installed(tmp_path) -> None:

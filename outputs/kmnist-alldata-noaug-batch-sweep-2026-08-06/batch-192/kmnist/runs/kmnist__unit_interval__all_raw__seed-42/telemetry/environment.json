@@ -1,0 +1,52 @@
+{
+  "captured_at": "2026-08-07T12:18:08.932+00:00",
+  "hardware": {
+    "cpu_count_logical": 12,
+    "disks": {
+      "data": {
+        "free_bytes": 998271229952,
+        "percent": 2.7,
+        "total_bytes": 1081101176832,
+        "used_bytes": 27837591552
+      },
+      "output": {
+        "free_bytes": 207297912832,
+        "percent": 79.3,
+        "total_bytes": 1000186310656,
+        "used_bytes": 792888397824
+      }
+    },
+    "gpu_backend": "pynvml",
+    "gpus": [
+      {
+        "index": 0,
+        "memory_total_bytes": 8589934592,
+        "memory_used_bytes": 2582437888,
+        "name": "NVIDIA GeForce RTX 3050",
+        "power_w": null,
+        "temperature_c": 38.0,
+        "utilization_percent": 1.0
+      }
+    ],
+    "ram_total_bytes": 16619077632
+  },
+  "packages": {
+    "numpy": "2.2.6",
+    "psutil": "7.2.2",
+    "pynvml": "12.575.51",
+    "scikit_learn": "1.7.2",
+    "tensorflow": "2.21.0"
+  },
+  "platform": {
+    "machine": "x86_64",
+    "processor": "x86_64",
+    "release": "6.6.87.2-microsoft-standard-WSL2",
+    "system": "Linux",
+    "version": "#1 SMP PREEMPT_DYNAMIC Thu Jun  5 18:30:46 UTC 2025"
+  },
+  "python": {
+    "executable": "/home/msduda/.venvs/tcc-benchmark/bin/python",
+    "implementation": "CPython",
+    "version": "3.10.12 (main, Jun 22 2026, 18:55:27) [GCC 11.4.0]"
+  }
+}

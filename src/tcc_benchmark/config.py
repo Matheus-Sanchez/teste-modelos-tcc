@@ -87,18 +87,22 @@ class TrainingSettings:
     image_size_overrides: dict[str, int] = dataclasses.field(default_factory=lambda: {"gtsrb": 128})
     augmentation: dict[str, float | bool] = dataclasses.field(default_factory=lambda: dict(DEFAULT_AUGMENTATION))
     preprocess_cache_max_mib: int = 0
+    shuffle_buffer_max_mib: int = 0
     early_stopping_patience: int = 10
     reduce_lr_factor: float = 0.3
     reduce_lr_patience: int = 4
     reduce_lr_min_lr: float = 1e-7
+    # QAT keeps float32 master variables and fake-quantizes kernels during the
+    # forward pass. ``None`` is the ordinary floating-point architecture.
+    qat_weight_bits: int | None = None
 
     def validate(self) -> None:
         if self.max_epochs < 1 or self.batch_size < 1:
             raise ConfigurationError("training.max_epochs e training.batch_size devem ser positivos")
         if self.learning_rate <= 0 or self.extra_fraction < 0:
             raise ConfigurationError("training.learning_rate deve ser positivo e extra_fraction não pode ser negativo")
-        if self.dtype_policy != "mixed_float16":
-            raise ConfigurationError("O protocolo atual exige training.dtype_policy='mixed_float16'.")
+        if self.dtype_policy not in {"float32", "mixed_float16"}:
+            raise ConfigurationError("training.dtype_policy deve ser 'float32' ou 'mixed_float16'.")
         if self.keras_verbose not in {0, 1, 2}:
             raise ConfigurationError("training.keras_verbose deve ser 0, 1 ou 2")
         if self.default_image_size < 64 or any(int(size) < 64 for size in self.image_size_overrides.values()):
@@ -107,8 +111,12 @@ class TrainingSettings:
             raise ConfigurationError("As paciências dos callbacks devem ser positivas.")
         if self.preprocess_cache_max_mib < 0:
             raise ConfigurationError("training.preprocess_cache_max_mib não pode ser negativo.")
+        if self.shuffle_buffer_max_mib < 0:
+            raise ConfigurationError("training.shuffle_buffer_max_mib não pode ser negativo.")
         if not 0 < self.reduce_lr_factor < 1 or self.reduce_lr_min_lr <= 0:
             raise ConfigurationError("Os parâmetros de ReduceLROnPlateau são inválidos.")
+        if self.qat_weight_bits is not None and int(self.qat_weight_bits) not in {4, 8}:
+            raise ConfigurationError("training.qat_weight_bits deve ser 4, 8 ou nulo.")
         unknown_augmentation = set(self.augmentation) - set(DEFAULT_AUGMENTATION)
         if unknown_augmentation:
             raise ConfigurationError(f"Parâmetros de augmentação desconhecidos: {unknown_augmentation}")

@@ -1,0 +1,94 @@
+{
+  "class_names": [
+    "angry",
+    "disgust",
+    "fear",
+    "happy",
+    "sad",
+    "surprise",
+    "neutral"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "angry",
+      "f1": 0.3961165048543689,
+      "label": 0,
+      "precision": 0.38154613466334164,
+      "recall": 0.41184387617765816,
+      "support": 743
+    },
+    {
+      "class_index": 1,
+      "class_name": "disgust",
+      "f1": 0.4770642201834862,
+      "label": 1,
+      "precision": 0.38235294117647056,
+      "recall": 0.6341463414634146,
+      "support": 82
+    },
+    {
+      "class_index": 2,
+      "class_name": "fear",
+      "f1": 0.328400281888654,
+      "label": 2,
+      "precision": 0.3579109062980031,
+      "recall": 0.3033854166666667,
+      "support": 768
+    },
+    {
+      "class_index": 3,
+      "class_name": "happy",
+      "f1": 0.6911586596689544,
+      "label": 3,
+      "precision": 0.7581930912311781,
+      "recall": 0.6350148367952523,
+      "support": 1348
+    },
+    {
+      "class_index": 4,
+      "class_name": "sad",
+      "f1": 0.3645058448459086,
+      "label": 4,
+      "precision": 0.3532440782698249,
+      "recall": 0.3765093304061471,
+      "support": 911
+    },
+    {
+      "class_index": 5,
+      "class_name": "surprise",
+      "f1": 0.6702127659574468,
+      "label": 5,
+      "precision": 0.6159217877094972,
+      "recall": 0.735,
+      "support": 600
+    },
+    {
+      "class_index": 6,
+      "class_name": "neutral",
+      "f1": 0.45201887781856326,
+      "label": 6,
+      "precision": 0.44114636642784033,
+      "recall": 0.46344086021505376,
+      "support": 930
+    }
+  ],
+  "test": {
+    "accuracy": 0.494611668524712,
+    "balanced_accuracy": 0.5084772373891704,
+    "generated_at": "2026-08-02T11:36:19.305+00:00",
+    "loss": 1.331053376197815,
+    "macro_f1": 0.4827824507453404,
+    "n_samples": 5382,
+    "run_id": "fer2013__zscore__oversample__seed-42"
+  }
+}

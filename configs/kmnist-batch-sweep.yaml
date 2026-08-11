@@ -1,0 +1,47 @@
+# Varredura de batch size para o KMNIST completo.
+#
+# O lançador scripts/run_kmnist_batch_sweep.py substitui somente
+# training.batch_size e output_root em uma cópia isolada desta configuração.
+# ``all_raw`` usa todos os 70.000 exemplos de origem antes do split
+# estratificado fixo de 70/15/15; não há reamostragem nem augmentation.
+suite:
+  # Resultados fora do disco do repositório (C:), no volume de benchmarks E:.
+  output_root: /mnt/e/tcc-benchmark/outputs/kmnist-alldata-noaug-batch-sweep-2026-08-06
+  seeds: [42]
+  normalizations: [unit_interval]
+  balance_modes: [all_raw]
+  train_fraction: 0.70
+  validation_fraction: 0.15
+  test_fraction: 0.15
+  hardware_interval_seconds: 5.0
+  training:
+    # O teste compara 50 épocas completas para cada batch.
+    max_epochs: 50
+    batch_size: 16
+    learning_rate: 0.0003
+    # Sem exemplos sintéticos: o conjunto de treino permanece apenas com as
+    # imagens de origem atribuídas ao split de treino.
+    extra_fraction: 0.0
+    dtype_policy: mixed_float16
+    keras_verbose: 1
+    default_image_size: 64
+    image_size_overrides: {gtsrb: 128}
+    # Valores neutros explícitos. Um mapa vazio herdaria os defaults de
+    # augmentation do projeto e, portanto, não atenderia ao teste.
+    augmentation:
+      flip_lr: false
+      brightness_delta: 0.0
+      contrast_lower: 1.0
+      contrast_upper: 1.0
+      translate_frac: 0.0
+      zoom_min: 1.0
+      zoom_max: 1.0
+      noise_std: 0.0
+      cutout_prob: 0.0
+      cutout_max_frac: 0.0
+    # Paciências iguais ao teto de épocas impedem que callbacks encurtem uma
+    # run. Elas permanecem registradas para rastreabilidade do protocolo.
+    early_stopping_patience: 50
+    reduce_lr_factor: 0.3
+    reduce_lr_patience: 50
+    reduce_lr_min_lr: 0.0000001

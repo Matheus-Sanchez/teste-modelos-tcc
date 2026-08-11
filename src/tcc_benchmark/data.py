@@ -835,6 +835,7 @@ class DatasetBuildInfo:
     training: bool
     decoded_cache_enabled: bool
     decoded_cache_estimated_bytes: int
+    shuffle_buffer_examples: int
 
     def to_dict(self) -> dict[str, Any]:
         return dataclasses.asdict(self)
@@ -855,6 +856,7 @@ def build_tf_dataset(
     shuffle: bool | None = None,
     deterministic: bool = True,
     preprocess_cache_max_mib: int = 0,
+    shuffle_buffer_max_mib: int = 0,
 ) -> tuple[Any, DatasetBuildInfo]:
     """Construct a deterministic ``tf.data`` pipeline for one split.
 
@@ -872,6 +874,8 @@ def build_tf_dataset(
         raise ValueError("extra_fraction não pode ser negativo.")
     if int(preprocess_cache_max_mib) < 0:
         raise ValueError("preprocess_cache_max_mib não pode ser negativo.")
+    if int(shuffle_buffer_max_mib) < 0:
+        raise ValueError("shuffle_buffer_max_mib não pode ser negativo.")
     values = _as_label_array(labels)
     count = _sample_count(samples)
     if count != len(values):
@@ -913,17 +917,27 @@ def build_tf_dataset(
     if decoded_cache_enabled:
         decoded = decoded.cache()
 
+    extra_count = int(math.floor(count * float(extra_fraction))) if training else 0
+    shuffle_buffer_size = count
+    if shuffle and int(shuffle_buffer_max_mib) > 0:
+        # There are two independently shuffled sources when augmentation adds
+        # extra samples. Split the configured memory budget between them so a
+        # full-dataset shuffle cannot exhaust the host RAM.
+        shuffled_sources = 2 if training and extra_count else 1
+        per_source_limit = (int(shuffle_buffer_max_mib) * 1024 * 1024) // shuffled_sources
+        decoded_example_bytes = int(image_size) * int(image_size) * int(channels) * 4 + 4
+        shuffle_buffer_size = max(1, min(count, per_source_limit // decoded_example_bytes))
+
     raw = decoded
     if shuffle:
-        raw = raw.shuffle(buffer_size=count, seed=int(seed), reshuffle_each_iteration=True)
+        raw = raw.shuffle(buffer_size=shuffle_buffer_size, seed=int(seed), reshuffle_each_iteration=True)
 
-    extra_count = int(math.floor(count * float(extra_fraction))) if training else 0
     dataset = raw
     if training and extra_count:
         augmented_source = decoded
         if shuffle:
             augmented_source = augmented_source.shuffle(
-                buffer_size=count, seed=int(seed) + 1, reshuffle_each_iteration=True
+                buffer_size=shuffle_buffer_size, seed=int(seed) + 1, reshuffle_each_iteration=True
             )
         augmented_source = augmented_source.repeat().take(extra_count).enumerate()
 
@@ -961,6 +975,7 @@ def build_tf_dataset(
         training=bool(training),
         decoded_cache_enabled=decoded_cache_enabled,
         decoded_cache_estimated_bytes=decoded_cache_estimated_bytes,
+        shuffle_buffer_examples=int(shuffle_buffer_size) if shuffle else 0,
     )
 
 
@@ -1000,6 +1015,7 @@ def prepare_run_datasets(
     extra_fraction: float,
     augmentation: AugmentationConfig,
     preprocess_cache_max_mib: int = 0,
+    shuffle_buffer_max_mib: int = 0,
 ) -> PreparedRunDatasets:
     """Prepare the full leakage-safe data flow for one matrix cell.
 
@@ -1047,6 +1063,7 @@ def prepare_run_datasets(
         extra_fraction=extra_fraction,
         seed=seed,
         preprocess_cache_max_mib=preprocess_cache_max_mib,
+        shuffle_buffer_max_mib=shuffle_buffer_max_mib,
     )
     validation_ds, validation_info = build_tf_dataset(
         validation_samples,
@@ -1058,6 +1075,7 @@ def prepare_run_datasets(
         training=False,
         seed=seed,
         preprocess_cache_max_mib=preprocess_cache_max_mib,
+        shuffle_buffer_max_mib=shuffle_buffer_max_mib,
     )
     test_ds, test_info = build_tf_dataset(
         test_samples,
@@ -1069,6 +1087,7 @@ def prepare_run_datasets(
         training=False,
         seed=seed,
         preprocess_cache_max_mib=preprocess_cache_max_mib,
+        shuffle_buffer_max_mib=shuffle_buffer_max_mib,
     )
     metadata = {
         "seed": int(seed),

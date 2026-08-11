@@ -1,0 +1,8 @@
+true_label,true_class_name,angry,disgust,fear,happy,sad,surprise,neutral
+0,angry,220,44,60,72,149,37,161
+1,disgust,11,55,1,2,3,3,7
+2,fear,99,19,118,71,159,157,145
+3,happy,99,24,59,820,150,48,148
+4,sad,146,28,82,96,307,34,218
+5,surprise,18,9,53,33,21,413,53
+6,neutral,69,17,55,96,170,42,481

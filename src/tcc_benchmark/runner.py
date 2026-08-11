@@ -12,6 +12,7 @@ import dataclasses
 import gc
 import io
 import math
+import os
 import time
 import traceback
 from pathlib import Path
@@ -44,6 +45,7 @@ from .preflight import run_preflight
 from .reporting import build_dataset_report, build_global_index, write_run_report
 from .state import (
     RunPaths,
+    atomic_write_bytes,
     atomic_write_json,
     atomic_write_text,
     initialize_run,
@@ -234,6 +236,8 @@ def _build_run_config(
                 "test_time_augmentation": False,
                 "optimizer": "Adam",
                 "dtype_policy": settings.training.dtype_policy,
+                "qat_weight_bits": settings.training.qat_weight_bits,
+                "op_determinism": settings.training.qat_weight_bits is None,
                 "checkpoint_monitor": "val_macro_f1",
                 "early_stopping": {
                     "patience": settings.training.early_stopping_patience,
@@ -273,6 +277,10 @@ def _configure_tensorflow_runtime(training: TrainingSettings) -> dict[str, Any]:
 
     from .data import require_tensorflow
 
+    # This must be set before the first TensorFlow device initialization. The
+    # command entrypoints set it before preflight as well; keeping it here makes
+    # direct/private callers deterministic.
+    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     tensorflow = require_tensorflow()
     set_dtype_policy(training.dtype_policy)
     physical_gpus = list(tensorflow.config.list_physical_devices("GPU"))
@@ -288,9 +296,29 @@ def _configure_tensorflow_runtime(training: TrainingSettings) -> dict[str, Any]:
     return {
         "tensorflow_version": getattr(tensorflow, "__version__", None),
         "dtype_policy": tensorflow.keras.mixed_precision.global_policy().name,
+        "tf_force_gpu_allow_growth": os.environ.get("TF_FORCE_GPU_ALLOW_GROWTH"),
         "physical_gpus": [device.name for device in physical_gpus],
         "memory_growth": memory_growth,
     }
+
+
+def _tensorflow_gpu_memory_info() -> dict[str, Any]:
+    """Read TensorFlow allocator counters separately from global NVML telemetry."""
+
+    try:
+        from .data import require_tensorflow
+
+        tensorflow = require_tensorflow()
+        values: dict[str, Any] = {}
+        for index, _gpu in enumerate(tensorflow.config.list_logical_devices("GPU")):
+            try:
+                info = tensorflow.config.experimental.get_memory_info(f"GPU:{index}")
+                values[f"GPU:{index}"] = {str(key): int(value) for key, value in info.items()}
+            except (AttributeError, RuntimeError, ValueError):
+                continue
+        return values
+    except Exception:
+        return {}
 
 
 def _epoch_rows(callbacks: Sequence[Any]) -> list[dict[str, Any]]:
@@ -423,6 +451,7 @@ def _run_cell(
     runtime: dict[str, Any] = {}
     try:
         runtime = _configure_tensorflow_runtime(settings.training)
+        runtime["tensorflow_gpu_memory_before"] = _tensorflow_gpu_memory_info()
         sampler = TelemetrySampler(
             paths.telemetry,
             interval_seconds=settings.hardware_interval_seconds,
@@ -447,6 +476,7 @@ def _run_cell(
             extra_fraction=settings.training.extra_fraction,
             augmentation=_augmentation_from_training(settings.training),
             preprocess_cache_max_mib=settings.training.preprocess_cache_max_mib,
+            shuffle_buffer_max_mib=settings.training.shuffle_buffer_max_mib,
         )
         if prepared.split.fingerprint() != split.fingerprint():
             raise RunExecutionError("O fingerprint do split preparado diverge do planejamento salvo.")
@@ -467,6 +497,7 @@ def _run_cell(
             num_classes=materials.num_classes,
             learning_rate=settings.training.learning_rate,
             dtype_policy=settings.training.dtype_policy,
+            qat_weight_bits=settings.training.qat_weight_bits,
             seed=int(seed),
         )
         model_lines: list[str] = []
@@ -559,6 +590,7 @@ def _run_cell(
             "median_train_examples_per_second": float(np.median(epoch_throughputs)) if epoch_throughputs else None,
             "max_epochs": int(settings.training.max_epochs),
             "selected_checkpoint": str(best_path if best_path.exists() else paths.checkpoints / "last.keras"),
+            "tensorflow_gpu_memory_after": _tensorflow_gpu_memory_info(),
         }
         telemetry_summary = _safe_stop_sampler(sampler, final_event="run_completed")
         sampler = None
@@ -568,6 +600,9 @@ def _run_cell(
             "classification": evaluation.classification.to_dict(),
         }
         atomic_write_json(paths.artifacts / "test_metrics.json", test_payload)
+        logits_buffer = io.BytesIO()
+        np.save(logits_buffer, evaluation.logits.astype(np.float32))
+        atomic_write_bytes(paths.artifacts / "logits.npy", logits_buffer.getvalue())
         _write_predictions(paths.artifacts / "predictions.csv", evaluation)
         write_run_report(
             paths.root,
@@ -718,6 +753,9 @@ def command_audit(args: Any) -> int:
 
 
 def command_run(args: Any) -> int:
+    # Set before preflight imports TensorFlow, otherwise its first device query
+    # can reserve all VRAM and make memory growth unavailable to the runner.
+    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     settings, registry = _load_settings_and_registry(args)
     entries = _select_entries(registry, args)
     if not args.dry_run:
@@ -790,6 +828,7 @@ def _subset_for_smoke(materials: DatasetMaterials, *, examples_per_class: int, s
 def command_smoke(args: Any) -> int:
     if int(args.epochs) < 1 or int(args.examples_per_class) < 3:
         raise RunExecutionError("--epochs deve ser positivo e --examples-per-class deve ser pelo menos 3.")
+    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     settings, registry = _load_settings_and_registry(args)
     if args.dataset not in registry:
         raise ConfigurationError(f"'{args.dataset}' não está configurado no registro local.")

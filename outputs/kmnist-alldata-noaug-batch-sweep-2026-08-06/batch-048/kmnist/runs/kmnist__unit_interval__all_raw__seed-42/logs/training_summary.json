@@ -1,0 +1,13 @@
+{
+  "epochs_completed": 50,
+  "evaluation_seconds": 30.38948063700002,
+  "fit_seconds_current_attempt": 461.597386323,
+  "max_epochs": 50,
+  "mean_epoch_seconds": 93.12728027925002,
+  "mean_train_examples_per_second": 527.5745930238944,
+  "median_train_examples_per_second": 531.7098900400667,
+  "selected_checkpoint": "/mnt/e/tcc-benchmark/outputs/kmnist-alldata-noaug-batch-sweep-2026-08-06/batch-048/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+  "total_seconds": 372.50912111700006,
+  "training_seconds": 372.50912111700006,
+  "wall_seconds_current_attempt": 495.75309560999995
+}
