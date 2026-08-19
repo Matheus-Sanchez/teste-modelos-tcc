@@ -55,12 +55,13 @@ def build_legacy_cnn(
     num_classes: int,
     name: str = "legacy_scratch_cnn",
     dtype_policy: str = DEFAULT_TRAINING_SETTINGS.dtype_policy,
+    hidden_activation: str = DEFAULT_TRAINING_SETTINGS.hidden_activation,
     qat_weight_bits: int | None = None,
 ) -> Any:
     """Build the old CNN topology from scratch with dynamic I/O dimensions.
 
     The architecture is intentionally unchanged from the reusable legacy CNN:
-    five ``SeparableConv -> GroupNorm -> swish`` pairs, max pooling per block,
+    five ``SeparableConv -> GroupNorm -> activation`` pairs, max pooling per block,
     concatenated GAP/GMP and a three-dropout dense head.  It carries no
     pretrained layers or weights.  Sizes of 64 and 128 are the benchmark's
     intended inputs; any value >=64 is safe with the five pooling stages.
@@ -79,6 +80,8 @@ def build_legacy_cnn(
     set_dtype_policy(dtype_policy)
     if qat_weight_bits is not None and int(qat_weight_bits) not in {4, 8}:
         raise ValueError("qat_weight_bits deve ser 4, 8 ou nulo.")
+    if str(hidden_activation) not in {"swish", "relu", "sigmoid", "softmax"}:
+        raise ValueError("hidden_activation deve ser swish, relu, sigmoid ou softmax.")
     layers = tensorflow.keras.layers
     if not hasattr(layers, "GroupNormalization"):
         raise RuntimeError(
@@ -104,7 +107,7 @@ def build_legacy_cnn(
             **quantized_arguments,
         )(x)
         x = layers.GroupNormalization(groups=16, axis=-1, name=f"block{index}_gn1")(x)
-        x = layers.Activation("swish", name=f"block{index}_swish1")(x)
+        x = layers.Activation(hidden_activation, name=f"block{index}_activation1")(x)
         x = FakeQuantize(num_bits=8, name=f"block{index}_fake_quant1")(x) if qat_bits else x
         x = convolution(
             filters,
@@ -118,7 +121,7 @@ def build_legacy_cnn(
             **quantized_arguments,
         )(x)
         x = layers.GroupNormalization(groups=16, axis=-1, name=f"block{index}_gn2")(x)
-        x = layers.Activation("swish", name=f"block{index}_swish2")(x)
+        x = layers.Activation(hidden_activation, name=f"block{index}_activation2")(x)
         x = FakeQuantize(num_bits=8, name=f"block{index}_fake_quant2")(x) if qat_bits else x
         x = layers.MaxPooling2D(2, name=f"block{index}_pool")(x)
 
@@ -128,10 +131,10 @@ def build_legacy_cnn(
     x = layers.Dropout(0.4, name="dropout1")(x)
     dense = QATDense if qat_bits else layers.Dense
     dense_arguments = {"weight_bits": qat_bits} if qat_bits else {}
-    x = dense(256, activation="silu", name="dense1", **dense_arguments)(x)
+    x = dense(256, activation=hidden_activation, name="dense1", **dense_arguments)(x)
     x = FakeQuantize(num_bits=8, name="dense1_fake_quant")(x) if qat_bits else x
     x = layers.Dropout(0.4, name="dropout2")(x)
-    x = dense(256, activation="silu", name="dense2", **dense_arguments)(x)
+    x = dense(256, activation=hidden_activation, name="dense2", **dense_arguments)(x)
     x = FakeQuantize(num_bits=8, name="dense2_fake_quant")(x) if qat_bits else x
     x = layers.Dropout(0.4, name="dropout3")(x)
     logits = dense(num_classes, activation=None, dtype="float32", name="logits", **dense_arguments)(x)
@@ -167,6 +170,7 @@ def build_and_compile_legacy_cnn(
     num_classes: int,
     learning_rate: float = DEFAULT_TRAINING_SETTINGS.learning_rate,
     dtype_policy: str = DEFAULT_TRAINING_SETTINGS.dtype_policy,
+    hidden_activation: str = DEFAULT_TRAINING_SETTINGS.hidden_activation,
     qat_weight_bits: int | None = None,
     seed: int | None = None,
 ) -> Any:
@@ -182,6 +186,7 @@ def build_and_compile_legacy_cnn(
         channels=channels,
         num_classes=num_classes,
         dtype_policy=dtype_policy,
+        hidden_activation=hidden_activation,
         qat_weight_bits=qat_weight_bits,
     )
     return compile_legacy_cnn(model, learning_rate=learning_rate, dtype_policy=dtype_policy)

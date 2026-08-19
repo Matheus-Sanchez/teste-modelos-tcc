@@ -170,15 +170,15 @@ model.build_legacy_cnn mantém a topologia herdada:
 ~~~text
 Entrada H x W x 1 ou 3
  -> 5 blocos:
-    SeparableConv 5x5 -> GroupNorm -> swish
-    SeparableConv 3x3 -> GroupNorm -> swish -> MaxPool
+    SeparableConv 5x5 -> GroupNorm -> ativação interna
+    SeparableConv 3x3 -> GroupNorm -> ativação interna -> MaxPool
  -> GlobalAveragePooling + GlobalMaxPooling
- -> Dropout 0.4 -> Dense 256 SiLU
- -> Dropout 0.4 -> Dense 256 SiLU
- -> Dropout 0.4 -> Dense num_classes softmax FP32
+ -> Dropout 0.4 -> Dense 256 ativação interna
+ -> Dropout 0.4 -> Dense 256 ativação interna
+ -> Dropout 0.4 -> Dense num_classes logits FP32
 ~~~
 
-compile_legacy_cnn usa Adam, SparseCategoricalCrossentropy, accuracy e jit_compile=False. set_dtype_policy configura mixed_float16; variáveis, softmax final e loss permanecem FP32.
+`training.hidden_activation` seleciona `swish` (padrão), `relu`, `sigmoid` ou `softmax` em todas as ativações internas. `compile_legacy_cnn` usa Adam, SparseCategoricalCrossentropy com `from_logits=True`, accuracy e jit_compile=False; variáveis, logits finais e loss permanecem FP32.
 
 Alterar filtros, blocos, dropout, loss ou otimizador significa trocar a arquitetura/protocolo. Crie uma pasta de output nova e documente a decisão.
 

@@ -47,6 +47,7 @@ DEFAULT_AUGMENTATION: dict[str, float | bool] = {
     "cutout_prob": 0.25,
     "cutout_max_frac": 0.08,
 }
+HIDDEN_ACTIVATIONS: tuple[str, ...] = ("swish", "relu", "sigmoid", "softmax")
 
 
 class ConfigurationError(ValueError):
@@ -82,6 +83,10 @@ class TrainingSettings:
     learning_rate: float = 3e-4
     extra_fraction: float = 2.0
     dtype_policy: str = "mixed_float16"
+    # This controls every non-linearity in the feature extractor and dense
+    # head.  The classifier always emits logits so loss/evaluation stay
+    # comparable across activation experiments.
+    hidden_activation: str = "swish"
     keras_verbose: int = 1
     default_image_size: int = 64
     image_size_overrides: dict[str, int] = dataclasses.field(default_factory=lambda: {"gtsrb": 128})
@@ -103,6 +108,11 @@ class TrainingSettings:
             raise ConfigurationError("training.learning_rate deve ser positivo e extra_fraction não pode ser negativo")
         if self.dtype_policy not in {"float32", "mixed_float16"}:
             raise ConfigurationError("training.dtype_policy deve ser 'float32' ou 'mixed_float16'.")
+        if self.hidden_activation not in HIDDEN_ACTIVATIONS:
+            raise ConfigurationError(
+                "training.hidden_activation deve ser um de "
+                f"{', '.join(HIDDEN_ACTIVATIONS)}."
+            )
         if self.keras_verbose not in {0, 1, 2}:
             raise ConfigurationError("training.keras_verbose deve ser 0, 1 ou 2")
         if self.default_image_size < 64 or any(int(size) < 64 for size in self.image_size_overrides.values()):

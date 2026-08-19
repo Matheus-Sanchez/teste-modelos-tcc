@@ -137,8 +137,16 @@ Use `--suite configs/suite.yaml` para trocar somente a configuração declarada.
 Não há redução automática de batch, resolução ou épocas quando ocorre OOM: a
 execução é marcada como falha e os parâmetros permanecem comparáveis.
 
+## Protocolo controlado sequencial
+
+O experimento separado de batch, quantização e ativações para os nove datasets
+configurados está documentado em
+[docs/BENCHMARK_CONTROLADO.md](docs/BENCHMARK_CONTROLADO.md). Ele usa
+`all_raw`, augmentation `2.0`, 100 épocas e um supervisor que executa uma run
+por vez e pode ser retomado sem manter esta conversa ativa.
+
 O treino usa a política Keras `mixed_float16`: convoluções e ativações calculam
-em FP16 para reduzir o uso de VRAM, enquanto pesos, softmax final e loss ficam
+em FP16 para reduzir o uso de VRAM, enquanto pesos, logits finais e loss ficam
 em FP32 para estabilidade numérica. As imagens não são carregadas inteiramente
 na GPU; a pipeline envia batches conforme `suite.training.batch_size`.
 

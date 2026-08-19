@@ -236,6 +236,7 @@ def _build_run_config(
                 "test_time_augmentation": False,
                 "optimizer": "Adam",
                 "dtype_policy": settings.training.dtype_policy,
+                "hidden_activation": settings.training.hidden_activation,
                 "qat_weight_bits": settings.training.qat_weight_bits,
                 "op_determinism": settings.training.qat_weight_bits is None,
                 "checkpoint_monitor": "val_macro_f1",
@@ -497,6 +498,7 @@ def _run_cell(
             num_classes=materials.num_classes,
             learning_rate=settings.training.learning_rate,
             dtype_policy=settings.training.dtype_policy,
+            hidden_activation=settings.training.hidden_activation,
             qat_weight_bits=settings.training.qat_weight_bits,
             seed=int(seed),
         )

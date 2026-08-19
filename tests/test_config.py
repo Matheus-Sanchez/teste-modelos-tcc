@@ -58,6 +58,20 @@ def test_training_block_is_the_single_runtime_source_of_truth(tmp_path: Path) ->
     assert settings.training.shuffle_buffer_max_mib == 1024
 
 
+def test_hidden_activation_is_loaded_and_validated(tmp_path: Path) -> None:
+    suite = tmp_path / "suite.yaml"
+    suite.write_text("suite:\n  training:\n    hidden_activation: relu\n", encoding="utf-8")
+    assert load_suite_settings(suite).training.hidden_activation == "relu"
+
+    suite.write_text("suite:\n  training:\n    hidden_activation: gelu\n", encoding="utf-8")
+    try:
+        load_suite_settings(suite)
+    except ValueError as exc:
+        assert "hidden_activation" in str(exc)
+    else:
+        raise AssertionError("A ativação não suportada deveria ser rejeitada.")
+
+
 def test_fingerprint_and_run_key_are_stable() -> None:
     payload = {"b": 2, "a": 1}
     assert fingerprint(payload) == fingerprint({"a": 1, "b": 2})

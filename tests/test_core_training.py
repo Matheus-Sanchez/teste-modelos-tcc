@@ -165,6 +165,24 @@ def test_qat_models_use_fake_quantized_weights_when_tensorflow_is_installed() ->
     tf.keras.backend.clear_session()
 
 
+def test_hidden_activation_variants_keep_logits_when_tensorflow_is_installed() -> None:
+    try:
+        import tensorflow as tf
+    except ImportError:
+        return
+
+    from tcc_benchmark.model import build_and_compile_legacy_cnn
+
+    for activation in ("relu", "sigmoid", "softmax"):
+        model = build_and_compile_legacy_cnn(
+            image_size=64, channels=1, num_classes=3, hidden_activation=activation, seed=42
+        )
+        assert model.output_shape == (None, 3)
+        assert model.get_layer("logits").activation.__name__ == "linear"
+        assert model.get_layer("dense1").activation.__name__ == activation
+    tf.keras.backend.clear_session()
+
+
 def test_backup_and_restore_resumes_after_simulated_interrupt_when_tensorflow_is_installed(tmp_path) -> None:
     """The second fit must begin after the epoch checkpoint saved before interruption."""
 
