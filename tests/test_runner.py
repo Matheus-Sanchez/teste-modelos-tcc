@@ -6,8 +6,8 @@ from pathlib import Path
 import numpy as np
 
 from tcc_benchmark.config import DatasetEntry, SuiteSettings
-from tcc_benchmark.runner import DatasetMaterials, _execution_action, _run_cell, _subset_for_smoke
-from tcc_benchmark.state import set_run_status
+from tcc_benchmark.runner import DatasetMaterials, _completed_artifacts_valid, _execution_action, _run_cell, _subset_for_smoke
+from tcc_benchmark.state import RunPaths, set_run_status
 
 
 def _materials() -> DatasetMaterials:
@@ -64,6 +64,27 @@ def test_resume_policy_requires_an_explicit_resume_after_interruption(tmp_path: 
 
     assert _execution_action("interrupted", resume=False, rerun_failed=False, dry_run=False) == "skip_needs_resume"
     assert _execution_action("interrupted", resume=True, rerun_failed=False, dry_run=False) == "execute"
+
+
+def test_completed_run_requires_checkpoint_metrics_and_telemetry(tmp_path: Path) -> None:
+    paths = RunPaths.from_root(tmp_path / "run").ensure()
+    for path in (
+        paths.manifest,
+        paths.status,
+        paths.artifacts / "test_metrics.json",
+        paths.logs / "training_summary.json",
+        paths.telemetry / "environment.json",
+        paths.telemetry / "samples.csv",
+        paths.telemetry / "summary.json",
+    ):
+        path.write_text("{}", encoding="utf-8")
+    (paths.checkpoints / "best.keras").write_bytes(b"checkpoint")
+
+    assert _completed_artifacts_valid(paths)[0] is True
+    (paths.telemetry / "summary.json").unlink()
+    valid, detail = _completed_artifacts_valid(paths)
+    assert valid is False
+    assert "telemetry/summary.json" in detail
 
 
 def test_smoke_subset_is_balanced_and_deterministic() -> None:

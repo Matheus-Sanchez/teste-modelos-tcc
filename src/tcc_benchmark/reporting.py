@@ -531,11 +531,26 @@ def _dataset_run_rows(dataset_dir: Path) -> list[dict[str, Any]]:
             ),
             "mean_epoch_seconds": _get_nested(training, ("mean_epoch_seconds",), ("avg_epoch_seconds",)),
             "telemetry_samples": _get_nested(telemetry, ("sample_count",)),
+            "gpu_backend": telemetry.get("gpu_backend"),
+            "gpu_memory_kind": _get_nested(telemetry, ("categorical", "gpu_memory_kind", "current")),
+            "thermal_pressure": _get_nested(telemetry, ("categorical", "thermal_pressure", "current")),
             "peak_cpu_percent": _get_nested(telemetry, ("metrics", "cpu_percent", "max")),
             "peak_ram_used_bytes": _get_nested(telemetry, ("metrics", "ram_used_bytes", "max")),
             "peak_process_rss_bytes": _get_nested(telemetry, ("metrics", "process_rss_bytes", "max")),
             "peak_gpu_memory_used_bytes": _get_nested(telemetry, ("metrics", "gpu_memory_used_bytes", "max")),
             "peak_gpu_utilization_percent": _get_nested(telemetry, ("metrics", "gpu_utilization_percent", "max")),
+            "peak_gpu_renderer_utilization_percent": _get_nested(
+                telemetry, ("metrics", "gpu_renderer_utilization_percent", "max")
+            ),
+            "peak_gpu_tiler_utilization_percent": _get_nested(
+                telemetry, ("metrics", "gpu_tiler_utilization_percent", "max")
+            ),
+            "peak_gpu_driver_allocated_memory_bytes": _get_nested(
+                telemetry, ("metrics", "gpu_driver_allocated_memory_bytes", "max")
+            ),
+            "peak_gpu_system_memory_in_use_bytes": _get_nested(
+                telemetry, ("metrics", "gpu_system_memory_in_use_bytes", "max")
+            ),
             "report_path": (run_dir / "artifacts" / "report.html").relative_to(dataset_dir).as_posix(),
         }
         rows.append(row)
@@ -572,7 +587,7 @@ def _write_dataset_chart(path: Path, rows: Sequence[Mapping[str, Any]]) -> Path 
 
 
 def build_dataset_report(dataset_dir: str | Path, *, dataset_name: str | None = None) -> dict[str, Path]:
-    """Aggregate a dataset's 40 (or partial) runs into CSV, JSON, HTML and PNG."""
+    """Aggregate a dataset's runs into CSV, JSON, HTML and PNG."""
 
     root = Path(dataset_dir)
     root.mkdir(parents=True, exist_ok=True)
@@ -598,11 +613,18 @@ def build_dataset_report(dataset_dir: str | Path, *, dataset_name: str | None = 
         "training_total_seconds",
         "mean_epoch_seconds",
         "telemetry_samples",
+        "gpu_backend",
+        "gpu_memory_kind",
+        "thermal_pressure",
         "peak_cpu_percent",
         "peak_ram_used_bytes",
         "peak_process_rss_bytes",
         "peak_gpu_memory_used_bytes",
         "peak_gpu_utilization_percent",
+        "peak_gpu_renderer_utilization_percent",
+        "peak_gpu_tiler_utilization_percent",
+        "peak_gpu_driver_allocated_memory_bytes",
+        "peak_gpu_system_memory_in_use_bytes",
         "report_path",
     )
     statuses = Counter(str(row.get("status", "unknown")) for row in rows)

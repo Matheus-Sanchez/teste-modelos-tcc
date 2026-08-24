@@ -212,6 +212,7 @@ def audit_dataset(
     *,
     verify_images: bool = True,
     hash_images: bool = True,
+    allow_conflicting_duplicates: bool = False,
     max_samples: int | None = None,
     max_issue_examples: int = 200,
     max_duplicate_groups: int = 200,
@@ -238,6 +239,7 @@ def audit_dataset(
         options={
             "verify_images": bool(verify_images),
             "hash_images": bool(hash_images),
+            "allow_conflicting_duplicates": bool(allow_conflicting_duplicates),
             "max_samples": max_samples,
             "hash_definition": "decoded-pixel-content",
         },
@@ -377,12 +379,14 @@ def audit_dataset(
                 maximum=max_issue_examples,
             )
         if any(len({member["label"] for member in members}) > 1 for _, members in all_groups):
+            severity = "warning" if allow_conflicting_duplicates else "error"
             _add_issue(
                 report,
                 AuditIssue(
-                    "error",
+                    severity,
                     "duplicate_with_conflicting_labels",
-                    "At least one exact decoded duplicate appears with different labels.",
+                    "At least one exact decoded duplicate appears with different labels; "
+                    + ("accepted as a documented dataset warning." if allow_conflicting_duplicates else ""),
                 ),
                 maximum=max_issue_examples,
             )
@@ -395,7 +399,7 @@ def audit_local_dataset(name: str, path: str | Path, **options: Any) -> AuditRep
     from .adapters import load_local_dataset
 
     audit_keys = {
-        "verify_images", "hash_images", "max_samples", "max_issue_examples",
+        "verify_images", "hash_images", "allow_conflicting_duplicates", "max_samples", "max_issue_examples",
         "max_duplicate_groups", "max_duplicate_members",
     }
     audit_options = {key: value for key, value in options.items() if key in audit_keys}

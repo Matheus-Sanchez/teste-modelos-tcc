@@ -37,7 +37,6 @@ DATASET_NAMES = (
     "emnist_balanced",
     "cifar10",
     "cifar100_coarse",
-    "cinic10",
     "svhn",
     "gtsrb",
     "fer2013",
@@ -595,7 +594,6 @@ INSTALLERS: dict[str, Callable[[Path, bool], None]] = {
             "https://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz"
         ),
     ),
-    "cinic10": _install_cinic10,
     "svhn": _install_svhn,
     "gtsrb": _install_gtsrb,
     "fer2013": _install_fer2013,
@@ -605,7 +603,7 @@ INSTALLERS: dict[str, Callable[[Path, bool], None]] = {
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Baixa os datasets públicos do benchmark para datasets/<nome>/.")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--all", action="store_true", help="Baixa os dez datasets.")
+    group.add_argument("--all", action="store_true", help="Baixa os nove datasets ativos.")
     group.add_argument("--dataset", choices=DATASET_NAMES, action="append", help="Baixa somente um dataset; pode ser repetido.")
     parser.add_argument("--root", type=Path, default=PROJECT_ROOT / "datasets", help="Raiz de dados local.")
     parser.add_argument("--keep-archives", action="store_true", help="Mantém arquivos compactados em datasets/.downloads/.")

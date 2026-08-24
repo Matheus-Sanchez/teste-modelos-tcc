@@ -1,7 +1,7 @@
-# Protocolo comum para a sequência batch -> quantização -> ativações.
-# O supervisor cria cópias desta suite, alterando somente a variável da fase.
+# Perfil nativo do iMac M4: mesmo protocolo científico do benchmark controlado,
+# com limites de memória adequados aos 16 GB de memória unificada.
 suite:
-  output_root: ../outputs/controlled-augmentation2
+  output_root: ../outputs/controlled-augmentation2-mac-m4
   seeds: [42]
   normalizations: [unit_interval]
   balance_modes: [all_raw]
@@ -20,7 +20,8 @@ suite:
     default_image_size: 64
     image_size_overrides: {gtsrb: 128}
     augmentation: {flip_lr: true, brightness_delta: 0.03, contrast_lower: 0.92, contrast_upper: 1.08, translate_frac: 0.05, zoom_min: 0.96, zoom_max: 1.04, noise_std: 0.005, cutout_prob: 0.25, cutout_max_frac: 0.08}
-    # As comparações usam sempre 100 épocas completas.
+    preprocess_cache_max_mib: 1024
+    shuffle_buffer_max_mib: 512
     early_stopping_patience: 100
     early_stopping_enabled: false
     reduce_lr_factor: 0.3

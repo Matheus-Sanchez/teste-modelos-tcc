@@ -15,7 +15,7 @@ param(
     [string]$Output,
     [string[]]$DatasetNames = @(
         'mnist', 'fashion_mnist', 'kmnist', 'emnist_balanced', 'cifar10',
-        'cifar100_coarse', 'cinic10', 'svhn', 'gtsrb', 'fer2013'
+        'cifar100_coarse', 'svhn', 'gtsrb', 'fer2013'
     )
 )
 

@@ -24,6 +24,18 @@ def test_quantization_selection_requires_fp32_tolerance_then_latency() -> None:
     assert winner["macro_f1_threshold"] == 0.89
 
 
+def test_quantization_selection_tie_breaks_latency_size_throughput_then_macro_f1() -> None:
+    winner = select_quantization(
+        [
+            {"status": "completed", "variant": "fp32", "macro_f1": 0.90, "median_batch_latency_ms": 5, "serialized_model_bytes": 100},
+            {"status": "completed", "variant": "small-slow", "macro_f1": 0.895, "median_batch_latency_ms": 2, "serialized_litert_bytes": 60, "throughput_examples_per_second": 100},
+            {"status": "completed", "variant": "small-fast", "macro_f1": 0.89, "median_batch_latency_ms": 2, "serialized_litert_bytes": 60, "throughput_examples_per_second": 120},
+            {"status": "completed", "variant": "large-fast", "macro_f1": 0.90, "median_batch_latency_ms": 2, "serialized_litert_bytes": 80, "throughput_examples_per_second": 500},
+        ]
+    )
+    assert winner["variant"] == "small-fast"
+
+
 def test_activation_selection_uses_epoch_time_only_after_metric_tie() -> None:
     winner = select_activation(
         [

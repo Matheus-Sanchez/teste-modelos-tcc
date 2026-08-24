@@ -1,0 +1,303 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Relatório atualizado — treinamento, resultados e previsões",
+    "description": "Revisão dos cinco runs concluídos, do run ativo e das pendências da matriz controlada.",
+    "generatedAt": "2026-08-24T16:23:21-03:00",
+    "sources": [
+      {
+        "id": "training_snapshot",
+        "label": "Snapshot atual dos artefatos do benchmark",
+        "path": "training-output-snapshot.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura somente de status, métricas por época, métricas de teste, previsões, logits, relatórios por classe, matrizes de confusão, telemetria, auditorias e logs.",
+          "executed_at": "2026-08-24T16:23:21-03:00",
+          "metric_definitions": {
+            "test_macro_f1": "F1 macro medido no conjunto de teste do checkpoint selecionado.",
+            "val_macro_f1": "F1 macro medido no conjunto de validação ao final de cada época.",
+            "confidence": "Probabilidade da classe escolhida pelo modelo."
+          }
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "layout": "full", "body": "# Relatório atualizado — treinamento, resultados e previsões"},
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Resumo executivo\n\nO treinamento continua avançando sem evidência de falha: cinco runs completos já geraram avaliação, previsões, logits e telemetria; o sexto run está ativo no Fashion-MNIST com batch 64, na época 79.\n\nEntre os quatro batches concluídos no MNIST, o batch 64 obteve o melhor resultado de teste: F1 macro de 99,05% e acurácia de 99,07%. No Fashion-MNIST, o batch 32 concluído alcançou F1 macro de 92,92%; o batch 64 ainda está em validação, com melhor F1 de 93,19% na época 71 e último F1 de 92,64% na época 79.\n\nA matriz completa ainda não terminou: há 5 runs completos, 1 em andamento e 75 restantes — 30 batch, 18 de quantização e 27 de ativação. Portanto, já é possível comparar parcialmente MNIST e observar o comportamento inicial do Fashion-MNIST, mas ainda não escolher vencedores definitivos para todos os datasets e variantes."
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": ["completed_runs", "best_mnist", "active_fashion", "remaining_runs"]
+      },
+      {
+        "id": "matrix_progress",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## A matriz avançou, mas ainda está concentrada nos primeiros datasets\n\nOs runs concluídos são MNIST nos batches 32, 64, 128 e 256, além de Fashion-MNIST no batch 32. O Fashion-MNIST batch 64 permanece ativo e é o único processo de treinamento observado agora. Os demais datasets ainda não têm runs batch concluídos neste snapshot.\n\nA execução está sequencial: cada run é longo, e os jobs pendentes permanecem registrados como pending/planned. Isso não indica falha individual; indica que a matriz ainda não chegou a essas combinações."
+      },
+      {
+        "id": "test_comparison",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "test_comparison"
+      },
+      {
+        "id": "mnist_results",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## MNIST: batch 64 é o melhor entre os quatro concluídos\n\nOs quatro runs MNIST ficaram muito próximos, todos acima de 98,9% de F1 macro no teste. O batch 64 lidera com 99,05%, seguido por batch 128 com 99,05% praticamente empatado, batch 32 com 98,98% e batch 256 com 98,92%. A diferença máxima entre o melhor e o pior é de aproximadamente 0,13 ponto percentual.\n\nIsso indica que, para MNIST, aumentar o batch acima de 64 não trouxe ganho e o batch 256 teve uma pequena perda. A conclusão ainda é parcial porque a comparação de custo, memória e estabilidade precisa ser cruzada com todos os datasets, não apenas com MNIST."
+      },
+      {
+        "id": "results_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "results_table"
+      },
+      {
+        "id": "fashion_results",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Fashion-MNIST é substancialmente mais difícil que MNIST\n\nO Fashion-MNIST batch 32 concluído alcançou 92,92% de F1 macro no teste, muito abaixo dos aproximadamente 99% observados em MNIST. Isso é esperado pelo maior grau de ambiguidade visual das classes.\n\nNo batch 32, as confusões mais comuns foram 6→0, 0→6, 6→4, 2→4 e 2→6; a classe 6 foi a mais difícil, com F1 de 80,42%, enquanto a classe 1 foi a melhor, com 99,33%.\n\nO batch 64 ainda não pode ser comparado no teste. Seu melhor ponto de validação foi 93,19% na época 71, mas caiu para 92,64% na última época salva. A queda de cerca de 0,55 ponto percentual após o melhor ponto merece ser acompanhada; o checkpoint monitorado deve ser usado na avaliação final, e não necessariamente a última época."
+      },
+      {
+        "id": "predictions",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## As previsões dos cinco runs concluídos foram salvas e são auditáveis\n\nCada run concluído possui `predictions.csv`, `logits.npy`, relatório por classe e matriz de confusão. Os quatro MNIST geraram 10.498 previsões cada; o Fashion-MNIST gerou 10.500.\n\nOs erros de MNIST ficaram entre 98 e 112 por run, com confiança média próxima de 99%. No Fashion-MNIST houve 744 erros e confiança média de 95,03%; a queda de confiança acompanha a maior ambiguidade das classes. Isso mostra que a confiança do modelo é informativa, mas deve ser analisada junto à matriz de confusão e ao desempenho por classe."
+      },
+      {
+        "id": "prediction_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "prediction_table"
+      },
+      {
+        "id": "capture_and_hardware",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Captura de dados, hardware e checkpoints está funcionando\n\nOs cinco runs concluídos possuem métricas, previsões, logits, relatório por classe, matriz de confusão, histórico, checkpoints e resumo final de telemetria. Os CSVs de telemetria têm 39 campos e os arquivos de ambiente registram Apple M4, Metal, CPU, RAM, disco e versões das bibliotecas.\n\nNos runs concluídos, foram salvas 60.534 amostras de telemetria; o run ativo já tinha 10.818 amostras no snapshot e continuava atualizando. O preflight permanece válido: Apple Metal disponível, GPU TensorFlow visível, 10 cores, 16 GB de RAM e sem erros de pré-execução.\n\nAs auditorias cobriram 636.046 amostras em nove datasets sem arquivos ausentes, imagens ilegíveis, shapes inválidos ou labels inválidos. Permanecem warnings documentados de duplicatas em CIFAR100 coarse, EMNIST balanced, FER2013 e SVHN."
+      },
+      {
+        "id": "capture_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "capture_table"
+      },
+      {
+        "id": "missing",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## O que ainda falta\n\n1. Finalizar o Fashion-MNIST batch 64 e gerar teste, previsões, logits, matriz de confusão, relatório por classe, resumo de telemetria e status completed.\n2. Executar os 30 runs batch pendentes para os demais datasets e batches.\n3. Executar os 18 runs de quantização e 27 de ativação.\n4. Regenerar os comparativos batch/quantização/ativação e o consolidado usando apenas runs completed.\n5. Atualizar o `pipeline-status.json`, que continua com metadados de dry-run e não representa o progresso real.\n6. Avaliar vencedores por dataset considerando desempenho e custo: tempo por época, exemplos por segundo, RAM, GPU e estabilidade térmica."
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Limitações de interpretação\n\n- Os resultados de teste são finais apenas para os cinco runs concluídos; o Fashion-MNIST batch 64 ainda é somente validação.\n- O consolidado global não está pronto e os relatórios comparativos existentes continuam mostrando planned/null.\n- A execução atual não apresentou erro de processo, mas o status global antigo registra uma falha de auditoria; os arquivos de auditoria individuais e os status por run são mais confiáveis neste snapshot.\n- As duplicatas documentadas não bloquearam o treinamento, mas devem ser consideradas na discussão metodológica."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Próximos passos recomendados\n\nDeixar o Fashion-MNIST batch 64 concluir sem intervenção. Em seguida, validar a consistência entre `test_metrics.json`, `predictions.csv`, `classification_report.json` e `confusion_matrix.csv`. Depois, executar a matriz restante e regenerar os relatórios comparativos antes de tomar uma decisão sobre batch size, quantização ou ativação."
+      }
+    ],
+    "cards": [
+      {
+        "id": "completed_runs",
+        "dataset": "headline_metrics",
+        "description": "Runs completos com avaliação e previsões disponíveis.",
+        "metrics": [
+          {"label": "Runs completos", "field": "completed_runs", "format": "number"},
+          {"label": "Em andamento", "field": "active_runs", "format": "number"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "best_mnist",
+        "dataset": "headline_metrics",
+        "description": "Melhor resultado de teste entre os batches MNIST concluídos.",
+        "metrics": [
+          {"label": "Melhor F1 MNIST", "field": "best_mnist_test_macro_f1", "format": "percent"},
+          {"label": "Batch", "field": "best_mnist_batch", "format": "number"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "active_fashion",
+        "dataset": "headline_metrics",
+        "description": "Último estado persistido do Fashion-MNIST batch 64.",
+        "metrics": [
+          {"label": "Época ativa", "field": "active_epoch", "format": "number"},
+          {"label": "Val F1 atual", "field": "active_val_macro_f1", "format": "percent"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "remaining_runs",
+        "dataset": "headline_metrics",
+        "description": "Jobs ainda não concluídos na matriz de 81 runs.",
+        "metrics": [
+          {"label": "Runs restantes", "field": "remaining_runs", "format": "number"},
+          {"label": "Total planejado", "field": "total_planned_runs", "format": "number"}
+        ],
+        "sourceId": "training_snapshot"
+      }
+    ],
+    "charts": [
+      {
+        "id": "test_comparison",
+        "dataset": "test_comparison",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "F1 macro de teste nos runs concluídos",
+        "subtitle": "Comparação entre os quatro batches MNIST e o batch 32 de Fashion-MNIST.",
+        "showDescription": true,
+        "encodings": {
+          "x": {"field": "run", "type": "nominal"},
+          "y": {"field": "test_macro_f1", "type": "quantitative"}
+        },
+        "sourceId": "training_snapshot"
+      }
+    ],
+    "tables": [
+      {
+        "id": "results_table",
+        "dataset": "results_table",
+        "title": "Resultados dos runs concluídos",
+        "subtitle": "Métricas de teste; cada linha é um run completo e independente.",
+        "showDescription": true,
+        "columns": [
+          {"field": "run", "label": "Run"},
+          {"field": "test_accuracy", "label": "Accuracy teste"},
+          {"field": "test_macro_f1", "label": "F1 macro teste"},
+          {"field": "best_val_macro_f1", "label": "Melhor F1 validação"},
+          {"field": "prediction_errors", "label": "Erros"}
+        ],
+        "defaultSort": {"field": "test_macro_f1", "direction": "desc"},
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "prediction_table",
+        "dataset": "prediction_table",
+        "title": "Previsões e principais erros",
+        "subtitle": "Linhas salvas em predictions.csv e pares de confusão mais frequentes.",
+        "showDescription": true,
+        "columns": [
+          {"field": "run", "label": "Run"},
+          {"field": "predictions", "label": "Previsões"},
+          {"field": "errors", "label": "Erros"},
+          {"field": "confidence_mean", "label": "Confiança média"},
+          {"field": "top_confusions", "label": "Principais confusões"}
+        ],
+        "defaultSort": {"field": "errors", "direction": "desc"},
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "capture_table",
+        "dataset": "capture_table",
+        "title": "Captura e persistência",
+        "subtitle": "Artefatos, telemetria e validações observados nos runs concluídos e ativo.",
+        "showDescription": true,
+        "columns": [
+          {"field": "item", "label": "Item"},
+          {"field": "value", "label": "Valor"},
+          {"field": "status", "label": "Estado"}
+        ],
+        "defaultSort": {"field": "item", "direction": "asc"},
+        "sourceId": "training_snapshot"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "partial",
+    "generatedAt": "2026-08-24T16:23:21-03:00",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "completed_runs": 5,
+          "active_runs": 1,
+          "best_mnist_test_macro_f1": 0.9905256296537901,
+          "best_mnist_batch": 64,
+          "active_epoch": 79,
+          "active_val_macro_f1": 0.9264231921173774,
+          "remaining_runs": 75,
+          "total_planned_runs": 81
+        }
+      ],
+      "test_comparison": [
+        {"run": "MNIST b32", "test_macro_f1": 0.9897878261},
+        {"run": "MNIST b64", "test_macro_f1": 0.9905256297},
+        {"run": "MNIST b128", "test_macro_f1": 0.9904790015},
+        {"run": "MNIST b256", "test_macro_f1": 0.9892281711},
+        {"run": "Fashion b32", "test_macro_f1": 0.9291633450}
+      ],
+      "results_table": [
+        {"run": "MNIST batch 64", "test_accuracy": "99,07%", "test_macro_f1": "99,05%", "best_val_macro_f1": "99,34%", "prediction_errors": 98},
+        {"run": "MNIST batch 128", "test_accuracy": "99,06%", "test_macro_f1": "99,05%", "best_val_macro_f1": "99,31%", "prediction_errors": 99},
+        {"run": "MNIST batch 32", "test_accuracy": "98,99%", "test_macro_f1": "98,98%", "best_val_macro_f1": "99,34%", "prediction_errors": 106},
+        {"run": "MNIST batch 256", "test_accuracy": "98,93%", "test_macro_f1": "98,92%", "best_val_macro_f1": "99,28%", "prediction_errors": 112},
+        {"run": "Fashion-MNIST batch 32", "test_accuracy": "92,91%", "test_macro_f1": "92,92%", "best_val_macro_f1": "93,34%", "prediction_errors": 744}
+      ],
+      "prediction_table": [
+        {"run": "MNIST batch 64", "predictions": 10498, "errors": 98, "confidence_mean": "99,29%", "top_confusions": "2→5 (15), 2→6 (8), 1→7 (6)"},
+        {"run": "MNIST batch 128", "predictions": 10498, "errors": 99, "confidence_mean": "99,48%", "top_confusions": "2→6 (12), 5→2 (7), 4→9 (7)"},
+        {"run": "MNIST batch 32", "predictions": 10498, "errors": 106, "confidence_mean": "99,32%", "top_confusions": "5→2 (12), 4→9 (7), 2→6 (6)"},
+        {"run": "MNIST batch 256", "predictions": 10498, "errors": 112, "confidence_mean": "99,34%", "top_confusions": "6→2 (10), 2→5 (7), 2→6 (7)"},
+        {"run": "Fashion-MNIST batch 32", "predictions": 10500, "errors": 744, "confidence_mean": "95,03%", "top_confusions": "6→0 (88), 0→6 (85), 6→4 (53)"}
+      ],
+      "capture_table": [
+        {"item": "Runs completos", "value": "5; todos com teste, previsões, logits e relatórios", "status": "confirmado"},
+        {"item": "Run ativo", "value": "Fashion-MNIST batch 64; 79 épocas persistidas", "status": "running"},
+        {"item": "Telemetria concluída", "value": "60.534 amostras nos cinco runs; 39 campos", "status": "salva"},
+        {"item": "Telemetria ativa", "value": "10.818 amostras no snapshot; crescendo", "status": "salva"},
+        {"item": "Checkpoints", "value": "best.keras, last.keras e backup presentes nos runs concluídos", "status": "confirmado"},
+        {"item": "Auditoria", "value": "636.046 amostras em 9 datasets; zero erros estruturais", "status": "confirmado"},
+        {"item": "Matriz batch", "value": "5 completed, 1 running, 30 pending", "status": "parcial"},
+        {"item": "Quantização e ativação", "value": "18 + 27 runs ainda planejados", "status": "pendente"}
+      ]
+    },
+    "accessIssues": [
+      {
+        "id": "active_fashion_final_pending",
+        "scope": "Fashion-MNIST batch-064",
+        "message": "O run está ativo; métricas de teste, previsões e artefatos finais ainda não estão disponíveis."
+      },
+      {
+        "id": "global_metadata_stale",
+        "scope": "pipeline-status.json e relatórios comparativos",
+        "message": "Os metadados globais ainda aparecem como dry-run/planned e não refletem todos os runs concluídos observados."
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "training_snapshot",
+      "label": "Snapshot atual dos artefatos do benchmark",
+      "path": "training-output-snapshot.sql",
+      "query": {
+        "language": "python",
+        "description": "Leitura somente dos artefatos locais do benchmark; nenhum processo foi interrompido.",
+        "executed_at": "2026-08-24T16:23:21-03:00"
+      }
+    }
+  ]
+}

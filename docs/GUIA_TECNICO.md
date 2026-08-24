@@ -129,7 +129,6 @@ A função adapters.load_local_dataset escolhe o carregador pelo campo adapter n
 - MNIST, Fashion-MNIST e KMNIST: IDX ou NPZ;
 - EMNIST Balanced: IDX, NPZ ou MAT;
 - CIFAR-10 e CIFAR-100 coarse: pickles oficiais; CIFAR-100 converte para 20 superclasses;
-- CINIC-10: pastas train, valid e test por classe;
 - SVHN: arquivos MAT;
 - GTSRB: pastas por classe ou CSV, retornando caminhos para leitura preguiçosa;
 - FER2013: CSV com emotion e pixels.
@@ -188,7 +187,7 @@ Alterar filtros, blocos, dropout, loss ou otimizador significa trocar a arquitet
 |---|---|---|
 | [runner.py](../src/tcc_benchmark/runner.py) | Orquestra a matriz. | command_run -> _run_dataset_matrix -> _run_cell. |
 | [state.py](../src/tcc_benchmark/state.py) | Escrita atômica, IDs estáveis, manifestos, status e compatibilidade. | Impede retomada de configuração incompatível. |
-| [telemetry.py](../src/tcc_benchmark/telemetry.py) | CPU, RAM, I/O, disco, GPU, VRAM, temperatura e potência via NVML; fallback nvidia-smi. | Amostra a cada 5 s e em marcos de época. |
+| [telemetry.py](../src/tcc_benchmark/telemetry.py) | CPU, RAM, I/O, disco e GPU. WSL usa NVML/`nvidia-smi`; macOS usa `apple-metal-ioreg`, com renderer, tiler, memória unificada e pressão térmica. | Amostra a cada 5 s e em marcos de época; temperatura/potência permanecem nulas quando indisponíveis. |
 | [reporting.py](../src/tcc_benchmark/reporting.py) | HTML, CSV, JSON, PNG, matriz de confusão e índices. | Chamado após run e dataset. |
 | [preflight.py](../src/tcc_benchmark/preflight.py) | TensorFlow, GPU, driver, disco e dependências. | Antes do treino. |
 
@@ -197,10 +196,9 @@ metrics.make_training_callbacks cria, nesta ordem:
 1. EpochMetricsCallback: Macro-F1, balanced accuracy e métricas por classe da validação; grava checkpoints/epoch_metrics.csv;
 2. ModelCheckpoint best.keras: maior val_macro_f1;
 3. ModelCheckpoint last.keras: fim de cada época;
-4. EarlyStopping com valores de training;
-5. ReduceLROnPlateau com valores de training;
-6. BackupAndRestore: modelo, otimizador e época;
-7. callback de telemetria.
+4. EarlyStopping e ReduceLROnPlateau somente quando habilitados no YAML;
+5. BackupAndRestore: modelo, otimizador e época;
+6. callback de telemetria.
 
 A barra Keras mostra métricas globais, LR e tempo. Métricas por classe não entram no terminal porque GTSRB teria centenas de campos; elas continuam no CSV e nos relatórios.
 

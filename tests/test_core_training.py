@@ -138,6 +138,17 @@ def test_tensorflow_model_and_pipeline_when_profile_is_installed(tmp_path) -> No
     callbacks = make_training_callbacks(validation_data=dataset, num_classes=3, run_dir=tmp_path)
     names = {type(callback).__name__ for callback in callbacks}
     assert {"EpochMetricsCallback", "ModelCheckpoint", "EarlyStopping", "ReduceLROnPlateau", "BackupAndRestore"} <= names
+    from tcc_benchmark.config import TrainingSettings
+
+    fixed_length_callbacks = make_training_callbacks(
+        validation_data=dataset,
+        num_classes=3,
+        run_dir=tmp_path / "fixed-length",
+        training=TrainingSettings(early_stopping_enabled=False, reduce_lr_enabled=False),
+    )
+    fixed_names = {type(callback).__name__ for callback in fixed_length_callbacks}
+    assert "EarlyStopping" not in fixed_names
+    assert "ReduceLROnPlateau" not in fixed_names
 
 
 def test_qat_models_use_fake_quantized_weights_when_tensorflow_is_installed() -> None:

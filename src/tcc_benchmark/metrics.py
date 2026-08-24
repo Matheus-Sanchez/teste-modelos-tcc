@@ -424,25 +424,27 @@ def make_training_callbacks(
             verbose=0,
         )
     )
-    callbacks.append(
-        tensorflow.keras.callbacks.EarlyStopping(
-            monitor="val_macro_f1",
-            mode="max",
-            patience=int(training.early_stopping_patience),
-            restore_best_weights=True,
-            verbose=0,
+    if training.early_stopping_enabled:
+        callbacks.append(
+            tensorflow.keras.callbacks.EarlyStopping(
+                monitor="val_macro_f1",
+                mode="max",
+                patience=int(training.early_stopping_patience),
+                restore_best_weights=True,
+                verbose=0,
+            )
         )
-    )
-    callbacks.append(
-        tensorflow.keras.callbacks.ReduceLROnPlateau(
-            monitor="val_macro_f1",
-            mode="max",
-            factor=float(training.reduce_lr_factor),
-            patience=int(training.reduce_lr_patience),
-            min_lr=float(training.reduce_lr_min_lr),
-            verbose=0,
+    if training.reduce_lr_enabled:
+        callbacks.append(
+            tensorflow.keras.callbacks.ReduceLROnPlateau(
+                monitor="val_macro_f1",
+                mode="max",
+                factor=float(training.reduce_lr_factor),
+                patience=int(training.reduce_lr_patience),
+                min_lr=float(training.reduce_lr_min_lr),
+                verbose=0,
+            )
         )
-    )
     if include_backup_restore:
         callbacks.append(
             tensorflow.keras.callbacks.BackupAndRestore(

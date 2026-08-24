@@ -19,12 +19,12 @@ dependencies = [
   "psutil>=5.9,<8",
   "matplotlib>=3.8,<4",
   "scipy>=1.10,<2",
-  "nvidia-ml-py>=12,<13",
 ]
 
 [project.optional-dependencies]
-wsl-gpu = ["tensorflow[and-cuda]==2.21.0"]
+wsl-gpu = ["tensorflow[and-cuda]==2.21.0", "nvidia-ml-py>=12,<13"]
 windows-smoke = ["tensorflow==2.21.0"]
+mac-metal = ["tensorflow==2.18.1", "tensorflow-metal==1.2.0"]
 dev = ["pytest>=8,<9"]
 
 [project.scripts]

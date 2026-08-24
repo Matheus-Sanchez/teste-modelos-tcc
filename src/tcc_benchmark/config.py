@@ -30,7 +30,6 @@ DATASET_ORDER: tuple[str, ...] = (
     "emnist_balanced",
     "cifar10",
     "cifar100_coarse",
-    "cinic10",
     "svhn",
     "gtsrb",
     "fer2013",
@@ -94,9 +93,11 @@ class TrainingSettings:
     preprocess_cache_max_mib: int = 0
     shuffle_buffer_max_mib: int = 0
     early_stopping_patience: int = 10
+    early_stopping_enabled: bool = True
     reduce_lr_factor: float = 0.3
     reduce_lr_patience: int = 4
     reduce_lr_min_lr: float = 1e-7
+    reduce_lr_enabled: bool = True
     # QAT keeps float32 master variables and fake-quantizes kernels during the
     # forward pass. ``None`` is the ordinary floating-point architecture.
     qat_weight_bits: int | None = None
@@ -119,6 +120,8 @@ class TrainingSettings:
             raise ConfigurationError("As resoluções de treino devem ser pelo menos 64.")
         if self.early_stopping_patience < 1 or self.reduce_lr_patience < 1:
             raise ConfigurationError("As paciências dos callbacks devem ser positivas.")
+        if not isinstance(self.early_stopping_enabled, bool) or not isinstance(self.reduce_lr_enabled, bool):
+            raise ConfigurationError("As flags de callbacks devem ser booleanas.")
         if self.preprocess_cache_max_mib < 0:
             raise ConfigurationError("training.preprocess_cache_max_mib não pode ser negativo.")
         if self.shuffle_buffer_max_mib < 0:
@@ -165,6 +168,8 @@ class SuiteSettings:
         for dataset, dataset_seeds in self.dataset_seeds.items():
             if not str(dataset):
                 raise ConfigurationError("dataset_seeds não pode conter um nome de dataset vazio")
+            if dataset not in DATASET_ORDER:
+                raise ConfigurationError(f"dataset_seeds contém dataset fora da matriz ativa: '{dataset}'")
             if not dataset_seeds or any(int(seed) < 0 for seed in dataset_seeds):
                 raise ConfigurationError(f"dataset_seeds inválido para '{dataset}'")
 

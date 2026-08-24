@@ -3,7 +3,7 @@
 The module deliberately does not know about a particular on-disk dataset
 format.  Adapters hand it either a sequence of image paths or an in-memory
 ``numpy.ndarray`` of images together with integer labels.  This keeps the
-experiment logic identical for all ten datasets.
+experiment logic identical for all nine active datasets.
 
 TensorFlow is optional at import time so commands such as ``audit`` can run on
 machines that only have the lightweight dependency profile installed.  A clear
@@ -66,9 +66,9 @@ def require_tensorflow() -> Any:
 
     if tf is None:
         raise TensorFlowUnavailableError(
-            "TensorFlow não está instalado. Instale requirements/windows-smoke.txt "
-            "ou requirements/wsl-gpu.txt antes de executar treino, smoke ou "
-            "normalização baseada em imagens."
+            "TensorFlow não está instalado. Instale requirements/windows-smoke.txt, "
+            "requirements/wsl-gpu.txt ou requirements/macos-metal.txt antes de "
+            "executar treino, smoke ou normalização baseada em imagens."
         ) from _TENSORFLOW_IMPORT_ERROR
     return tf
 

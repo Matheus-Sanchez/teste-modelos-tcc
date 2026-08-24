@@ -14,9 +14,9 @@ from tcc_benchmark.config import (
 )
 
 
-def test_suite_defaults_describe_400_jobs() -> None:
+def test_suite_defaults_expose_the_nine_active_datasets() -> None:
     settings = SuiteSettings()
-    assert len(DATASET_ORDER) == 10
+    assert len(DATASET_ORDER) == 9
     assert len(settings.seeds) * len(NORMALIZATION_MODES) * len(BALANCE_MODES) == 40
     settings.validate()
 
@@ -82,7 +82,7 @@ def test_default_registry_resolves_project_dataset_subfolders() -> None:
     project_root = Path(__file__).resolve().parents[1]
     registry = load_dataset_registry(project_root / "configs" / "datasets.yaml")
 
-    configured_datasets = tuple(name for name in DATASET_ORDER if name != "cinic10")
+    configured_datasets = DATASET_ORDER
     assert tuple(registry) == configured_datasets
     for name in configured_datasets:
         assert registry[name].root == project_root / "datasets" / name
@@ -104,3 +104,19 @@ def test_wsl_profile_caps_total_shuffle_memory() -> None:
 
     assert settings.training.preprocess_cache_max_mib == 2048
     assert settings.training.shuffle_buffer_max_mib == 1024
+
+
+def test_mac_m4_profile_is_fixed_length_and_disables_adaptive_callbacks() -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    settings = load_suite_settings(project_root / "configs" / "controlled-augmentation2-mac-m4.yaml")
+
+    assert tuple(settings.seeds) == (42,)
+    assert tuple(settings.normalizations) == ("unit_interval",)
+    assert tuple(settings.balance_modes) == ("all_raw",)
+    assert (settings.train_fraction, settings.validation_fraction, settings.test_fraction) == (0.70, 0.15, 0.15)
+    assert settings.training.max_epochs == 100
+    assert settings.training.keras_verbose == 1
+    assert settings.training.early_stopping_enabled is False
+    assert settings.training.reduce_lr_enabled is False
+    assert settings.training.preprocess_cache_max_mib == 1024
+    assert settings.training.shuffle_buffer_max_mib == 512

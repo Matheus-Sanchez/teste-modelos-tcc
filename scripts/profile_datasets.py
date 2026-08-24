@@ -65,11 +65,6 @@ CONTEXT: dict[str, dict[str, str]] = {
         "content": "CIFAR-100 agregado em superclasses",
         "label_scheme": "20 superclasses (rótulos coarse)",
     },
-    "cinic10": {
-        "domain": "objetos e cenas naturais",
-        "content": "imagens de 10 categorias, combinação de CIFAR-10 e imagens derivadas do ImageNet",
-        "label_scheme": "10 categorias compatíveis com CIFAR-10",
-    },
     "svhn": {
         "domain": "dígitos em cenas urbanas",
         "content": "números de casas fotografados em ambiente real",
@@ -496,7 +491,7 @@ def main() -> int:
     parser.add_argument(
         "--folder-index",
         type=Path,
-        help="JSON de scripts/index_folder_datasets.ps1; substitui a enumeração lenta de CINIC-10/GTSRB no WSL.",
+        help="JSON de scripts/index_folder_datasets.ps1; substitui a enumeração lenta de datasets em pastas no WSL.",
     )
     args = parser.parse_args()
     if args.sample_per_class < 1:

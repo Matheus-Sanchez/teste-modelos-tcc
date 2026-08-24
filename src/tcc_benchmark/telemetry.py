@@ -11,11 +11,14 @@ import importlib.metadata
 import math
 import os
 import platform
+import re
 import statistics
+import shutil
 import subprocess
 import sys
 import threading
 import time
+from collections import Counter
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -55,11 +58,17 @@ SAMPLE_FIELDS: tuple[str, ...] = (
     "gpu_backend",
     "gpu_count",
     "gpu_utilization_percent",
+    "gpu_renderer_utilization_percent",
+    "gpu_tiler_utilization_percent",
     "gpu_memory_used_bytes",
     "gpu_memory_total_bytes",
     "gpu_memory_percent",
+    "gpu_memory_kind",
+    "gpu_driver_allocated_memory_bytes",
+    "gpu_system_memory_in_use_bytes",
     "gpu_temperature_c",
     "gpu_power_w",
+    "thermal_pressure",
     "gpus_json",
 )
 
@@ -68,6 +77,26 @@ _NUMERIC_SAMPLE_FIELDS = tuple(
     for field in SAMPLE_FIELDS
     if field.endswith(("_percent", "_bytes", "_c", "_w", "_seconds")) or field == "gpu_count"
 )
+
+
+def _apple_runtime_metadata() -> dict[str, str | None]:
+    """Return non-privileged macOS/Metal version facts for environment.json."""
+
+    if platform.system() != "Darwin":
+        return {"macos_version": None, "metal_version": None}
+    macos_version = platform.mac_ver()[0] or None
+    metal_version: str | None = None
+    executable = shutil.which("system_profiler")
+    if executable:
+        try:
+            result = subprocess.run(
+                [executable, "SPDisplaysDataType"], capture_output=True, text=True, timeout=10, check=False
+            )
+            match = re.search(r"Metal Support:\s*([^\n]+)", result.stdout)
+            metal_version = match.group(1).strip() if match else None
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return {"macos_version": macos_version, "metal_version": metal_version}
 
 
 def _optional_version(distribution: str) -> str | None:
@@ -107,12 +136,18 @@ def _percentile(values: Sequence[float], percentile: float) -> float | None:
 
 
 class _GpuProbe:
-    """Use NVML when available and fall back to a bounded ``nvidia-smi`` call."""
+    """Probe NVIDIA GPUs or the Apple Metal device without failing training."""
 
     def __init__(self) -> None:
         self.backend = "none"
         self._nvml: Any | None = None
         self._nvml_initialized = False
+        self._apple_metal = _AppleMetalProbe() if platform.system() == "Darwin" else None
+        if self._apple_metal is not None:
+            # macOS must never probe the WSL/NVIDIA stack.  A missing or
+            # inaccessible IOAccelerator simply becomes an explicit fallback.
+            self.backend = "apple-metal-ioreg" if self._apple_metal.available else "none"
+            return
         try:
             import pynvml  # type: ignore
 
@@ -145,6 +180,8 @@ class _GpuProbe:
         return value.decode("utf-8", errors="replace") if isinstance(value, bytes) else str(value)
 
     def sample(self) -> list[dict[str, Any]]:
+        if self.backend == "apple-metal-ioreg" and self._apple_metal is not None:
+            return self._apple_metal.sample()
         if self.backend == "pynvml" and self._nvml is not None:
             try:
                 return self._sample_nvml()
@@ -237,6 +274,74 @@ class _GpuProbe:
         self._nvml_initialized = False
 
 
+class _AppleMetalProbe:
+    """Read public IOAccelerator counters exposed by Apple Silicon macOS.
+
+    Apple Silicon uses unified memory, so the probe deliberately reports driver
+    and system-memory counters instead of pretending that a discrete VRAM
+    capacity exists.  ``ioreg`` is read-only and does not require sudo.
+    """
+
+    _COMMAND = ("ioreg", "-l", "-w", "0", "-r", "-c", "IOAccelerator")
+
+    def __init__(self) -> None:
+        self.available = bool(shutil.which("ioreg"))
+
+    @staticmethod
+    def _number(text: str, key: str) -> float | None:
+        match = re.search(rf'"{re.escape(key)}"\s*=\s*([0-9]+(?:\.[0-9]+)?)', text)
+        if not match:
+            return None
+        try:
+            return float(match.group(1))
+        except ValueError:
+            return None
+
+    def sample(self) -> list[dict[str, Any]]:
+        if not self.available:
+            return []
+        try:
+            result = subprocess.run(
+                list(self._COMMAND), capture_output=True, text=True, timeout=4, check=False
+            )
+        except (OSError, subprocess.SubprocessError):
+            return []
+        if result.returncode != 0:
+            return []
+        statistics_block = re.search(r'"PerformanceStatistics"\s*=\s*\{(?P<body>[^}]*)\}', result.stdout)
+        if statistics_block is None:
+            return []
+        body = statistics_block.group("body")
+        device = self._number(body, "Device Utilization %")
+        renderer = self._number(body, "Renderer Utilization %")
+        tiler = self._number(body, "Tiler Utilization %")
+        allocated = self._number(body, "Alloc system memory")
+        in_use = self._number(body, "In use system memory")
+        driver_in_use = self._number(body, "In use system memory (driver)")
+        if all(value is None for value in (device, renderer, tiler, allocated, in_use, driver_in_use)):
+            return []
+        model_match = re.search(r'"model"\s*=\s*"([^"]+)"', result.stdout)
+        core_count = self._number(result.stdout, "gpu-core-count")
+        return [
+            {
+                "index": 0,
+                "name": model_match.group(1) if model_match else "Apple Metal GPU",
+                "utilization_percent": device,
+                "renderer_utilization_percent": renderer,
+                "tiler_utilization_percent": tiler,
+                "memory_used_bytes": int(in_use) if in_use is not None else None,
+                "memory_total_bytes": None,
+                "memory_kind": "shared_unified_driver",
+                "driver_allocated_memory_bytes": int(allocated) if allocated is not None else None,
+                "system_memory_in_use_bytes": int(in_use) if in_use is not None else None,
+                "driver_memory_in_use_bytes": int(driver_in_use) if driver_in_use is not None else None,
+                "gpu_core_count": int(core_count) if core_count is not None else None,
+                "temperature_c": None,
+                "power_w": None,
+            }
+        ]
+
+
 def _disk_usage(path: Path) -> dict[str, float | int | None]:
     if psutil is None:
         return {"total_bytes": None, "free_bytes": None, "used_bytes": None, "percent": None}
@@ -250,6 +355,29 @@ def _disk_usage(path: Path) -> dict[str, float | int | None]:
         }
     except (OSError, ValueError):
         return {"total_bytes": None, "free_bytes": None, "used_bytes": None, "percent": None}
+
+
+def _thermal_pressure() -> str | None:
+    """Return macOS thermal warnings without requiring privileged samplers."""
+
+    if platform.system() != "Darwin" or not shutil.which("pmset"):
+        return None
+    try:
+        result = subprocess.run(
+            ["pmset", "-g", "therm"], capture_output=True, text=True, timeout=3, check=False
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    text = " ".join(result.stdout.split())
+    if not text:
+        return None
+    if "No thermal warning level has been recorded" in text:
+        return "nominal"
+    if "critical" in text.lower():
+        return "critical"
+    if "warning" in text.lower():
+        return "warning"
+    return text[:240]
 
 
 def capture_environment(*, disk_paths: Mapping[str, str | Path] | None = None) -> dict[str, Any]:
@@ -270,6 +398,7 @@ def capture_environment(*, disk_paths: Mapping[str, str | Path] | None = None) -
                 hardware["ram_total_bytes"] = int(memory.total)
             except Exception:
                 hardware["ram_total_bytes"] = None
+        hardware.update(_apple_runtime_metadata())
         return {
             "captured_at": utc_now(),
             "python": {
@@ -288,6 +417,7 @@ def capture_environment(*, disk_paths: Mapping[str, str | Path] | None = None) -
                 name: _optional_version(distribution)
                 for name, distribution in {
                     "tensorflow": "tensorflow",
+                    "tensorflow_metal": "tensorflow-metal",
                     "numpy": "numpy",
                     "scikit_learn": "scikit-learn",
                     "psutil": "psutil",
@@ -453,6 +583,10 @@ class TelemetrySampler:
         sample["gpu_backend"] = self._gpu.backend
         sample["gpu_count"] = len(gpus)
         sample["gpu_utilization_percent"] = _mean([gpu.get("utilization_percent") for gpu in gpus])
+        sample["gpu_renderer_utilization_percent"] = _mean(
+            [gpu.get("renderer_utilization_percent") for gpu in gpus]
+        )
+        sample["gpu_tiler_utilization_percent"] = _mean([gpu.get("tiler_utilization_percent") for gpu in gpus])
         used_values = [int(gpu["memory_used_bytes"]) for gpu in gpus if gpu.get("memory_used_bytes") is not None]
         total_values = [int(gpu["memory_total_bytes"]) for gpu in gpus if gpu.get("memory_total_bytes") is not None]
         sample["gpu_memory_used_bytes"] = sum(used_values) if used_values else None
@@ -460,8 +594,24 @@ class TelemetrySampler:
         total = sample["gpu_memory_total_bytes"]
         used = sample["gpu_memory_used_bytes"]
         sample["gpu_memory_percent"] = None if not total or used is None else 100.0 * float(used) / float(total)
+        sample["gpu_memory_kind"] = next(
+            (str(gpu.get("memory_kind")) for gpu in gpus if gpu.get("memory_kind")), None
+        )
+        driver_values = [
+            int(gpu["driver_allocated_memory_bytes"])
+            for gpu in gpus
+            if gpu.get("driver_allocated_memory_bytes") is not None
+        ]
+        system_values = [
+            int(gpu["system_memory_in_use_bytes"])
+            for gpu in gpus
+            if gpu.get("system_memory_in_use_bytes") is not None
+        ]
+        sample["gpu_driver_allocated_memory_bytes"] = sum(driver_values) if driver_values else None
+        sample["gpu_system_memory_in_use_bytes"] = sum(system_values) if system_values else None
         sample["gpu_temperature_c"] = _mean([gpu.get("temperature_c") for gpu in gpus])
         sample["gpu_power_w"] = _mean([gpu.get("power_w") for gpu in gpus])
+        sample["thermal_pressure"] = _thermal_pressure()
         sample["gpus_json"] = canonical_json(gpus)
         return sample
 
@@ -499,6 +649,14 @@ class TelemetrySampler:
         for sample in samples:
             event = str(sample.get("event", "unknown"))
             event_counts[event] = event_counts.get(event, 0) + 1
+        categorical: dict[str, dict[str, Any]] = {}
+        for field in ("gpu_memory_kind", "thermal_pressure"):
+            values = [str(sample[field]) for sample in samples if sample.get(field) not in {None, ""}]
+            if values:
+                categorical[field] = {
+                    "counts": dict(sorted(Counter(values).items())),
+                    "current": values[-1],
+                }
         elapsed = None
         if self._start_monotonic is not None:
             elapsed = time.monotonic() - self._start_monotonic
@@ -510,6 +668,7 @@ class TelemetrySampler:
             "elapsed_seconds": elapsed,
             "gpu_backend": self._gpu.backend,
             "event_counts": event_counts,
+            "categorical": categorical,
             "metrics": metrics,
         }
 

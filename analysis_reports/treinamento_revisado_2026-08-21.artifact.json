@@ -1,0 +1,351 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Relatório atualizado — treinamento e previsões",
+    "description": "Revisão dos runs concluídos, do run ativo e do estado da matriz controlada no Apple M4.",
+    "generatedAt": "2026-08-21T17:16:02-03:00",
+    "sources": [
+      {
+        "id": "training_snapshot",
+        "label": "Snapshot revisado dos artefatos do benchmark",
+        "path": "training-output-snapshot.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura somente de status.json, epoch_metrics.csv, metrics.json, test_metrics.json, predictions.csv, classification_report.json, confusion_matrix.csv, telemetry/summary.json, telemetry/samples.csv, manifests, auditorias e logs do pipeline.",
+          "executed_at": "2026-08-21T17:16:02-03:00",
+          "metric_definitions": {
+            "val_macro_f1": "F1 macro calculado no conjunto de validação ao fim de cada época.",
+            "test_macro_f1": "F1 macro calculado no conjunto de teste usando o checkpoint selecionado.",
+            "confidence": "Maior probabilidade prevista para a classe escolhida pelo modelo."
+          }
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "layout": "full",
+        "body": "# Relatório atualizado — treinamento e previsões"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Resumo executivo\n\nO benchmark está avançando sem evidência de falha no treinamento: o run MNIST com batch 32 completou 100 épocas, avaliação e geração das previsões; o run MNIST com batch 64 está ativo, com 76 épocas completas registradas.\n\nO resultado concluído é forte e consistente: no teste do batch 32, a acurácia foi 98,99%, o F1 macro foi 98,98% e a AUC one-vs-rest foi 99,99%. As 10.498 previsões foram salvas, com 106 erros identificáveis na matriz de confusão.\n\nA matriz completa ainda está longe de concluída: há 1 run completo, 1 run em andamento e 79 runs restantes na matriz de 81 execuções (34 batch pendentes, 18 de quantização e 27 de ativação). Os relatórios comparativos e o status global ainda não foram atualizados para refletir os artefatos reais; devem ser tratados como metadados desatualizados."
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": ["completed_run", "test_f1", "active_run", "remaining_runs"]
+      },
+      {
+        "id": "active_progress",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## O run ativo está estável, mas ainda não tem avaliação final\n\nO batch 64/MNIST está executando no Apple M4 e já registrou 76 épocas. A última linha persistida tem accuracy de treino de 99,39%, accuracy de validação de 99,23%, balanced accuracy de 99,22% e F1 macro de validação de 99,22%. O melhor ponto até agora foi a época 35, com F1 macro de validação de 99,34%.\n\nA diferença entre o melhor ponto e a última época é pequena: o modelo já atingiu um platô próximo de 99,2–99,3% na validação. Isso sugere convergência, não colapso; ainda assim, o resultado de teste do batch 64 não deve ser inferido antes da conclusão e da avaliação do checkpoint selecionado."
+      },
+      {
+        "id": "training_curve",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "training_curve"
+      },
+      {
+        "id": "completed_results",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## O primeiro run completo generaliza bem no teste\n\nNo batch 32/MNIST, o treinamento foi concluído em 100 épocas e o checkpoint selecionado foi o `best.keras`, monitorado por val_macro_f1. A validação chegou ao melhor F1 macro de 99,34% na época 35; na época 100, o F1 macro foi 99,25%, ainda muito próximo do máximo.\n\nNo conjunto de teste, o desempenho caiu apenas cerca de 0,36 ponto percentual de F1 macro em relação ao melhor valor de validação, para 98,98%. Essa diferença é compatível com uma pequena variação entre validação e teste e não sugere overfitting severo. A loss de teste foi 0,0352 e a balanced accuracy foi 98,97%."
+      },
+      {
+        "id": "test_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "test_table"
+      },
+      {
+        "id": "prediction_analysis",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## As previsões foram preservadas e os erros estão concentrados em pares plausíveis\n\nO arquivo de previsões contém uma linha por exemplo de teste, com rótulo verdadeiro, classe prevista e confiança. Foram 10.498 previsões e 106 erros, equivalentes a 1,01% do teste. A confiança média foi 99,32% e a mediana 100%; os erros tiveram confiança média menor, 77,09%, mas ainda existem casos de erro confiante — portanto confiança não deve ser usada sozinha como garantia de acerto.\n\nOs pares de erro mais frequentes foram 5→2, 4→9, 2→6, 8→9 e 3→5. Por classe, o F1 mais baixo foi o dígito 5 (98,25%), seguido pelos dígitos 2 e 9 (aproximadamente 98,67%). O dígito 0 teve o melhor F1, 99,47%."
+      },
+      {
+        "id": "prediction_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "prediction_table"
+      },
+      {
+        "id": "capture_and_hardware",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Dados, hardware e recuperação foram capturados\n\nAs auditorias cobriram 636.046 amostras em nove datasets, sem arquivos ausentes, imagens ilegíveis, shapes inválidos ou labels inválidos. O preflight confirmou Apple Metal, GPU TensorFlow visível, 10 núcleos lógicos, 16 GB de memória e espaço suficiente em disco.\n\nNo run concluído, a telemetria salvou 21.013 amostras em 39 campos, com eventos de preparação, treino, avaliação e conclusão. O intervalo nominal foi 5 segundos; a GPU Apple M4 registrou utilização média de 71,4%, o processo usou em média 94,3% de CPU agregado e a pressão térmica permaneceu nominal. O run ativo também está gerando telemetria continuamente e já tinha 10.205 amostras no snapshot.\n\nOs checkpoints `best.keras`, `last.keras` e o backup `latest.weights.h5` estão presentes. Isso permite recuperar o estado do treinamento ativo e selecionar o melhor modelo concluído."
+      },
+      {
+        "id": "capture_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "capture_table"
+      },
+      {
+        "id": "what_is_missing",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## O que ainda falta para considerar o experimento completo\n\nO batch 64/MNIST precisa terminar e gerar seus artefatos de avaliação: `test_metrics.json`, `predictions.csv`, logits, matriz de confusão, relatório por classe, resumo de telemetria e status completed.\n\nDepois disso, ainda faltam 34 runs de batch, 18 runs de quantização e 27 runs de ativação. Só após esses jobs será possível comparar batch size, quantização e ativação e escolher vencedores por dataset.\n\nHá também uma pendência de governança dos metadados: `pipeline-status.json` continua marcado como dry-run com erro de auditoria, enquanto os runs reais avançaram; os JSON/HTML comparativos ainda aparecem como planned/null. Esses arquivos precisam ser regenerados ao final, para não mascarar os resultados já existentes."
+      },
+      {
+        "id": "missing_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "missing_table"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Ressalvas de interpretação\n\n- O resultado de 98,98% é resultado final apenas do batch 32/MNIST; não representa a matriz completa.\n- As previsões do batch 64 ainda não existem porque a avaliação acontece depois do treino.\n- A auditoria encontrou advertências de duplicatas em CIFAR100 coarse, EMNIST balanced, FER2013 e SVHN, com maior concentração em FER2013; elas não bloquearam o treino, mas devem ser documentadas na análise científica.\n- O status global do pipeline e os relatórios comparativos estão stale; os status por run, logs, métricas e arquivos de avaliação são as fontes atuais."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "training_snapshot",
+        "body": "## Próximos passos\n\n1. Deixar o batch 64/MNIST concluir sem intervenção.\n2. Validar a consistência entre `predictions.csv`, `test_metrics.json`, `classification_report.json` e `confusion_matrix.csv`.\n3. Executar os 79 runs restantes da matriz.\n4. Regenerar as comparações batch/quantização/ativação e o consolidado usando somente runs completed.\n5. Comparar desempenho, tempo por época, exemplos por segundo, memória, GPU e estabilidade térmica antes de escolher o melhor modelo por dataset."
+      }
+    ],
+    "cards": [
+      {
+        "id": "completed_run",
+        "dataset": "headline_metrics",
+        "description": "Primeiro run completo da matriz de treinamento.",
+        "metrics": [
+          {"label": "Épocas concluídas", "field": "completed_epochs", "format": "number"},
+          {"label": "Batch", "field": "completed_batch_size", "format": "number"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "test_f1",
+        "dataset": "headline_metrics",
+        "description": "Desempenho no teste do checkpoint selecionado do batch 32/MNIST.",
+        "metrics": [
+          {"label": "F1 macro no teste", "field": "test_macro_f1", "format": "percent"},
+          {"label": "Acurácia", "field": "test_accuracy", "format": "percent"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "active_run",
+        "dataset": "headline_metrics",
+        "description": "Última época persistida do run MNIST com batch 64.",
+        "metrics": [
+          {"label": "Época ativa", "field": "active_epoch", "format": "number"},
+          {"label": "Val F1 macro", "field": "active_val_macro_f1", "format": "percent"}
+        ],
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "remaining_runs",
+        "dataset": "headline_metrics",
+        "description": "Runs ainda não concluídos na matriz completa.",
+        "metrics": [
+          {"label": "Runs restantes", "field": "remaining_runs", "format": "number"},
+          {"label": "Total planejado", "field": "total_planned_runs", "format": "number"}
+        ],
+        "sourceId": "training_snapshot"
+      }
+    ],
+    "charts": [
+      {
+        "id": "training_curve",
+        "dataset": "training_curve",
+        "type": "line",
+        "intent": "trend",
+        "title": "Curva de validação do batch 32/MNIST",
+        "subtitle": "F1 macro por época; o batch 32 terminou em 100 épocas. O batch 64 é interpretado separadamente no resumo do run ativo.",
+        "showDescription": true,
+        "encodings": {
+          "x": {"field": "epoch", "type": "quantitative"},
+          "y": {"field": "batch32_val_macro_f1", "type": "quantitative"}
+        },
+        "sourceId": "training_snapshot"
+      }
+    ],
+    "tables": [
+      {
+        "id": "test_table",
+        "dataset": "test_summary",
+        "title": "Métricas do teste — batch 32/MNIST",
+        "subtitle": "10.498 exemplos; checkpoint selecionado por maior val_macro_f1.",
+        "showDescription": true,
+        "columns": [
+          {"field": "metric", "label": "Métrica"},
+          {"field": "value", "label": "Valor"},
+          {"field": "interpretation", "label": "Interpretação"}
+        ],
+        "defaultSort": {"field": "metric", "direction": "asc"},
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "prediction_table",
+        "dataset": "prediction_summary",
+        "title": "Previsões e erros mais frequentes",
+        "subtitle": "Predictions.csv do teste; pares de rótulo verdadeiro → previsto.",
+        "showDescription": true,
+        "columns": [
+          {"field": "item", "label": "Item"},
+          {"field": "value", "label": "Valor"},
+          {"field": "interpretation", "label": "Interpretação"}
+        ],
+        "defaultSort": {"field": "item", "direction": "asc"},
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "capture_table",
+        "dataset": "capture_table",
+        "title": "Captura, telemetria e artefatos",
+        "subtitle": "Estado observado nos runs concluído e ativo.",
+        "showDescription": true,
+        "columns": [
+          {"field": "item", "label": "Item"},
+          {"field": "value", "label": "Valor"},
+          {"field": "status", "label": "Estado"}
+        ],
+        "defaultSort": {"field": "item", "direction": "asc"},
+        "sourceId": "training_snapshot"
+      },
+      {
+        "id": "missing_table",
+        "dataset": "missing_table",
+        "title": "Pendências da matriz",
+        "subtitle": "Jobs e artefatos que ainda não permitem o consolidado final.",
+        "showDescription": true,
+        "columns": [
+          {"field": "item", "label": "Pendência"},
+          {"field": "quantity", "label": "Quantidade"},
+          {"field": "status", "label": "Estado"},
+          {"field": "impact", "label": "Impacto"}
+        ],
+        "defaultSort": {"field": "item", "direction": "asc"},
+        "sourceId": "training_snapshot"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "partial",
+    "generatedAt": "2026-08-21T17:16:02-03:00",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "completed_epochs": 100,
+          "completed_batch_size": 32,
+          "test_macro_f1": 0.9897878260718647,
+          "test_accuracy": 0.9899028386359306,
+          "active_epoch": 76,
+          "active_val_macro_f1": 0.9921798792799408,
+          "remaining_runs": 79,
+          "total_planned_runs": 81
+        }
+      ],
+      "training_curve": [
+        {"epoch": 1, "batch32_val_macro_f1": 0.9565329, "batch64_val_macro_f1": 0.9565329},
+        {"epoch": 5, "batch32_val_macro_f1": 0.9870341, "batch64_val_macro_f1": 0.9870341},
+        {"epoch": 10, "batch32_val_macro_f1": 0.9862597, "batch64_val_macro_f1": 0.9862597},
+        {"epoch": 15, "batch32_val_macro_f1": 0.9905036, "batch64_val_macro_f1": 0.9905036},
+        {"epoch": 20, "batch32_val_macro_f1": 0.9901734, "batch64_val_macro_f1": 0.9901734},
+        {"epoch": 25, "batch32_val_macro_f1": 0.9916891, "batch64_val_macro_f1": 0.9916891},
+        {"epoch": 30, "batch32_val_macro_f1": 0.9916015, "batch64_val_macro_f1": 0.9916015},
+        {"epoch": 35, "batch32_val_macro_f1": 0.9934485, "batch64_val_macro_f1": 0.9934028},
+        {"epoch": 40, "batch32_val_macro_f1": 0.9907609, "batch64_val_macro_f1": 0.9907609},
+        {"epoch": 50, "batch32_val_macro_f1": 0.9880916, "batch64_val_macro_f1": 0.9880916},
+        {"epoch": 60, "batch32_val_macro_f1": 0.9889676, "batch64_val_macro_f1": 0.9889676},
+        {"epoch": 65, "batch32_val_macro_f1": 0.9884308, "batch64_val_macro_f1": 0.9884308},
+        {"epoch": 75, "batch32_val_macro_f1": 0.9921703, "batch64_val_macro_f1": 0.9924216},
+        {"epoch": 100, "batch32_val_macro_f1": 0.9925018, "batch64_val_macro_f1": null}
+      ],
+      "test_summary": [
+        {"metric": "Acurácia", "value": "98,99%", "interpretation": "Percentual de previsões corretas no teste."},
+        {"metric": "Balanced accuracy", "value": "98,97%", "interpretation": "Desempenho equilibrado entre os 10 dígitos."},
+        {"metric": "F1 macro", "value": "98,98%", "interpretation": "Média harmônica de precisão e recall por classe."},
+        {"metric": "AUC one-vs-rest", "value": "99,99%", "interpretation": "Separação probabilística muito forte entre classes."},
+        {"metric": "Loss", "value": "0,0352", "interpretation": "Erro médio do checkpoint no teste."},
+        {"metric": "Amostras", "value": "10.498", "interpretation": "Teste completo do split MNIST."}
+      ],
+      "prediction_summary": [
+        {"item": "Previsões salvas", "value": "10.498 linhas", "interpretation": "Uma previsão por exemplo do teste."},
+        {"item": "Erros", "value": "106 (1,01%)", "interpretation": "Compatível com accuracy de 98,99%."},
+        {"item": "Confiança média", "value": "99,32%", "interpretation": "Alta; erros têm média de 77,09%, mas podem ser confiantes."},
+        {"item": "Erro 5 → 2", "value": "12 casos", "interpretation": "Principal par de confusão observado."},
+        {"item": "Erro 4 → 9", "value": "7 casos", "interpretation": "Segundo par mais frequente."},
+        {"item": "Erro 2 → 6", "value": "6 casos", "interpretation": "Terceiro par mais frequente."},
+        {"item": "Menor F1 por classe", "value": "Classe 5: 98,25%", "interpretation": "Principal classe a acompanhar."},
+        {"item": "Maior F1 por classe", "value": "Classe 0: 99,47%", "interpretation": "Classe mais estável no teste."}
+      ],
+      "capture_table": [
+        {"item": "Run concluído", "value": "batch 32 / MNIST", "status": "completed"},
+        {"item": "Run ativo", "value": "batch 64 / MNIST; 76 épocas persistidas", "status": "running"},
+        {"item": "Telemetria concluída", "value": "21.013 amostras; 39 campos", "status": "salva"},
+        {"item": "Telemetria ativa", "value": "10.205 amostras no snapshot; crescendo", "status": "salva"},
+        {"item": "Hardware", "value": "Apple M4, Metal 3, GPU visível, 10 cores, 16 GB", "status": "confirmado"},
+        {"item": "Checkpoints", "value": "best.keras, last.keras, latest.weights.h5", "status": "presentes"},
+        {"item": "Previsões e logits", "value": "CSV de previsões e logits.npy do batch 32", "status": "presentes"},
+        {"item": "Auditoria", "value": "636.046 amostras em 9 datasets", "status": "sem erros; warnings de duplicatas"}
+      ],
+      "missing_table": [
+        {"item": "Finalização do batch 64/MNIST", "quantity": "1", "status": "running", "impact": "Ainda sem teste e previsões."},
+        {"item": "Runs batch restantes", "quantity": "34", "status": "pending", "impact": "Comparação de batch incompleta."},
+        {"item": "Runs de quantização", "quantity": "18", "status": "planned", "impact": "Robustez/compactação ainda não avaliada."},
+        {"item": "Runs de ativação", "quantity": "27", "status": "planned", "impact": "Comparação de ativação ainda não avaliada."},
+        {"item": "Relatórios comparativos", "quantity": "4", "status": "stale/planned", "impact": "Não refletem os resultados já gerados."},
+        {"item": "Status global", "quantity": "1", "status": "stale dry-run", "impact": "Não serve como fonte de progresso atual."}
+      ],
+      "class_metrics": [
+        {"class": "0", "f1": 0.9946783, "precision": 0.9961240, "recall": 0.9932367},
+        {"class": "1", "f1": 0.9936682, "precision": 0.9907407, "recall": 0.9966130},
+        {"class": "2", "f1": 0.9866794, "precision": 0.9838710, "recall": 0.9895038},
+        {"class": "3", "f1": 0.9901639, "precision": 0.9934211, "recall": 0.9869281},
+        {"class": "4", "f1": 0.9911937, "precision": 0.9921645, "recall": 0.9902248},
+        {"class": "5", "f1": 0.9824934, "precision": 0.9872068, "recall": 0.9778247},
+        {"class": "6", "f1": 0.9913043, "precision": 0.9874880, "recall": 0.9951503},
+        {"class": "7", "f1": 0.9908759, "precision": 0.9890710, "recall": 0.9926874},
+        {"class": "8", "f1": 0.9901672, "precision": 0.9970297, "recall": 0.9833984},
+        {"class": "9", "f1": 0.9866540, "precision": 0.9819734, "recall": 0.9913793}
+      ]
+    },
+    "accessIssues": [
+      {
+        "id": "active_run_final_pending",
+        "scope": "MNIST batch-064",
+        "message": "O run está ativo; suas métricas de teste, previsões e resumo final ainda não estão disponíveis."
+      },
+      {
+        "id": "pipeline_metadata_stale",
+        "scope": "pipeline-status.json e relatórios comparativos",
+        "message": "Os metadados globais permanecem de uma execução dry-run e não refletem integralmente os runs reais observados."
+      }
+    ]
+  },
+  "sources": [
+    {
+      "id": "training_snapshot",
+      "label": "Snapshot revisado dos artefatos do benchmark",
+      "path": "training-output-snapshot.sql",
+      "query": {
+        "language": "python",
+        "description": "Leitura somente de artefatos do benchmark, sem alteração da execução.",
+        "executed_at": "2026-08-21T17:16:02-03:00"
+      }
+    }
+  ]
+}

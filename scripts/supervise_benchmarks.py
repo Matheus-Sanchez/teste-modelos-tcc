@@ -22,7 +22,6 @@ DATASETS = (
     "emnist_balanced",
     "cifar10",
     "cifar100_coarse",
-    "cinic10",
     "svhn",
     "gtsrb",
     "fer2013",
@@ -75,7 +74,7 @@ def main() -> int:
 
     short_command = ["tcc-benchmark", "resume", "--all", "--suite", "configs/gpu-memory-check.yaml"]
     # If every durable short-run state is already complete, loading every
-    # source dataset again merely to skip it is expensive (notably CINIC-10).
+    # source dataset again merely to skip completed runs is expensive.
     # The statuses are the same source of truth used by the promotion gate
     # below, so skip that no-op resume pass and move directly to validation.
     statuses_before_resume = _statuses(short_root)

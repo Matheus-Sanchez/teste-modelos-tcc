@@ -57,6 +57,8 @@ def select_quantization(rows: Iterable[Mapping[str, Any]], *, max_macro_f1_drop:
         key=lambda row: (
             float(number(row.get("median_batch_latency_ms")) or float("inf")),
             float(number(row.get("serialized_litert_bytes")) or number(row.get("serialized_model_bytes")) or float("inf")),
+            -float(number(row.get("throughput_examples_per_second")) or 0.0),
+            -float(number(row.get("macro_f1")) or 0.0),
             str(row.get("variant")),
         ),
     )

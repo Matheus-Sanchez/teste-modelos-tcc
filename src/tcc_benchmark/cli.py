@@ -51,6 +51,7 @@ def build_parser() -> argparse.ArgumentParser:
     preflight = subparsers.add_parser("preflight", help="Exibe diagnóstico de ambiente sem treinar.")
     preflight.add_argument("--output-root", type=Path, default=Path("artifacts"))
     preflight.add_argument("--require-tensorflow", action="store_true")
+    preflight.add_argument("--require-gpu", action="store_true")
     preflight.add_argument("--data-path", type=Path, action="append", default=[])
 
     audit = subparsers.add_parser("audit", help="Audita datasets locais; não baixa dados.")
@@ -71,6 +72,11 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-hash",
         action="store_true",
         help="Abre imagens para validar corrupção, mas não calcula hashes de duplicatas.",
+    )
+    audit.add_argument(
+        "--allow-conflicting-duplicates",
+        action="store_true",
+        help="Registra duplicatas exatas com rótulos diferentes como aviso documentado, sem bloquear a auditoria.",
     )
 
     run = subparsers.add_parser("run", help="Executa a matriz configurada de uma ou todas as bases.")
@@ -110,7 +116,12 @@ def main(argv: Sequence[str] | None = None) -> int:
                 output_root=args.output_root,
                 data_paths=args.data_path,
                 require_tensorflow=args.require_tensorflow,
+                require_gpu=args.require_gpu,
             )
+            if args.output_root:
+                from .state import atomic_write_json
+
+                atomic_write_json(Path(args.output_root) / "preflight.json", report)
             print(format_preflight(report))
             return 0 if report.get("ok", False) else 1
 

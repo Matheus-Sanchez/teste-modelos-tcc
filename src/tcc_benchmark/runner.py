@@ -11,8 +11,10 @@ import csv
 import dataclasses
 import gc
 import io
+import importlib.metadata
 import math
 import os
+import platform
 import time
 import traceback
 from pathlib import Path
@@ -281,12 +283,18 @@ def _configure_tensorflow_runtime(training: TrainingSettings) -> dict[str, Any]:
     # This must be set before the first TensorFlow device initialization. The
     # command entrypoints set it before preflight as well; keeping it here makes
     # direct/private callers deterministic.
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    if platform.system() != "Darwin":
+        os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     tensorflow = require_tensorflow()
     set_dtype_policy(training.dtype_policy)
     physical_gpus = list(tensorflow.config.list_physical_devices("GPU"))
     memory_growth: list[dict[str, Any]] = []
     for gpu in physical_gpus:
+        if platform.system() == "Darwin":
+            memory_growth.append(
+                {"device": gpu.name, "enabled": False, "reason": "não aplicável ao backend Metal/Unified Memory"}
+            )
+            continue
         try:
             tensorflow.config.experimental.set_memory_growth(gpu, True)
             memory_growth.append({"device": gpu.name, "enabled": True})
@@ -294,8 +302,15 @@ def _configure_tensorflow_runtime(training: TrainingSettings) -> dict[str, Any]:
             # It is common for a resumed process to have initialized the device
             # already.  Record the fact; it does not alter benchmark settings.
             memory_growth.append({"device": gpu.name, "enabled": False, "reason": str(exc)})
+    try:
+        metal_version = importlib.metadata.version("tensorflow-metal")
+    except importlib.metadata.PackageNotFoundError:
+        metal_version = None
     return {
+        "platform": platform.platform(),
+        "accelerator_backend": "apple-metal" if platform.system() == "Darwin" else "cuda-or-cpu",
         "tensorflow_version": getattr(tensorflow, "__version__", None),
+        "tensorflow_metal_version": metal_version if platform.system() == "Darwin" else None,
         "dtype_policy": tensorflow.keras.mixed_precision.global_policy().name,
         "tf_force_gpu_allow_growth": os.environ.get("TF_FORCE_GPU_ALLOW_GROWTH"),
         "physical_gpus": [device.name for device in physical_gpus],
@@ -375,6 +390,27 @@ def _clear_tensorflow_session() -> None:
     gc.collect()
 
 
+def _completed_artifacts_valid(paths: RunPaths) -> tuple[bool, str]:
+    """Check the durable artefacts required before reusing a completed run."""
+
+    required = (
+        paths.manifest,
+        paths.status,
+        paths.artifacts / "test_metrics.json",
+        paths.logs / "training_summary.json",
+        paths.telemetry / "environment.json",
+        paths.telemetry / "samples.csv",
+        paths.telemetry / "summary.json",
+    )
+    missing = [str(path.relative_to(paths.root)) for path in required if not path.is_file() or path.stat().st_size == 0]
+    checkpoints = [paths.checkpoints / "best.keras", paths.checkpoints / "last.keras"]
+    if not any(path.is_file() and path.stat().st_size > 0 for path in checkpoints):
+        missing.append("checkpoints/best.keras|checkpoints/last.keras")
+    if missing:
+        return False, "artefatos obrigatórios ausentes ou vazios: " + ", ".join(missing)
+    return True, "ok"
+
+
 def _run_cell(
     *,
     settings: SuiteSettings,
@@ -412,6 +448,15 @@ def _run_cell(
     run_dir = settings.output_root / entry.name / "runs" / run_id
     paths = RunPaths.from_root(run_dir).ensure()
     manifest = initialize_run(paths.root, config, run_id=run_id, split_fingerprint=split.fingerprint())
+    if str(manifest.get("status")) == "completed":
+        valid, detail = _completed_artifacts_valid(paths)
+        if not valid:
+            manifest = set_run_status(
+                paths.root,
+                "failed",
+                detail="Run marcada como inválida antes da reutilização: " + detail,
+                force=True,
+            )
     action = _execution_action(
         str(manifest.get("status", "pending")),
         resume=resume,
@@ -716,6 +761,7 @@ def _write_training_preflight(settings: SuiteSettings, entries: Iterable[Dataset
         output_root=settings.output_root,
         data_paths=[entry.root for entry in entries],
         require_tensorflow=True,
+        require_gpu=True,
     )
     report["training"] = settings.training.to_dict()
     atomic_write_json(settings.output_root / "preflight.json", report)
@@ -739,6 +785,7 @@ def command_audit(args: Any) -> int:
                 dataset,
                 verify_images=not labels_only,
                 hash_images=not labels_only and not no_hash,
+                allow_conflicting_duplicates=bool(getattr(args, "allow_conflicting_duplicates", False)),
                 max_samples=max_samples,
             )
             path = write_audit_report(report, settings.output_root / entry.name / "audit" / "audit.json")
@@ -757,7 +804,8 @@ def command_audit(args: Any) -> int:
 def command_run(args: Any) -> int:
     # Set before preflight imports TensorFlow, otherwise its first device query
     # can reserve all VRAM and make memory growth unavailable to the runner.
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    if platform.system() != "Darwin":
+        os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     settings, registry = _load_settings_and_registry(args)
     entries = _select_entries(registry, args)
     if not args.dry_run:
@@ -830,7 +878,8 @@ def _subset_for_smoke(materials: DatasetMaterials, *, examples_per_class: int, s
 def command_smoke(args: Any) -> int:
     if int(args.epochs) < 1 or int(args.examples_per_class) < 3:
         raise RunExecutionError("--epochs deve ser positivo e --examples-per-class deve ser pelo menos 3.")
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    if platform.system() != "Darwin":
+        os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
     settings, registry = _load_settings_and_registry(args)
     if args.dataset not in registry:
         raise ConfigurationError(f"'{args.dataset}' não está configurado no registro local.")

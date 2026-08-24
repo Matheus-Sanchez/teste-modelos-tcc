@@ -11,8 +11,8 @@ manuais, leia [docs/GUIA_TECNICO.md](docs/GUIA_TECNICO.md).
 
 - Datasets: MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10,
   CIFAR-100 (superclasses), SVHN, GTSRB e FER2013.
-- O perfil final atual produz 36 runs: uma seed (42), normalização z-score e
-  quatro modos de balanceamento para cada dataset.
+- O perfil Mac controlado produz 81 treinos seriais: 36 batches, 18 variantes
+  FP32/FP16 e 27 ativações, sempre com seed 42, `all_raw` e split 70/15/15.
 - Divisão determinística nova de 70/15/15; validação e teste nunca recebem
   oversampling, undersampling ou pesos.
 - CNN herdada apenas em topologia, sem pesos pré-treinados. Entradas têm 64 px,
@@ -53,9 +53,22 @@ O preflight confirma TensorFlow, GPU, driver, espaço em disco e dependências
 de telemetria antes do treino. O perfil WSL usa TensorFlow 2.21 com o extra
 `and-cuda`; o perfil Windows é deliberadamente CPU-first.
 
+No macOS 15 com Apple Silicon/M4, use o perfil Metal isolado:
+
+```bash
+brew install python@3.10
+/opt/homebrew/bin/python3.10 -m venv .venv-mac
+.venv-mac/bin/python -m pip install --upgrade pip setuptools wheel
+.venv-mac/bin/python -m pip install -r requirements/macos-metal.txt
+```
+
+O perfil instala TensorFlow 2.18.1 e `tensorflow-metal` 1.2.0. A telemetria
+usa o backend `apple-metal-ioreg` e trata a memória do M4 como memória
+unificada compartilhada; não há “VRAM dedicada” artificial.
+
 ## Dados locais
 
-Baixe os dez conjuntos para o layout padrão do projeto:
+Baixe os nove conjuntos ativos para o layout padrão do projeto:
 
 ```powershell
 python scripts\fetch_datasets.py --all
@@ -84,7 +97,6 @@ Os adaptadores aceitam também as estruturas locais comuns:
 | KMNIST | arquivos `.npz` oficiais (`kmnist-*-imgs/labels.npz`) |
 | EMNIST Balanced | arquivos IDX gzip/sem gzip da variante `balanced` |
 | CIFAR-10/100 | diretórios oficiais `cifar-*-batches-py` e `cifar-100-python` |
-| CINIC-10 | `train`, `valid` e `test`, cada qual com subpastas por classe |
 | SVHN | `train_32x32.mat` e `test_32x32.mat` |
 | GTSRB | estrutura oficial por classes ou layout CSV comum (`Train.csv`/`Test.csv`) |
 | FER2013 | arquivo `fer2013.csv` com colunas `emotion` e `pixels` |
@@ -101,7 +113,7 @@ tcc-benchmark audit --dataset mnist
 # Gera a lista de jobs sem treinar.
 tcc-benchmark run --dataset mnist --dry-run
 
-# Executa as 40 runs de uma base; use --resume após uma interrupção.
+# Executa a matriz geral de uma base; use --resume após uma interrupção.
 tcc-benchmark run --dataset mnist
 tcc-benchmark resume --dataset mnist
 
@@ -131,6 +143,49 @@ tcc-benchmark report --output-root artifacts --dataset mnist
 
 # Validação curta em CPU/GPU com amostra local, sem contaminar os resultados.
 tcc-benchmark smoke --dataset mnist
+```
+
+## Benchmark controlado no Mac M4
+
+Dry-run completo, sem TensorFlow e sem treinamento:
+
+```bash
+.venv-mac/bin/python scripts/run_controlled_pipeline.py \
+  --suite configs/controlled-augmentation2-mac-m4.yaml \
+  --registry configs/datasets.yaml \
+  --output-root outputs/controlled-augmentation2-mac-m4 \
+  --dry-run
+```
+
+Execução serial com log visível e persistido:
+
+```bash
+set -o pipefail
+PYTHONUNBUFFERED=1 caffeinate -dimsu \
+  .venv-mac/bin/python scripts/run_controlled_pipeline.py \
+  --suite configs/controlled-augmentation2-mac-m4.yaml \
+  --registry configs/datasets.yaml \
+  --output-root outputs/controlled-augmentation2-mac-m4 \
+  2>&1 | tee -a outputs/controlled-augmentation2-mac-m4/logs/pipeline.log
+```
+
+Retomada após interrupção:
+
+```bash
+set -o pipefail
+PYTHONUNBUFFERED=1 caffeinate -dimsu \
+  .venv-mac/bin/python scripts/run_controlled_pipeline.py \
+  --suite configs/controlled-augmentation2-mac-m4.yaml \
+  --registry configs/datasets.yaml \
+  --output-root outputs/controlled-augmentation2-mac-m4 \
+  --resume 2>&1 | tee -a outputs/controlled-augmentation2-mac-m4/logs/pipeline.log
+```
+
+Em outro terminal do VS Code, acompanhe a fila e o hardware:
+
+```bash
+.venv-mac/bin/python scripts/live_benchmark_monitor.py \
+  --output-root outputs/controlled-augmentation2-mac-m4 --poll-seconds 5
 ```
 
 Use `--suite configs/suite.yaml` para trocar somente a configuração declarada.

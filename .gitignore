@@ -13,3 +13,4 @@ datasets.local.yaml
 *.keras
 *.h5
 *.log
+.DS_Store
