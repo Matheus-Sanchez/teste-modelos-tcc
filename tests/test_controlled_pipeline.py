@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import copy
 import importlib.util
+import json
 from pathlib import Path
 
 import yaml
@@ -99,3 +100,59 @@ def test_cli_parsers_reject_invalid_or_duplicated_candidates() -> None:
         assert "sem repetição" in str(exc)
     else:  # pragma: no cover - documents the required parser contract.
         raise AssertionError("batch duplicado deveria ser rejeitado")
+
+
+def test_batch_only_cli_skips_quantization_and_activation(tmp_path: Path, monkeypatch) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    registry = project_root / "configs" / "datasets.yaml"
+    suite = project_root / "configs" / "controlled-augmentation2-mac-m4.yaml"
+    output = tmp_path / "batch-only"
+
+    monkeypatch.setattr(pipeline, "_run_gates", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        pipeline,
+        "run_stage_batch",
+        lambda *args, **kwargs: {"rows": [{"dataset": "mnist", "batch_size": "256"}], "winners": {}},
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "run_stage_quant",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("quantização não deveria rodar")),
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "run_stage_activation",
+        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("ativação não deveria rodar")),
+    )
+    monkeypatch.setattr(pipeline, "_write_dataset_phase_reports", lambda *args, **kwargs: None)
+    monkeypatch.setattr(pipeline, "write_phase_report", lambda *args, **kwargs: None)
+    monkeypatch.setattr(
+        pipeline.sys,
+        "argv",
+        [
+            "run_controlled_pipeline.py",
+            "--suite",
+            str(suite),
+            "--registry",
+            str(registry),
+            "--output-root",
+            str(output),
+            "--dry-run",
+            "--batch-sizes",
+            "256",
+            "--skip-quantization",
+            "--skip-activation",
+        ],
+    )
+
+    assert pipeline.main() == 0
+    state = json.loads((output / "pipeline-status.json").read_text(encoding="utf-8"))
+    assert state["status"] == "planned_batch_only"
+    assert state["stages"]["quantization"]["status"] == "skipped"
+    assert state["stages"]["activation"]["status"] == "skipped"
+    assert state["counts"] == {
+        "batch_training_runs": 1,
+        "quantization_training_runs": 0,
+        "activation_training_runs": 0,
+        "total_training_runs": 1,
+    }

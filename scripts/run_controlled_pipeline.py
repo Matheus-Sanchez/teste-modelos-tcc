@@ -637,6 +637,11 @@ def main() -> int:
         help="Executa somente a fase de ativações com batch e precisão declarados explicitamente.",
     )
     parser.add_argument(
+        "--skip-quantization",
+        action="store_true",
+        help="Encerra após a fase batch; exige --skip-activation.",
+    )
+    parser.add_argument(
         "--activation-batch-size",
         type=int,
         help="Batch obrigatório para --activation-only; não depende de pipeline-status remoto.",
@@ -661,6 +666,10 @@ def main() -> int:
     args = parser.parse_args()
     if args.skip_gates and not args.activation_only:
         parser.error("--skip-gates só pode ser usado com --activation-only.")
+    if args.skip_quantization and args.activation_only:
+        parser.error("--skip-quantization não pode ser usado com --activation-only.")
+    if args.skip_quantization and not args.skip_activation:
+        parser.error("--skip-quantization exige --skip-activation, pois ativações dependem da quantização.")
     if args.activation_batch_size is not None and not args.activation_only:
         parser.error("--activation-batch-size exige --activation-only.")
     if args.activation_only and args.activation_batch_size is None:
@@ -739,47 +748,63 @@ def main() -> int:
                 "batch_sizes": list(args.batch_sizes),
             }
             atomic_write_json(state_path, state)
-            quant = run_stage_quant(base, root, registry, batch["winners"], resume=args.resume, dry_run=args.dry_run)
-            state["stages"]["quantization"] = {
-                "status": stage_status,
-                "winners": quant["winners"],
-                "run_count": len(quant["rows"]),
-            }
-            atomic_write_json(state_path, state)
-            phase_rows.update({"batch": batch["rows"], "quantization": quant["rows"]})
-            winners.update({"batch": batch["winners"], "quantization": quant["winners"]})
-            if args.skip_activation:
+            phase_rows["batch"] = batch["rows"]
+            winners["batch"] = batch["winners"]
+            if args.skip_quantization:
+                state["stages"]["quantization"] = {
+                    "status": "skipped",
+                    "reason": "Execução limitada à fase batch.",
+                }
                 state["stages"]["activation"] = {
                     "status": "skipped",
-                    "reason": "Execução transferida para outro ambiente.",
+                    "reason": "Ativações exigem resultados da quantização e foram transferidas para outro ambiente.",
                 }
-                final_status = "completed_without_activation" if not args.dry_run else "planned_without_activation"
+                final_status = "completed_batch_only" if not args.dry_run else "planned_batch_only"
                 activation_count = 0
+                quantization_training_count = 0
             else:
-                activation = run_stage_activation(
-                    base,
-                    root,
-                    registry,
-                    batch["winners"],
-                    quant["winners"],
-                    resume=args.resume,
-                    dry_run=args.dry_run,
-                    activations=args.activations,
-                )
-                state["stages"]["activation"] = {
+                quant = run_stage_quant(base, root, registry, batch["winners"], resume=args.resume, dry_run=args.dry_run)
+                state["stages"]["quantization"] = {
                     "status": stage_status,
-                    "winners": activation["winners"],
-                    "run_count": len(activation["rows"]),
+                    "winners": quant["winners"],
+                    "run_count": len(quant["rows"]),
                 }
-                phase_rows["activation"] = activation["rows"]
-                winners["activation"] = activation["winners"]
-                final_status = "dry_run_completed" if args.dry_run else "completed"
-                activation_count = len(activation["rows"])
+                atomic_write_json(state_path, state)
+                phase_rows["quantization"] = quant["rows"]
+                winners["quantization"] = quant["winners"]
+                quantization_training_count = len(DATASETS) * 2
+                if args.skip_activation:
+                    state["stages"]["activation"] = {
+                        "status": "skipped",
+                        "reason": "Execução transferida para outro ambiente.",
+                    }
+                    final_status = "completed_without_activation" if not args.dry_run else "planned_without_activation"
+                    activation_count = 0
+                else:
+                    activation = run_stage_activation(
+                        base,
+                        root,
+                        registry,
+                        batch["winners"],
+                        quant["winners"],
+                        resume=args.resume,
+                        dry_run=args.dry_run,
+                        activations=args.activations,
+                    )
+                    state["stages"]["activation"] = {
+                        "status": stage_status,
+                        "winners": activation["winners"],
+                        "run_count": len(activation["rows"]),
+                    }
+                    phase_rows["activation"] = activation["rows"]
+                    winners["activation"] = activation["winners"]
+                    final_status = "dry_run_completed" if args.dry_run else "completed"
+                    activation_count = len(activation["rows"])
             counts = {
                 "batch_training_runs": len(batch["rows"]),
-                "quantization_training_runs": len(DATASETS) * 2,
+                "quantization_training_runs": quantization_training_count,
                 "activation_training_runs": activation_count,
-                "total_training_runs": len(batch["rows"]) + len(DATASETS) * 2 + activation_count,
+                "total_training_runs": len(batch["rows"]) + quantization_training_count + activation_count,
             }
         atomic_write_json(state_path, state)
         _write_dataset_phase_reports(root, phase_rows, winners)
