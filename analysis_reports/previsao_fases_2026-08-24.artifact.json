@@ -1,0 +1,138 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Previsão por fase — benchmark controlado",
+    "description": "Projeção técnica de término a partir de um snapshot ao vivo do treinamento no Apple M4 e do plano dividido entre dois Macs.",
+    "generatedAt": "2026-08-24T21:24:33-03:00",
+    "sources": [
+      {
+        "id": "live_snapshot",
+        "label": "Snapshot dos artefatos e processos de treinamento",
+        "path": "live_snapshot.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura somente de status por run, CSV de métricas por época, telemetria, sumários de treino e processo ativo.",
+          "executed_at": "2026-08-24T21:24:33-03:00",
+          "metric_definitions": {
+            "remaining_hours": "Horas de execução previstas a partir do estado observado, incluindo a sobrecarga indicada para cada fase.",
+            "central_eta": "Término central da fase; não representa prazo garantido."
+          }
+        }
+      },
+      {
+        "id": "forecast_model",
+        "label": "Modelo de projeção por carga de trabalho",
+        "path": "forecast_model.sql",
+        "query": {
+          "language": "calculation",
+          "description": "Escalonamento pelo run MNIST batch 256 já concluído; fatores conservadores para volume efetivo e resolução de imagem.",
+          "executed_at": "2026-08-24T21:24:33-03:00",
+          "metric_definitions": {
+            "fp32_multiplier": "FP32 estimado como 1,25 vezes a duração FP16; ainda não há medição local desta etapa.",
+            "image_factor": "Fator 1,0 para cinza 64px, 1,35 para RGB 64px e 4,0 para GTSRB RGB 128px."
+          }
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "layout": "full", "body": "# Previsão por fase — benchmark controlado"},
+      {
+        "id": "summary",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Resultado principal\n\nNo snapshot de 24 de agosto, 21:24 BRT, o Fashion-MNIST batch 128 estava na época 8 de 100, sem evidência de erro ou desaceleração. Mantendo a execução atual, ele deve encerrar perto de **25 de agosto, 09:45 BRT**.\n\nCom a divisão já preparada — batches 256 e quantização neste Mac; ativações FP16 batch 256 no outro Mac — o término central de todas as frentes é **6 de setembro, por volta de 08:00 BRT**. A faixa prudente é **3 a 11 de setembro**, pois ainda faltam medições reais para RGB, GTSRB e FP32.\n\nA previsão acelerada só passa a valer quando o processo atual for reiniciado com o novo comando. O processo que já está em memória continua no fluxo antigo e não lê automaticamente a mudança de pipeline."
+      },
+      {"id": "headline", "type": "metric-strip", "layout": "full", "cardIds": ["batch_state", "active_epoch", "main_remaining", "overall_eta"]},
+      {
+        "id": "current_state",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## O que já foi, o que está rodando e o que falta\n\nA fase de gates já foi concluída. Na matriz de batch do fluxo original existem 6 jobs completos, 1 em execução e 29 pendentes. Para o novo fluxo rápido, o MNIST batch 256 já está pronto; ainda são necessários oito batches 256, 18 treinos de quantização, 9 conversões e benchmarks PTQ e 27 treinos de ativação no segundo Mac.\n\nO run ativo persiste uma linha por época e telemetria a cada 5 segundos. No snapshot havia 836 linhas de telemetria, com a última amostra registrando pressão térmica nominal, 74,4% de RAM do sistema ocupada e 282 GB livres em disco."
+      },
+      {"id": "work_state", "type": "table", "layout": "full", "tableId": "work_state"},
+      {
+        "id": "duration_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Duração prevista por fase\n\nA base observada é MNIST FP16 batch 256: 261,8 s por época e 7,57 h de parede para 100 épocas. Para datasets ainda não medidos em batch 256, a projeção escala pelo número efetivo de exemplos e pela resolução. A fase de quantização soma uma passada FP16 e outra FP32 por dataset, mais PTQ; a fase de ativações repete as três ativações em FP16."
+      },
+      {"id": "phase_chart", "type": "chart", "layout": "full", "chartId": "phase_chart"},
+      {"id": "phase_forecast", "type": "table", "layout": "full", "tableId": "phase_forecast"},
+      {
+        "id": "method",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Como calcular a projeção\n\n- **Job ativo:** 92 épocas restantes × média das últimas 5 épocas (482,9 s), mais avaliação final.\n- **Batches 256 restantes no Mac principal:** MNIST pronto; os demais oito datasets somam cerca de 79,0 h de treino. Foi incluída margem operacional de 5%, totalizando 83,0 h.\n- **Quantização:** 86,3 h para FP16 em todos os datasets + 107,9 h para FP32 estimado em 1,25× + 9 h de PTQ e exportação = 203,2 h.\n- **Ativações no segundo Mac:** três ativações × 86,3 h, com 10% de preparação e exportação = 284,8 h. Esta linha pressupõe hardware comparável ao M4 principal e execução serial no segundo Mac.\n\nA linha crítica é a quantização no Mac principal; por isso ela define o término global central, apesar de as ativações rodarem em paralelo no segundo Mac."
+      },
+      {
+        "id": "data_quality",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Confiabilidade do snapshot\n\nOs status individuais, métricas por época, telemetria e processo ativo são coerentes entre si. Não há status failed no lote de 36 runs: seis completed, um running e 29 pending. O CSV do Fashion-MNIST ativo possui oito épocas completas; a última registrou F1 macro de validação de 90,62%, 306,4 exemplos/s e 479,8 s.\n\nAtenção: `pipeline-status.json` continua refletindo um planejamento anterior e não o avanço ao vivo. Ele não foi usado para as contagens deste relatório. Ainda não há dados do segundo Mac, portanto sua previsão é uma hipótese de capacidade e deve ser recalibrada após o primeiro run de ativação concluído."
+      },
+      {
+        "id": "risks",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Riscos que podem alterar o prazo\n\n- GTSRB usa imagens RGB de 128px e não tem medição batch 256 neste Mac; ele é a maior incerteza de desempenho e memória.\n- O multiplicador de FP32 é estimado, não medido.\n- A projeção do segundo Mac pressupõe que ele não esteja concorrendo com outro treinamento pesado e tenha capacidade semelhante.\n- Reexecuções por falha, OOM, falta de energia ou download de dados não estão incluídas.\n\nA melhor forma de reduzir a incerteza é iniciar as ativações no outro Mac e atualizar a velocidade após o primeiro dataset terminar."
+      }
+    ],
+    "cards": [
+      {"id": "batch_state", "dataset": "headline_metrics", "description": "Estado observado dos 36 jobs de batch do fluxo atual.", "metrics": [{"label": "Batch completos", "field": "completed_batches", "format": "number"}, {"label": "Em execução", "field": "running_batches", "format": "number"}], "sourceId": "live_snapshot"},
+      {"id": "active_epoch", "dataset": "headline_metrics", "description": "Último estado inteiramente persistido do Fashion-MNIST batch 128.", "metrics": [{"label": "Épocas concluídas", "field": "active_epochs", "format": "number"}, {"label": "F1 macro validação", "field": "active_val_f1", "format": "percent"}], "sourceId": "live_snapshot"},
+      {"id": "main_remaining", "dataset": "headline_metrics", "description": "Tempo central restante no Mac principal após o job atual terminar e o fluxo rápido ser retomado.", "metrics": [{"label": "Mac principal", "field": "main_remaining_days", "format": "number"}, {"label": "Unidade", "field": "main_remaining_unit", "format": "text"}], "sourceId": "forecast_model"},
+      {"id": "overall_eta", "dataset": "headline_metrics", "description": "Previsão central para a última frente concluir, se o segundo Mac iniciar agora.", "metrics": [{"label": "Término central", "field": "overall_eta", "format": "text"}, {"label": "Faixa", "field": "overall_range", "format": "text"}], "sourceId": "forecast_model"}
+    ],
+    "charts": [
+      {"id": "phase_chart", "dataset": "phase_duration_hours", "type": "bar", "intent": "comparison", "title": "Horas estimadas restantes por fase", "subtitle": "Duração central; as ativações do segundo Mac são paralelas à execução do Mac principal.", "showDescription": true, "encodings": {"x": {"field": "phase", "type": "nominal"}, "y": {"field": "hours", "type": "quantitative"}}, "sourceId": "forecast_model"}
+    ],
+    "tables": [
+      {"id": "work_state", "dataset": "work_state", "title": "Estado detalhado do trabalho", "subtitle": "Contagens que distinguem o fluxo já em memória do plano rápido preparado.", "showDescription": true, "columns": [{"field": "phase", "label": "Fase"}, {"field": "already_done", "label": "Já foi"}, {"field": "running_now", "label": "Rodando agora"}, {"field": "remaining", "label": "Falta"}, {"field": "owner", "label": "Responsável"}], "defaultSort": {"field": "phase", "direction": "asc"}, "sourceId": "live_snapshot"},
+      {"id": "phase_forecast", "dataset": "phase_forecast", "title": "Previsão de conclusão", "subtitle": "Datas em BRT; o cenário assume que o job atual conclui e o fluxo rápido é retomado sem atraso.", "showDescription": true, "columns": [{"field": "order", "label": "Ordem"}, {"field": "phase", "label": "Fase"}, {"field": "central_duration", "label": "Duração central"}, {"field": "central_finish", "label": "Término central"}, {"field": "prudent_range", "label": "Faixa prudente"}, {"field": "dependency", "label": "Dependência"}], "defaultSort": {"field": "order", "direction": "asc"}, "sourceId": "forecast_model"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "partial",
+    "generatedAt": "2026-08-24T21:24:33-03:00",
+    "datasets": {
+      "headline_metrics": [{"completed_batches": 6, "running_batches": 1, "active_epochs": 8, "active_val_f1": 0.9062173302455362, "main_remaining_days": 12.0, "main_remaining_unit": "dias", "overall_eta": "06 set., ~08:00 BRT", "overall_range": "03–11 set."}],
+      "work_state": [
+        {"phase": "Gates: auditoria, preflight e smoke", "already_done": "3 de 3", "running_now": "não", "remaining": "0", "owner": "Mac principal"},
+        {"phase": "Batch do fluxo atual", "already_done": "6 de 36", "running_now": "Fashion-MNIST batch 128, época 8 de 100", "remaining": "29 pending", "owner": "Mac principal"},
+        {"phase": "Batch rápido 256", "already_done": "MNIST 1 de 9", "running_now": "não; começa após reinício", "remaining": "8 datasets", "owner": "Mac principal"},
+        {"phase": "Quantização", "already_done": "0 de 18 treinos", "running_now": "não", "remaining": "18 FP16 e FP32 + 9 PTQ", "owner": "Mac principal"},
+        {"phase": "Ativações", "already_done": "0 de 27", "running_now": "não iniciado", "remaining": "9 datasets × ReLU, Sigmoid e Softmax", "owner": "Segundo Mac"}
+      ],
+      "phase_duration_hours": [
+        {"phase": "Job atual", "hours": 12.4},
+        {"phase": "Batch 256", "hours": 83.0},
+        {"phase": "Quantização", "hours": 203.2},
+        {"phase": "Ativações", "hours": 284.8}
+      ],
+      "phase_forecast": [
+        {"order": 1, "phase": "Fashion-MNIST batch 128 em memória", "central_duration": "12 h 20 min restantes", "central_finish": "25 ago., ~09:45", "prudent_range": "25 ago., 09:00–11:00", "dependency": "continuar sem interrupção"},
+        {"order": 2, "phase": "Batches 256 restantes", "central_duration": "83,0 h; 3 d 11 h", "central_finish": "28 ago., ~20:45", "prudent_range": "28–30 ago.", "dependency": "reiniciar no fluxo rápido"},
+        {"order": 3, "phase": "Quantização e PTQ", "central_duration": "203,2 h; 8 d 11 h", "central_finish": "06 set., ~08:00", "prudent_range": "03–11 set.", "dependency": "batches 256 concluídos"},
+        {"order": 4, "phase": "Ativações no segundo Mac", "central_duration": "284,8 h; 11 d 21 h", "central_finish": "05 set., ~18:15", "prudent_range": "03–10 set.", "dependency": "iniciar agora, FP16 batch 256"},
+        {"order": 5, "phase": "Término de todas as frentes", "central_duration": "linha crítica: quantização", "central_finish": "06 set., ~08:00", "prudent_range": "03–11 set.", "dependency": "conclusão de ambos os Macs"}
+      ]
+    },
+    "accessIssues": [
+      {"id": "second_mac_unobserved", "scope": "Ativações", "message": "Ainda não há artefatos nem benchmark do segundo Mac; a estimativa usa desempenho comparável ao M4 principal."},
+      {"id": "global_status_stale", "scope": "Status global", "message": "O status global vem de um planejamento anterior; as contagens deste relatório usam status individuais, métricas e processo ativo."}
+    ]
+  },
+  "sources": [
+    {"id": "live_snapshot", "label": "Snapshot dos artefatos e processos de treinamento", "path": "live_snapshot.sql", "query": {"language": "python", "description": "Leitura somente de status por run, métricas por época e telemetria.", "executed_at": "2026-08-24T21:24:33-03:00"}},
+    {"id": "forecast_model", "label": "Modelo de projeção por carga de trabalho", "path": "forecast_model.sql", "query": {"language": "calculation", "description": "Escalonamento do run MNIST batch 256 e hipóteses declaradas.", "executed_at": "2026-08-24T21:24:33-03:00"}}
+  ]
+}
