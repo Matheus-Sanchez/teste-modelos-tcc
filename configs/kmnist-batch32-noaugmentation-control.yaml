@@ -1,0 +1,28 @@
+# Controle isolado para medir o impacto da augmentation no KMNIST.
+# Mantém o protocolo atual, alterando somente extra_fraction e as transformações.
+suite:
+  output_root: ../outputs/kmnist-batch32-noaugmentation-control-2026-08-28
+  seeds: [42]
+  normalizations: [unit_interval]
+  balance_modes: [all_raw]
+  train_fraction: 0.70
+  validation_fraction: 0.15
+  test_fraction: 0.15
+  hardware_interval_seconds: 5.0
+  training:
+    max_epochs: 100
+    batch_size: 32
+    learning_rate: 0.0003
+    # Nenhum exemplo extra e nenhuma transformação aleatória no treino.
+    extra_fraction: 0.0
+    dtype_policy: mixed_float16
+    hidden_activation: swish
+    # 1 exibe a barra de progresso dentro de cada época no terminal.
+    keras_verbose: 1
+    default_image_size: 64
+    image_size_overrides: {gtsrb: 128}
+    augmentation: {flip_lr: false, brightness_delta: 0.0, contrast_lower: 1.0, contrast_upper: 1.0, translate_frac: 0.0, zoom_min: 1.0, zoom_max: 1.0, noise_std: 0.0, cutout_prob: 0.0, cutout_max_frac: 0.0}
+    early_stopping_patience: 100
+    reduce_lr_factor: 0.3
+    reduce_lr_patience: 100
+    reduce_lr_min_lr: 0.0000001
