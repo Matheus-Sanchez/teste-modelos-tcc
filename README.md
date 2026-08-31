@@ -7,6 +7,12 @@ subpasta `datasets/` do projeto e não são versionados pelo Git.
 Para o mapa de chamadas, explicação arquivo a arquivo e guia de alterações
 manuais, leia [docs/GUIA_TECNICO.md](docs/GUIA_TECNICO.md).
 
+> **Estado verificado em 31 de agosto de 2026:** o perfil, os experimentos
+> concluídos e as limitações de evidência estão consolidados em
+> [docs/ESTADO_ATUAL_DO_PROJETO.md](docs/ESTADO_ATUAL_DO_PROJETO.md). Esse
+> documento deve ser usado como referência para números de runs, batch e
+> resultados enquanto os guias históricos são harmonizados.
+
 ## Escopo fixo
 
 - Datasets: MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced, CIFAR-10,
@@ -55,7 +61,7 @@ de telemetria antes do treino. O perfil WSL usa TensorFlow 2.21 com o extra
 
 ## Dados locais
 
-Baixe os dez conjuntos para o layout padrão do projeto:
+Baixe os nove conjuntos do escopo ativo para o layout padrão do projeto:
 
 ```powershell
 python scripts\fetch_datasets.py --all
@@ -84,7 +90,6 @@ Os adaptadores aceitam também as estruturas locais comuns:
 | KMNIST | arquivos `.npz` oficiais (`kmnist-*-imgs/labels.npz`) |
 | EMNIST Balanced | arquivos IDX gzip/sem gzip da variante `balanced` |
 | CIFAR-10/100 | diretórios oficiais `cifar-*-batches-py` e `cifar-100-python` |
-| CINIC-10 | `train`, `valid` e `test`, cada qual com subpastas por classe |
 | SVHN | `train_32x32.mat` e `test_32x32.mat` |
 | GTSRB | estrutura oficial por classes ou layout CSV comum (`Train.csv`/`Test.csv`) |
 | FER2013 | arquivo `fer2013.csv` com colunas `emotion` e `pixels` |
@@ -101,7 +106,7 @@ tcc-benchmark audit --dataset mnist
 # Gera a lista de jobs sem treinar.
 tcc-benchmark run --dataset mnist --dry-run
 
-# Executa as 40 runs de uma base; use --resume após uma interrupção.
+# Com a suite padrão, executa 40 runs de uma base; use --resume após uma interrupção.
 tcc-benchmark run --dataset mnist
 tcc-benchmark resume --dataset mnist
 
@@ -112,7 +117,8 @@ tcc-benchmark run --all
 # No WSL, use o invólucro de GPU descrito acima.
 bash scripts/wsl-gpu-env.sh tcc-benchmark run --all --suite configs/gpu-memory-check.yaml
 
-# Matriz final: 100 épocas por run, todas as normalizações, balanceamentos e seeds.
+# Matriz final: 36 runs sequenciais (9 datasets × z-score × 4 balanceamentos × seed 42),
+# com até 100 épocas por run e batch 512.
 bash scripts/wsl-gpu-env.sh tcc-benchmark run --all --suite configs/full-100-epochs.yaml
 
 # Perfil otimizado com datasets no filesystem nativo do WSL.
@@ -161,9 +167,7 @@ QAT são treinadas separadamente; INT8-PTQ é convertido do checkpoint FP32. O
 INT4-QAT é fake quantization W4A8 para pesquisa: seus números de tamanho físico
 e desempenho são explicitamente rotulados como estimados/emulados.
 
-## Artefatos
-
-## Backup consolidado e organização das saídas
+## Artefatos, backup e organização das saídas
 
 O backup consolidado do projeto usa uma única raiz no HDD:
 
@@ -185,8 +189,8 @@ backup, pois pode ser recriado a partir dos arquivos de dependência.
 | `docs/` | Guias técnicos e documentação do backup. |
 
 Veja [docs/BACKUP_ESTRUTURA.md](docs/BACKUP_ESTRUTURA.md) para o procedimento
-de sincronização e [outputs/README.md](outputs/README.md) para a convenção das
-saídas.
+de sincronização e [docs/ESTADO_ATUAL_DO_PROJETO.md](docs/ESTADO_ATUAL_DO_PROJETO.md)
+para o estado e a convenção atual das saídas.
 
 Cada run fica em:
 

@@ -1,6 +1,6 @@
 # Guia técnico do benchmark
 
-Este guia explica a estrutura atual do projeto e indica o lugar correto para cada alteração manual. A matriz ativa é configurada em [configs/full-100-epochs.yaml](../configs/full-100-epochs.yaml): batch 64, mixed_float16, no máximo 100 épocas, resolução 64x64 na regra geral e 128x128 no GTSRB.
+Este guia explica a estrutura atual do projeto e indica o lugar correto para cada alteração manual. A matriz final é configurada em [configs/full-100-epochs.yaml](../configs/full-100-epochs.yaml): batch 512, `mixed_float16`, no máximo 100 épocas, resolução 64x64 na regra geral e 128x128 no GTSRB. Para o estado de execução e os resultados já consolidados, consulte também [ESTADO_ATUAL_DO_PROJETO.md](ESTADO_ATUAL_DO_PROJETO.md).
 
 ## 1. O que o projeto faz
 
@@ -18,12 +18,11 @@ dados locais unidos
   -> avaliação final única no teste
 ~~~
 
-A configuração final atual cria 112 runs:
+A configuração final atual cria 36 runs:
 
 ~~~text
-MNIST:              2 normalizações x 4 balanceamentos x 5 seeds = 40
-Outros 9 datasets:  2 normalizações x 4 balanceamentos x 1 seed  = 72
-Total: 112 runs sequenciais
+9 datasets x 1 normalização (z-score) x 4 balanceamentos x 1 seed (42)
+Total: 36 runs sequenciais
 ~~~
 
 ## 2. Quem chama quem
@@ -64,7 +63,7 @@ O bloco suite.training do YAML escolhido é a fonte de verdade. Para a matriz pr
 suite:
   training:
     max_epochs: 100
-    batch_size: 64
+    batch_size: 512
     learning_rate: 0.0003
     extra_fraction: 2.0
     dtype_policy: mixed_float16
@@ -216,7 +215,7 @@ A barra Keras mostra métricas globais, LR e tempo. Métricas por classe não en
 ## 5. Estrutura de saída
 
 ~~~text
-outputs/full-100-epochs-batch64/
+outputs/full-100-epochs-batch64/  # nome histórico; a configuração atual usa batch 512
 ├── preflight.json
 ├── index.html e index.json
 ├── README.md
