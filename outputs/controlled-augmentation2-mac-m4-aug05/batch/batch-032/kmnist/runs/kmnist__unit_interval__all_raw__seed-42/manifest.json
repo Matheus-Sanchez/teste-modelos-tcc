@@ -1,0 +1,797 @@
+{
+  "attempt": 1,
+  "config": {
+    "adapter": "kmnist",
+    "balance_mode": "all_raw",
+    "class_names": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "dataset": "kmnist",
+    "dataset_options": {},
+    "dataset_root": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+    "native_channels": 1,
+    "normalization": "unit_interval",
+    "num_classes": 10,
+    "protocol": {
+      "checkpoint_monitor": "val_macro_f1",
+      "dtype_policy": "mixed_float16",
+      "early_stopping": {
+        "patience": 100,
+        "restore_best_weights": true
+      },
+      "evaluation_augmentation": false,
+      "hidden_activation": "swish",
+      "input_channels": "native",
+      "op_determinism": true,
+      "optimizer": "Adam",
+      "pretrained_weights": false,
+      "qat_weight_bits": null,
+      "reduce_lr_on_plateau": {
+        "factor": 0.3,
+        "min_lr": 1e-07,
+        "patience": 100
+      },
+      "resize": "proportional_padding",
+      "test_time_augmentation": false,
+      "training_from_scratch": true
+    },
+    "seed": 42,
+    "source_fingerprint": "ca7863d6898e8d5f5af577921bfe35a73798a82ddb36de31dfdde7b5318c2c92",
+    "source_manifest": {
+      "class_names": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "joined_samples": 70000,
+      "metadata": {
+        "layout": "kmnist-component-npz"
+      },
+      "name": "kmnist",
+      "native_channels": 1,
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+      "splits": {
+        "test": 10000,
+        "train": 60000
+      },
+      "target_size": 64
+    },
+    "target_size": 64,
+    "test_fraction": 0.15,
+    "train_fraction": 0.7,
+    "training": {
+      "augmentation": {
+        "brightness_delta": 0.03,
+        "contrast_lower": 0.92,
+        "contrast_upper": 1.08,
+        "cutout_max_frac": 0.08,
+        "cutout_prob": 0.25,
+        "flip_lr": true,
+        "noise_std": 0.005,
+        "translate_frac": 0.05,
+        "zoom_max": 1.04,
+        "zoom_min": 0.96
+      },
+      "batch_size": 32,
+      "default_image_size": 64,
+      "dtype_policy": "mixed_float16",
+      "early_stopping_enabled": false,
+      "early_stopping_patience": 100,
+      "extra_fraction": 0.5,
+      "hidden_activation": "swish",
+      "image_size_overrides": {
+        "gtsrb": 128
+      },
+      "keras_verbose": 1,
+      "learning_rate": 0.0003,
+      "max_epochs": 100,
+      "preprocess_cache_max_mib": 1024,
+      "qat_weight_bits": null,
+      "reduce_lr_enabled": false,
+      "reduce_lr_factor": 0.3,
+      "reduce_lr_min_lr": 1e-07,
+      "reduce_lr_patience": 100,
+      "shuffle_buffer_max_mib": 512
+    },
+    "validation_fraction": 0.15
+  },
+  "config_fingerprint": "b46a2011903465e47308126d9f4ed78e57c47097f2e57ea31e3cd69fac8663c2",
+  "created_at": "2026-09-02T03:13:14.501+00:00",
+  "data_metadata": {
+    "augmentation": {
+      "brightness_delta": 0.03,
+      "contrast_lower": 0.92,
+      "contrast_upper": 1.08,
+      "cutout_max_frac": 0.08,
+      "cutout_prob": 0.25,
+      "flip_lr": true,
+      "noise_std": 0.005,
+      "translate_frac": 0.05,
+      "zoom_max": 1.04,
+      "zoom_min": 0.96
+    },
+    "balancing": {
+      "class_weights": null,
+      "is_noop": true,
+      "mode": "all_raw",
+      "output_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "raw_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      }
+    },
+    "batch_size": 32,
+    "channels": 1,
+    "class_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "datasets": {
+      "test": {
+        "batches": 329,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 172032000,
+        "extra_augmented_examples": 0,
+        "shuffle_buffer_examples": 0,
+        "source_examples": 10500,
+        "total_examples": 10500,
+        "training": false
+      },
+      "train": {
+        "batches": 2297,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 802816000,
+        "extra_augmented_examples": 24500,
+        "shuffle_buffer_examples": 16380,
+        "source_examples": 49000,
+        "total_examples": 73500,
+        "training": true
+      },
+      "validation": {
+        "batches": 329,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 172032000,
+        "extra_augmented_examples": 0,
+        "shuffle_buffer_examples": 0,
+        "source_examples": 10500,
+        "total_examples": 10500,
+        "training": false
+      }
+    },
+    "extra_fraction": 0.5,
+    "fractions": {
+      "test": 0.15,
+      "train": 0.7,
+      "validation": 0.15
+    },
+    "image_size": 64,
+    "normalization": {
+      "channels": 1,
+      "image_size": 64,
+      "mean": [
+        0.0
+      ],
+      "mode": "unit_interval",
+      "pixel_count": 0,
+      "std": [
+        1.0
+      ]
+    },
+    "num_classes": 10,
+    "raw_split_class_counts": {
+      "test": {
+        "0": 1050,
+        "1": 1050,
+        "2": 1050,
+        "3": 1050,
+        "4": 1050,
+        "5": 1050,
+        "6": 1050,
+        "7": 1050,
+        "8": 1050,
+        "9": 1050
+      },
+      "train": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "validation": {
+        "0": 1050,
+        "1": 1050,
+        "2": 1050,
+        "3": 1050,
+        "4": 1050,
+        "5": 1050,
+        "6": 1050,
+        "7": 1050,
+        "8": 1050,
+        "9": 1050
+      }
+    },
+    "seed": 42,
+    "split": {
+      "fingerprint": "161c642197f73a5c2a9888f8f889988f3853ec4a3aa1a4101c2c1fe0d3478f81",
+      "test_size": 10500,
+      "train_size": 49000,
+      "validation_size": 10500
+    }
+  },
+  "identity": {
+    "balance_mode": "all_raw",
+    "dataset": "kmnist",
+    "normalization": "unit_interval",
+    "seed": 42
+  },
+  "planning": {
+    "dry_run": false,
+    "source_manifest": {
+      "class_names": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "joined_samples": 70000,
+      "metadata": {
+        "layout": "kmnist-component-npz"
+      },
+      "name": "kmnist",
+      "native_channels": 1,
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+      "splits": {
+        "test": 10000,
+        "train": 60000
+      },
+      "target_size": 64
+    },
+    "split": {
+      "fingerprint": "161c642197f73a5c2a9888f8f889988f3853ec4a3aa1a4101c2c1fe0d3478f81",
+      "test_size": 10500,
+      "train_size": 49000,
+      "validation_size": 10500
+    }
+  },
+  "run_id": "kmnist__unit_interval__all_raw__seed-42",
+  "runtime": {
+    "accelerator_backend": "apple-metal",
+    "dtype_policy": "mixed_float16",
+    "memory_growth": [
+      {
+        "device": "/physical_device:GPU:0",
+        "enabled": false,
+        "reason": "não aplicável ao backend Metal/Unified Memory"
+      }
+    ],
+    "physical_gpus": [
+      "/physical_device:GPU:0"
+    ],
+    "platform": "macOS-15.0-arm64-arm-64bit",
+    "tensorflow_gpu_memory_before": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "tensorflow_metal_version": "1.2.0",
+    "tensorflow_version": "2.18.1",
+    "tf_force_gpu_allow_growth": null
+  },
+  "schema_version": 1,
+  "split_fingerprint": "161c642197f73a5c2a9888f8f889988f3853ec4a3aa1a4101c2c1fe0d3478f81",
+  "status": "completed",
+  "status_detail": "Treino e avaliação concluídos",
+  "status_updated_at": "2026-09-02T21:23:58.498+00:00",
+  "telemetry": {
+    "categorical": {
+      "gpu_memory_kind": {
+        "counts": {
+          "shared_unified_driver": 12857
+        },
+        "current": "shared_unified_driver"
+      },
+      "thermal_pressure": {
+        "counts": {
+          "nominal": 12857
+        },
+        "current": "nominal"
+      }
+    },
+    "elapsed_seconds": 65443.61183875,
+    "event_counts": {
+      "data_preparation_end": 1,
+      "data_preparation_start": 1,
+      "epoch_end": 100,
+      "evaluation_end": 1,
+      "evaluation_start": 1,
+      "fit_end": 1,
+      "fit_start": 1,
+      "periodic": 12749,
+      "run_completed": 1,
+      "train_start": 1
+    },
+    "generated_at": "2026-09-02T21:23:58.241+00:00",
+    "gpu_backend": "apple-metal-ioreg",
+    "interval_seconds": 5.0,
+    "metrics": {
+      "cpu_percent": {
+        "count": 12857,
+        "max": 52.6,
+        "mean": 20.26051178346426,
+        "min": 0.0,
+        "p50": 20.5,
+        "p95": 22.9
+      },
+      "disk_data_free_bytes": {
+        "count": 12857,
+        "max": 300935471104.0,
+        "mean": 296388049196.9,
+        "min": 288576176128.0,
+        "p50": 296406577152.0,
+        "p95": 300906680320.0
+      },
+      "disk_data_percent": {
+        "count": 12857,
+        "max": 35.9,
+        "mean": 35.23872598584428,
+        "min": 34.9,
+        "p50": 35.2,
+        "p95": 35.8
+      },
+      "disk_data_total_bytes": {
+        "count": 12857,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_data_used_bytes": {
+        "count": 12857,
+        "max": 161853718528.0,
+        "mean": 161238042998.8109,
+        "min": 160392855552.0,
+        "p50": 161236901888.0,
+        "p95": 161570027110.4
+      },
+      "disk_output_free_bytes": {
+        "count": 12857,
+        "max": 300935471104.0,
+        "mean": 296388049195.3071,
+        "min": 288576176128.0,
+        "p50": 296406577152.0,
+        "p95": 300906680320.0
+      },
+      "disk_output_percent": {
+        "count": 12857,
+        "max": 35.9,
+        "mean": 35.23872598584428,
+        "min": 34.9,
+        "p50": 35.2,
+        "p95": 35.8
+      },
+      "disk_output_total_bytes": {
+        "count": 12857,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_output_used_bytes": {
+        "count": 12857,
+        "max": 161853718528.0,
+        "mean": 161238043000.08524,
+        "min": 160392855552.0,
+        "p50": 161236901888.0,
+        "p95": 161570027110.4
+      },
+      "elapsed_seconds": {
+        "count": 12857,
+        "max": 65443.085843,
+        "mean": 32695.01672553154,
+        "min": 0.21721,
+        "p50": 32666.112847,
+        "p95": 62173.96013
+      },
+      "gpu_count": {
+        "count": 12857,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "p50": 1.0,
+        "p95": 1.0
+      },
+      "gpu_driver_allocated_memory_bytes": {
+        "count": 12857,
+        "max": 2204860416.0,
+        "mean": 2177419655.0585675,
+        "min": 1944059904.0,
+        "p50": 2180317184.0,
+        "p95": 2186706944.0
+      },
+      "gpu_memory_used_bytes": {
+        "count": 12857,
+        "max": 620789760.0,
+        "mean": 465664586.348915,
+        "min": 195788800.0,
+        "p50": 506101760.0,
+        "p95": 548962304.0
+      },
+      "gpu_renderer_utilization_percent": {
+        "count": 12857,
+        "max": 39.0,
+        "mean": 2.1089678774208602,
+        "min": 0.0,
+        "p50": 2.0,
+        "p95": 5.0
+      },
+      "gpu_system_memory_in_use_bytes": {
+        "count": 12857,
+        "max": 620789760.0,
+        "mean": 465664586.348915,
+        "min": 195788800.0,
+        "p50": 506101760.0,
+        "p95": 548962304.0
+      },
+      "gpu_tiler_utilization_percent": {
+        "count": 12857,
+        "max": 40.0,
+        "mean": 2.151279458660652,
+        "min": 0.0,
+        "p50": 2.0,
+        "p95": 5.0
+      },
+      "gpu_utilization_percent": {
+        "count": 12857,
+        "max": 94.0,
+        "mean": 76.00272225246947,
+        "min": 0.0,
+        "p50": 80.0,
+        "p95": 82.0
+      },
+      "process_cpu_percent": {
+        "count": 12857,
+        "max": 158.2,
+        "mean": 83.51947577195301,
+        "min": 3.8,
+        "p50": 84.2,
+        "p95": 86.5
+      },
+      "process_rss_bytes": {
+        "count": 12857,
+        "max": 4753719296.0,
+        "mean": 2214333284.930544,
+        "min": 524566528.0,
+        "p50": 1994637312.0,
+        "p95": 4015472640.0000024
+      },
+      "process_vms_bytes": {
+        "count": 12857,
+        "max": 470675243008.0,
+        "mean": 448125496392.3976,
+        "min": 421744394240.0,
+        "p50": 447956729856.0,
+        "p95": 468238604697.6
+      },
+      "ram_available_bytes": {
+        "count": 12857,
+        "max": 9417261056.0,
+        "mean": 3451894091.483861,
+        "min": 2885976064.0,
+        "p50": 3064856576.0,
+        "p95": 5529311641.600001
+      },
+      "ram_percent": {
+        "count": 12857,
+        "max": 83.2,
+        "mean": 79.90699229991444,
+        "min": 45.2,
+        "p50": 82.2,
+        "p95": 82.9
+      },
+      "ram_total_bytes": {
+        "count": 12857,
+        "max": 17179869184.0,
+        "mean": 17179869184.0,
+        "min": 17179869184.0,
+        "p50": 17179869184.0,
+        "p95": 17179869184.0
+      },
+      "ram_used_bytes": {
+        "count": 12857,
+        "max": 7494893568.0,
+        "mean": 5168454585.9917555,
+        "min": 2669314048.0,
+        "p50": 4855644160.0,
+        "p95": 6971729510.4
+      }
+    },
+    "sample_count": 12857,
+    "schema_version": 1
+  },
+  "test_metrics": {
+    "classification": {
+      "accuracy": 0.9862857142857143,
+      "balanced_accuracy": 0.9862857142857143,
+      "confusion_matrix": [
+        [
+          1037,
+          2,
+          0,
+          0,
+          0,
+          3,
+          2,
+          4,
+          1,
+          1
+        ],
+        [
+          2,
+          1028,
+          3,
+          0,
+          2,
+          5,
+          4,
+          0,
+          4,
+          2
+        ],
+        [
+          1,
+          7,
+          1033,
+          1,
+          1,
+          5,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1045,
+          1,
+          3,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          4,
+          5,
+          1,
+          1,
+          1032,
+          1,
+          0,
+          3,
+          1,
+          2
+        ],
+        [
+          1,
+          1,
+          2,
+          4,
+          0,
+          1040,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          2,
+          8,
+          1,
+          1,
+          4,
+          1030,
+          2,
+          0,
+          1
+        ],
+        [
+          1,
+          6,
+          0,
+          1,
+          1,
+          1,
+          2,
+          1036,
+          2,
+          0
+        ],
+        [
+          1,
+          2,
+          1,
+          2,
+          2,
+          2,
+          2,
+          0,
+          1036,
+          2
+        ],
+        [
+          2,
+          1,
+          4,
+          0,
+          1,
+          1,
+          2,
+          0,
+          0,
+          1039
+        ]
+      ],
+      "macro_f1": 0.9862896040512441,
+      "macro_ovr_auc": 0.9997688183421516,
+      "macro_precision": 0.9863129664006314,
+      "macro_recall": 0.9862857142857143,
+      "per_class": {
+        "0": {
+          "f1": 0.9876190476190476,
+          "label": 0,
+          "precision": 0.9876190476190476,
+          "recall": 0.9876190476190476,
+          "support": 1050
+        },
+        "1": {
+          "f1": 0.9771863117870723,
+          "label": 1,
+          "precision": 0.9753320683111955,
+          "recall": 0.979047619047619,
+          "support": 1050
+        },
+        "2": {
+          "f1": 0.9828734538534728,
+          "label": 2,
+          "precision": 0.9819391634980988,
+          "recall": 0.9838095238095238,
+          "support": 1050
+        },
+        "3": {
+          "f1": 0.9928741092636579,
+          "label": 3,
+          "precision": 0.990521327014218,
+          "recall": 0.9952380952380953,
+          "support": 1050
+        },
+        "4": {
+          "f1": 0.9870875179340028,
+          "label": 4,
+          "precision": 0.9913544668587896,
+          "recall": 0.9828571428571429,
+          "support": 1050
+        },
+        "5": {
+          "f1": 0.9834515366430261,
+          "label": 5,
+          "precision": 0.9765258215962441,
+          "recall": 0.9904761904761905,
+          "support": 1050
+        },
+        "6": {
+          "f1": 0.9832935560859187,
+          "label": 6,
+          "precision": 0.9856459330143541,
+          "recall": 0.9809523809523809,
+          "support": 1050
+        },
+        "7": {
+          "f1": 0.9890214797136039,
+          "label": 7,
+          "precision": 0.9913875598086125,
+          "recall": 0.9866666666666667,
+          "support": 1050
+        },
+        "8": {
+          "f1": 0.9894937917860555,
+          "label": 8,
+          "precision": 0.9923371647509579,
+          "recall": 0.9866666666666667,
+          "support": 1050
+        },
+        "9": {
+          "f1": 0.9899952358265842,
+          "label": 9,
+          "precision": 0.990467111534795,
+          "recall": 0.9895238095238095,
+          "support": 1050
+        }
+      }
+    },
+    "keras_metrics": {
+      "accuracy": 0.9862856864929199,
+      "loss": 0.05756894499063492
+    }
+  },
+  "training": {
+    "epochs_completed": 100,
+    "evaluation_seconds": 56.04598779202206,
+    "fit_seconds_current_attempt": 65384.89938583301,
+    "max_epochs": 100,
+    "mean_epoch_seconds": 616.0464901424893,
+    "mean_train_examples_per_second": 119.31253087118998,
+    "median_train_examples_per_second": 119.4652728429901,
+    "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+    "tensorflow_gpu_memory_after": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "total_seconds": 61604.649014248935,
+    "training_seconds": 61604.649014248935,
+    "wall_seconds_current_attempt": 65443.095245749995
+  },
+  "updated_at": "2026-09-02T21:23:58.498+00:00"
+}

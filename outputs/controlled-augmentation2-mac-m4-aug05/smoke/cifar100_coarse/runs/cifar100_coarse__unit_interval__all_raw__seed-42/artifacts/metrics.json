@@ -1,0 +1,650 @@
+{
+  "config": {
+    "adapter": "cifar100_coarse",
+    "balance_mode": "all_raw",
+    "class_names": [
+      "aquatic_mammals",
+      "fish",
+      "flowers",
+      "food_containers",
+      "fruit_and_vegetables",
+      "household_electrical_devices",
+      "household_furniture",
+      "insects",
+      "large_carnivores",
+      "large_man-made_outdoor_things",
+      "large_natural_outdoor_scenes",
+      "large_omnivores_and_herbivores",
+      "medium_mammals",
+      "non-insect_invertebrates",
+      "people",
+      "reptiles",
+      "small_mammals",
+      "trees",
+      "vehicles_1",
+      "vehicles_2"
+    ],
+    "dataset": "cifar100_coarse",
+    "dataset_options": {},
+    "dataset_root": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/cifar100_coarse",
+    "native_channels": 3,
+    "normalization": "unit_interval",
+    "num_classes": 20,
+    "protocol": {
+      "checkpoint_monitor": "val_macro_f1",
+      "dtype_policy": "mixed_float16",
+      "early_stopping": {
+        "patience": 100,
+        "restore_best_weights": true
+      },
+      "evaluation_augmentation": false,
+      "hidden_activation": "swish",
+      "input_channels": "native",
+      "op_determinism": true,
+      "optimizer": "Adam",
+      "pretrained_weights": false,
+      "qat_weight_bits": null,
+      "reduce_lr_on_plateau": {
+        "factor": 0.3,
+        "min_lr": 1e-07,
+        "patience": 100
+      },
+      "resize": "proportional_padding",
+      "test_time_augmentation": false,
+      "training_from_scratch": true
+    },
+    "seed": 42,
+    "smoke": {
+      "epochs": 2,
+      "examples_per_class": 16
+    },
+    "source_fingerprint": "5a773cbe2bf8977dc603086af5fc6d630bd0602139f876e13f0ab7251eb1fcd5",
+    "source_manifest": {
+      "class_names": [
+        "aquatic_mammals",
+        "fish",
+        "flowers",
+        "food_containers",
+        "fruit_and_vegetables",
+        "household_electrical_devices",
+        "household_furniture",
+        "insects",
+        "large_carnivores",
+        "large_man-made_outdoor_things",
+        "large_natural_outdoor_scenes",
+        "large_omnivores_and_herbivores",
+        "medium_mammals",
+        "non-insect_invertebrates",
+        "people",
+        "reptiles",
+        "small_mammals",
+        "trees",
+        "vehicles_1",
+        "vehicles_2"
+      ],
+      "joined_samples": 60000,
+      "metadata": {
+        "label_level": "coarse",
+        "layout": "cifar-100-python"
+      },
+      "name": "cifar100_coarse",
+      "native_channels": 3,
+      "smoke_subset": {
+        "examples_per_class": 16,
+        "samples": 320,
+        "seed": 42,
+        "selection_fingerprint": "92089706305d0d52a13131b6bc1e562f74e6dc2e98cfd9c895ba6d3f22ae8b53"
+      },
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/cifar100_coarse",
+      "splits": {
+        "test": 10000,
+        "train": 50000
+      },
+      "target_size": 64
+    },
+    "target_size": 64,
+    "test_fraction": 0.15,
+    "train_fraction": 0.7,
+    "training": {
+      "augmentation": {
+        "brightness_delta": 0.03,
+        "contrast_lower": 0.92,
+        "contrast_upper": 1.08,
+        "cutout_max_frac": 0.08,
+        "cutout_prob": 0.25,
+        "flip_lr": true,
+        "noise_std": 0.005,
+        "translate_frac": 0.05,
+        "zoom_max": 1.04,
+        "zoom_min": 0.96
+      },
+      "batch_size": 32,
+      "default_image_size": 64,
+      "dtype_policy": "mixed_float16",
+      "early_stopping_enabled": false,
+      "early_stopping_patience": 100,
+      "extra_fraction": 0.5,
+      "hidden_activation": "swish",
+      "image_size_overrides": {
+        "gtsrb": 128
+      },
+      "keras_verbose": 1,
+      "learning_rate": 0.0003,
+      "max_epochs": 2,
+      "preprocess_cache_max_mib": 1024,
+      "qat_weight_bits": null,
+      "reduce_lr_enabled": false,
+      "reduce_lr_factor": 0.3,
+      "reduce_lr_min_lr": 1e-07,
+      "reduce_lr_patience": 100,
+      "shuffle_buffer_max_mib": 512
+    },
+    "validation_fraction": 0.15
+  },
+  "environment": {
+    "captured_at": "2026-08-29T01:35:43.427+00:00",
+    "hardware": {
+      "cpu_count_logical": 10,
+      "disks": {
+        "data": {
+          "free_bytes": 301491732480,
+          "percent": 34.3,
+          "total_bytes": 494384795648,
+          "used_bytes": 157279944704
+        },
+        "output": {
+          "free_bytes": 301491732480,
+          "percent": 34.3,
+          "total_bytes": 494384795648,
+          "used_bytes": 157279944704
+        }
+      },
+      "gpu_backend": "apple-metal-ioreg",
+      "gpus": [
+        {
+          "driver_allocated_memory_bytes": 3119398912,
+          "driver_memory_in_use_bytes": 0,
+          "gpu_core_count": 10,
+          "index": 0,
+          "memory_kind": "shared_unified_driver",
+          "memory_total_bytes": null,
+          "memory_used_bytes": 243433472,
+          "name": "Apple M4",
+          "power_w": null,
+          "renderer_utilization_percent": 0.0,
+          "system_memory_in_use_bytes": 243433472,
+          "temperature_c": null,
+          "tiler_utilization_percent": 0.0,
+          "utilization_percent": 0.0
+        }
+      ],
+      "macos_version": "15.0",
+      "metal_version": "Metal 3",
+      "ram_total_bytes": 17179869184
+    },
+    "packages": {
+      "numpy": "2.0.2",
+      "psutil": "7.2.2",
+      "pynvml": null,
+      "scikit_learn": "1.7.2",
+      "tensorflow": "2.18.1",
+      "tensorflow_metal": "1.2.0"
+    },
+    "platform": {
+      "machine": "arm64",
+      "processor": "arm",
+      "release": "24.0.0",
+      "system": "Darwin",
+      "version": "Darwin Kernel Version 24.0.0: Fri Aug 16 21:28:00 PDT 2024; root:xnu-11215.1.10~25/RELEASE_ARM64_T8132"
+    },
+    "python": {
+      "executable": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/.venv-mac/bin/python",
+      "implementation": "CPython",
+      "version": "3.10.21 (main, Aug 14 2026, 15:25:49) [Clang 22.1.3 ]"
+    }
+  },
+  "generated_at": "2026-08-29T01:36:00.007+00:00",
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "aquatic_mammals",
+      "f1": 0.0,
+      "label": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 1,
+      "class_name": "fish",
+      "f1": 0.0,
+      "label": 1,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 2,
+      "class_name": "flowers",
+      "f1": 0.0,
+      "label": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 3,
+      "class_name": "food_containers",
+      "f1": 0.0,
+      "label": 3,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 4,
+      "class_name": "fruit_and_vegetables",
+      "f1": 0.0,
+      "label": 4,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 5,
+      "class_name": "household_electrical_devices",
+      "f1": 0.0,
+      "label": 5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 6,
+      "class_name": "household_furniture",
+      "f1": 0.0,
+      "label": 6,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 7,
+      "class_name": "insects",
+      "f1": 0.0,
+      "label": 7,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 8,
+      "class_name": "large_carnivores",
+      "f1": 0.0,
+      "label": 8,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 9,
+      "class_name": "large_man-made_outdoor_things",
+      "f1": 0.0,
+      "label": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 10,
+      "class_name": "large_natural_outdoor_scenes",
+      "f1": 0.0,
+      "label": 10,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 11,
+      "class_name": "large_omnivores_and_herbivores",
+      "f1": 0.0,
+      "label": 11,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 12,
+      "class_name": "medium_mammals",
+      "f1": 0.0,
+      "label": 12,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 13,
+      "class_name": "non-insect_invertebrates",
+      "f1": 0.0,
+      "label": 13,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 14,
+      "class_name": "people",
+      "f1": 0.3333333333333333,
+      "label": 14,
+      "precision": 0.25,
+      "recall": 0.5,
+      "support": 2
+    },
+    {
+      "class_index": 15,
+      "class_name": "reptiles",
+      "f1": 0.0,
+      "label": 15,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 16,
+      "class_name": "small_mammals",
+      "f1": 0.0,
+      "label": 16,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 17,
+      "class_name": "trees",
+      "f1": 0.0,
+      "label": 17,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 18,
+      "class_name": "vehicles_1",
+      "f1": 0.5,
+      "label": 18,
+      "precision": 0.5,
+      "recall": 0.5,
+      "support": 2
+    },
+    {
+      "class_index": 19,
+      "class_name": "vehicles_2",
+      "f1": 0.0,
+      "label": 19,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    }
+  ],
+  "run_id": "cifar100_coarse__unit_interval__all_raw__seed-42",
+  "schema_version": 1,
+  "telemetry": {
+    "categorical": {
+      "gpu_memory_kind": {
+        "counts": {
+          "shared_unified_driver": 13
+        },
+        "current": "shared_unified_driver"
+      },
+      "thermal_pressure": {
+        "counts": {
+          "nominal": 13
+        },
+        "current": "nominal"
+      }
+    },
+    "elapsed_seconds": 16.8583077499934,
+    "event_counts": {
+      "data_preparation_end": 1,
+      "data_preparation_start": 1,
+      "epoch_end": 2,
+      "evaluation_end": 1,
+      "evaluation_start": 1,
+      "fit_end": 1,
+      "fit_start": 1,
+      "periodic": 3,
+      "run_completed": 1,
+      "train_start": 1
+    },
+    "generated_at": "2026-08-29T01:36:00.001+00:00",
+    "gpu_backend": "apple-metal-ioreg",
+    "interval_seconds": 5.0,
+    "metrics": {
+      "cpu_percent": {
+        "count": 13,
+        "max": 20.8,
+        "mean": 10.146153846153847,
+        "min": 0.0,
+        "p50": 17.1,
+        "p95": 20.32
+      },
+      "disk_data_free_bytes": {
+        "count": 13,
+        "max": 301491728384.0,
+        "mean": 301482371229.53845,
+        "min": 301474459648.0,
+        "p50": 301477650432.0,
+        "p95": 301491725926.4
+      },
+      "disk_data_percent": {
+        "count": 13,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_data_total_bytes": {
+        "count": 13,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_data_used_bytes": {
+        "count": 13,
+        "max": 157297217536.0,
+        "mean": 157289305954.46155,
+        "min": 157279948800.0,
+        "p50": 157294026752.0,
+        "p95": 157297217536.0
+      },
+      "disk_output_free_bytes": {
+        "count": 13,
+        "max": 301491728384.0,
+        "mean": 301482371229.53845,
+        "min": 301474459648.0,
+        "p50": 301477650432.0,
+        "p95": 301491725926.4
+      },
+      "disk_output_percent": {
+        "count": 13,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_output_total_bytes": {
+        "count": 13,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_output_used_bytes": {
+        "count": 13,
+        "max": 157297217536.0,
+        "mean": 157289305954.46155,
+        "min": 157279948800.0,
+        "p50": 157294026752.0,
+        "p95": 157297217536.0
+      },
+      "elapsed_seconds": {
+        "count": 13,
+        "max": 16.772438,
+        "mean": 9.521145,
+        "min": 0.287098,
+        "p50": 11.682033,
+        "p95": 16.7188592
+      },
+      "gpu_count": {
+        "count": 13,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "p50": 1.0,
+        "p95": 1.0
+      },
+      "gpu_driver_allocated_memory_bytes": {
+        "count": 13,
+        "max": 3354918912.0,
+        "mean": 3277302862.769231,
+        "min": 3123937280.0,
+        "p50": 3338452992.0,
+        "p95": 3354918912.0
+      },
+      "gpu_memory_used_bytes": {
+        "count": 13,
+        "max": 451051520.0,
+        "mean": 343277568.0,
+        "min": 247971840.0,
+        "p50": 353009664.0,
+        "p95": 431715123.2
+      },
+      "gpu_renderer_utilization_percent": {
+        "count": 13,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "gpu_system_memory_in_use_bytes": {
+        "count": 13,
+        "max": 451051520.0,
+        "mean": 343277568.0,
+        "min": 247971840.0,
+        "p50": 353009664.0,
+        "p95": 431715123.2
+      },
+      "gpu_tiler_utilization_percent": {
+        "count": 13,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "gpu_utilization_percent": {
+        "count": 13,
+        "max": 52.0,
+        "mean": 9.846153846153847,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 37.60000000000001
+      },
+      "process_cpu_percent": {
+        "count": 13,
+        "max": 100.6,
+        "mean": 76.13076923076923,
+        "min": 2.9,
+        "p50": 87.0,
+        "p95": 100.0
+      },
+      "process_rss_bytes": {
+        "count": 13,
+        "max": 2595880960.0,
+        "mean": 1802117750.1538463,
+        "min": 679657472.0,
+        "p50": 2331115520.0,
+        "p95": 2595871129.6
+      },
+      "process_vms_bytes": {
+        "count": 13,
+        "max": 424567209984.0,
+        "mean": 423515209728.0,
+        "min": 421928140800.0,
+        "p50": 424302936064.0,
+        "p95": 424557114163.2
+      },
+      "ram_available_bytes": {
+        "count": 13,
+        "max": 8494776320.0,
+        "mean": 7439146377.846154,
+        "min": 6806978560.0,
+        "p50": 6987366400.0,
+        "p95": 8491630592.0
+      },
+      "ram_percent": {
+        "count": 13,
+        "max": 60.4,
+        "mean": 56.70769230769231,
+        "min": 50.6,
+        "p50": 59.3,
+        "p95": 60.339999999999996
+      },
+      "ram_total_bytes": {
+        "count": 13,
+        "max": 17179869184.0,
+        "mean": 17179869184.0,
+        "min": 17179869184.0,
+        "p50": 17179869184.0,
+        "p95": 17179869184.0
+      },
+      "ram_used_bytes": {
+        "count": 13,
+        "max": 8073609216.0,
+        "mean": 7442298407.384615,
+        "min": 6390726656.0,
+        "p50": 7893106688.0,
+        "p95": 8063474073.6
+      }
+    },
+    "sample_count": 13,
+    "schema_version": 1
+  },
+  "test": {
+    "accuracy": 0.05,
+    "balanced_accuracy": 0.05,
+    "generated_at": "2026-08-29T01:36:00.007+00:00",
+    "loss": 3.004901170730591,
+    "macro_f1": 0.041666666666666664,
+    "n_samples": 40,
+    "run_id": "cifar100_coarse__unit_interval__all_raw__seed-42"
+  },
+  "training": {
+    "epochs_completed": 2,
+    "epochs_recorded": 2,
+    "evaluation_seconds": 1.4507539580226876,
+    "fit_seconds_current_attempt": 13.536636750010075,
+    "max_epoch_seconds": 9.490444374998333,
+    "max_epochs": 2,
+    "mean_epoch_seconds": 5.921520062503987,
+    "mean_train_examples_per_second": 87.52120506002112,
+    "median_train_examples_per_second": 87.52120506002112,
+    "min_epoch_seconds": 2.352595750009641,
+    "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+    "tensorflow_gpu_memory_after": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "total_seconds": 11.843040125007974,
+    "training_seconds": 11.843040125007974,
+    "wall_seconds_current_attempt": 16.782014166994486
+  }
+}

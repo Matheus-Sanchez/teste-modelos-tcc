@@ -1,0 +1,130 @@
+{
+  "classification": {
+    "accuracy": 0.14285714285714285,
+    "balanced_accuracy": 0.14285714285714285,
+    "confusion_matrix": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "macro_f1": 0.09523809523809523,
+    "macro_ovr_auc": 0.6011904761904762,
+    "macro_precision": 0.07142857142857142,
+    "macro_recall": 0.14285714285714285,
+    "per_class": {
+      "0": {
+        "f1": 0.0,
+        "label": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      },
+      "1": {
+        "f1": 0.0,
+        "label": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      },
+      "2": {
+        "f1": 0.0,
+        "label": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      },
+      "3": {
+        "f1": 0.6666666666666666,
+        "label": 3,
+        "precision": 0.5,
+        "recall": 1.0,
+        "support": 2
+      },
+      "4": {
+        "f1": 0.0,
+        "label": 4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      },
+      "5": {
+        "f1": 0.0,
+        "label": 5,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      },
+      "6": {
+        "f1": 0.0,
+        "label": 6,
+        "precision": 0.0,
+        "recall": 0.0,
+        "support": 2
+      }
+    }
+  },
+  "keras_metrics": {
+    "accuracy": 0.1428571492433548,
+    "loss": 1.9441903829574585
+  }
+}

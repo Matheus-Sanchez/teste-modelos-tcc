@@ -1,0 +1,11 @@
+{
+  "created_at": "2026-08-29T01:33:34.628790+00:00",
+  "experiment": "controlled-augmentation2",
+  "gates": {
+    "audit": "completed",
+    "preflight": "completed",
+    "smoke": "completed"
+  },
+  "platform_profile": "mac-metal",
+  "stages": {}
+}

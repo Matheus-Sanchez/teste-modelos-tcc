@@ -1,0 +1,19 @@
+{
+  "epochs_completed": 2,
+  "evaluation_seconds": 1.8126193329808302,
+  "fit_seconds_current_attempt": 23.559439750009915,
+  "max_epochs": 2,
+  "mean_epoch_seconds": 10.518698375002714,
+  "mean_train_examples_per_second": 75.3802818414598,
+  "median_train_examples_per_second": 75.3802818414598,
+  "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+  "tensorflow_gpu_memory_after": {
+    "GPU:0": {
+      "current": 0,
+      "peak": 0
+    }
+  },
+  "total_seconds": 21.037396750005428,
+  "training_seconds": 21.037396750005428,
+  "wall_seconds_current_attempt": 27.216057500016177
+}

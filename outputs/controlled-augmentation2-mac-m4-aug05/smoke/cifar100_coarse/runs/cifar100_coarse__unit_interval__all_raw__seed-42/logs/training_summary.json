@@ -1,0 +1,19 @@
+{
+  "epochs_completed": 2,
+  "evaluation_seconds": 1.4507539580226876,
+  "fit_seconds_current_attempt": 13.536636750010075,
+  "max_epochs": 2,
+  "mean_epoch_seconds": 5.921520062503987,
+  "mean_train_examples_per_second": 87.52120506002112,
+  "median_train_examples_per_second": 87.52120506002112,
+  "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+  "tensorflow_gpu_memory_after": {
+    "GPU:0": {
+      "current": 0,
+      "peak": 0
+    }
+  },
+  "total_seconds": 11.843040125007974,
+  "training_seconds": 11.843040125007974,
+  "wall_seconds_current_attempt": 16.782014166994486
+}

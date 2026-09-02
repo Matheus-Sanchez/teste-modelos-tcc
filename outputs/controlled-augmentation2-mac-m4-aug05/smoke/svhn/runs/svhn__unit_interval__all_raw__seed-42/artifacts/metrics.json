@@ -1,0 +1,540 @@
+{
+  "config": {
+    "adapter": "svhn",
+    "balance_mode": "all_raw",
+    "class_names": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "dataset": "svhn",
+    "dataset_options": {},
+    "dataset_root": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/svhn",
+    "native_channels": 3,
+    "normalization": "unit_interval",
+    "num_classes": 10,
+    "protocol": {
+      "checkpoint_monitor": "val_macro_f1",
+      "dtype_policy": "mixed_float16",
+      "early_stopping": {
+        "patience": 100,
+        "restore_best_weights": true
+      },
+      "evaluation_augmentation": false,
+      "hidden_activation": "swish",
+      "input_channels": "native",
+      "op_determinism": true,
+      "optimizer": "Adam",
+      "pretrained_weights": false,
+      "qat_weight_bits": null,
+      "reduce_lr_on_plateau": {
+        "factor": 0.3,
+        "min_lr": 1e-07,
+        "patience": 100
+      },
+      "resize": "proportional_padding",
+      "test_time_augmentation": false,
+      "training_from_scratch": true
+    },
+    "seed": 42,
+    "smoke": {
+      "epochs": 2,
+      "examples_per_class": 16
+    },
+    "source_fingerprint": "83d5d71886233179af803dd4a86ff969bdf1f77f46c36d438b6f975772fb2b88",
+    "source_manifest": {
+      "class_names": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "joined_samples": 99289,
+      "metadata": {
+        "include_extra": false,
+        "layout": "svhn-mat"
+      },
+      "name": "svhn",
+      "native_channels": 3,
+      "smoke_subset": {
+        "examples_per_class": 16,
+        "samples": 160,
+        "seed": 42,
+        "selection_fingerprint": "2def556d22cf6ec672da9d2979534c4204e348a6f9067177ed18611bbdb60064"
+      },
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/svhn",
+      "splits": {
+        "test": 26032,
+        "train": 73257
+      },
+      "target_size": 64
+    },
+    "target_size": 64,
+    "test_fraction": 0.15,
+    "train_fraction": 0.7,
+    "training": {
+      "augmentation": {
+        "brightness_delta": 0.03,
+        "contrast_lower": 0.92,
+        "contrast_upper": 1.08,
+        "cutout_max_frac": 0.08,
+        "cutout_prob": 0.25,
+        "flip_lr": true,
+        "noise_std": 0.005,
+        "translate_frac": 0.05,
+        "zoom_max": 1.04,
+        "zoom_min": 0.96
+      },
+      "batch_size": 32,
+      "default_image_size": 64,
+      "dtype_policy": "mixed_float16",
+      "early_stopping_enabled": false,
+      "early_stopping_patience": 100,
+      "extra_fraction": 0.5,
+      "hidden_activation": "swish",
+      "image_size_overrides": {
+        "gtsrb": 128
+      },
+      "keras_verbose": 1,
+      "learning_rate": 0.0003,
+      "max_epochs": 2,
+      "preprocess_cache_max_mib": 1024,
+      "qat_weight_bits": null,
+      "reduce_lr_enabled": false,
+      "reduce_lr_factor": 0.3,
+      "reduce_lr_min_lr": 1e-07,
+      "reduce_lr_patience": 100,
+      "shuffle_buffer_max_mib": 512
+    },
+    "validation_fraction": 0.15
+  },
+  "environment": {
+    "captured_at": "2026-08-29T01:36:05.713+00:00",
+    "hardware": {
+      "cpu_count_logical": 10,
+      "disks": {
+        "data": {
+          "free_bytes": 301474291712,
+          "percent": 34.3,
+          "total_bytes": 494384795648,
+          "used_bytes": 157297385472
+        },
+        "output": {
+          "free_bytes": 301474291712,
+          "percent": 34.3,
+          "total_bytes": 494384795648,
+          "used_bytes": 157297385472
+        }
+      },
+      "gpu_backend": "apple-metal-ioreg",
+      "gpus": [
+        {
+          "driver_allocated_memory_bytes": 3123937280,
+          "driver_memory_in_use_bytes": 0,
+          "gpu_core_count": 10,
+          "index": 0,
+          "memory_kind": "shared_unified_driver",
+          "memory_total_bytes": null,
+          "memory_used_bytes": 307331072,
+          "name": "Apple M4",
+          "power_w": null,
+          "renderer_utilization_percent": 0.0,
+          "system_memory_in_use_bytes": 307331072,
+          "temperature_c": null,
+          "tiler_utilization_percent": 0.0,
+          "utilization_percent": 0.0
+        }
+      ],
+      "macos_version": "15.0",
+      "metal_version": "Metal 3",
+      "ram_total_bytes": 17179869184
+    },
+    "packages": {
+      "numpy": "2.0.2",
+      "psutil": "7.2.2",
+      "pynvml": null,
+      "scikit_learn": "1.7.2",
+      "tensorflow": "2.18.1",
+      "tensorflow_metal": "1.2.0"
+    },
+    "platform": {
+      "machine": "arm64",
+      "processor": "arm",
+      "release": "24.0.0",
+      "system": "Darwin",
+      "version": "Darwin Kernel Version 24.0.0: Fri Aug 16 21:28:00 PDT 2024; root:xnu-11215.1.10~25/RELEASE_ARM64_T8132"
+    },
+    "python": {
+      "executable": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/.venv-mac/bin/python",
+      "implementation": "CPython",
+      "version": "3.10.21 (main, Aug 14 2026, 15:25:49) [Clang 22.1.3 ]"
+    }
+  },
+  "generated_at": "2026-08-29T01:36:18.802+00:00",
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "0",
+      "f1": 0.0,
+      "label": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 1,
+      "class_name": "1",
+      "f1": 0.5,
+      "label": 1,
+      "precision": 0.5,
+      "recall": 0.5,
+      "support": 2
+    },
+    {
+      "class_index": 2,
+      "class_name": "2",
+      "f1": 0.0,
+      "label": 2,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 3,
+      "class_name": "3",
+      "f1": 0.28571428571428575,
+      "label": 3,
+      "precision": 0.2,
+      "recall": 0.5,
+      "support": 2
+    },
+    {
+      "class_index": 4,
+      "class_name": "4",
+      "f1": 0.0,
+      "label": 4,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 5,
+      "class_name": "5",
+      "f1": 0.0,
+      "label": 5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 6,
+      "class_name": "6",
+      "f1": 0.0,
+      "label": 6,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 7,
+      "class_name": "7",
+      "f1": 0.0,
+      "label": 7,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 8,
+      "class_name": "8",
+      "f1": 0.0,
+      "label": 8,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    },
+    {
+      "class_index": 9,
+      "class_name": "9",
+      "f1": 0.0,
+      "label": 9,
+      "precision": 0.0,
+      "recall": 0.0,
+      "support": 2
+    }
+  ],
+  "run_id": "svhn__unit_interval__all_raw__seed-42",
+  "schema_version": 1,
+  "telemetry": {
+    "categorical": {
+      "gpu_memory_kind": {
+        "counts": {
+          "shared_unified_driver": 12
+        },
+        "current": "shared_unified_driver"
+      },
+      "thermal_pressure": {
+        "counts": {
+          "nominal": 12
+        },
+        "current": "nominal"
+      }
+    },
+    "elapsed_seconds": 13.310315584007185,
+    "event_counts": {
+      "data_preparation_end": 1,
+      "data_preparation_start": 1,
+      "epoch_end": 2,
+      "evaluation_end": 1,
+      "evaluation_start": 1,
+      "fit_end": 1,
+      "fit_start": 1,
+      "periodic": 2,
+      "run_completed": 1,
+      "train_start": 1
+    },
+    "generated_at": "2026-08-29T01:36:18.797+00:00",
+    "gpu_backend": "apple-metal-ioreg",
+    "interval_seconds": 5.0,
+    "metrics": {
+      "cpu_percent": {
+        "count": 12,
+        "max": 19.4,
+        "mean": 13.458333333333334,
+        "min": 0.0,
+        "p50": 15.4,
+        "p95": 18.574999999999996
+      },
+      "disk_data_free_bytes": {
+        "count": 12,
+        "max": 301474324480.0,
+        "mean": 301465834154.6667,
+        "min": 301459775488.0,
+        "p50": 301459810304.0,
+        "p95": 301474308710.4
+      },
+      "disk_data_percent": {
+        "count": 12,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_data_total_bytes": {
+        "count": 12,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_data_used_bytes": {
+        "count": 12,
+        "max": 157311901696.0,
+        "mean": 157305843029.33334,
+        "min": 157297352704.0,
+        "p50": 157311866880.0,
+        "p95": 157311901696.0
+      },
+      "disk_output_free_bytes": {
+        "count": 12,
+        "max": 301474324480.0,
+        "mean": 301465834154.6667,
+        "min": 301459775488.0,
+        "p50": 301459810304.0,
+        "p95": 301474308710.4
+      },
+      "disk_output_percent": {
+        "count": 12,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_output_total_bytes": {
+        "count": 12,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_output_used_bytes": {
+        "count": 12,
+        "max": 157311901696.0,
+        "mean": 157305843029.33334,
+        "min": 157297352704.0,
+        "p50": 157311866880.0,
+        "p95": 157311901696.0
+      },
+      "elapsed_seconds": {
+        "count": 12,
+        "max": 13.229824,
+        "mean": 7.471781333333333,
+        "min": 0.229228,
+        "p50": 9.971874499999998,
+        "p95": 13.1830421
+      },
+      "gpu_count": {
+        "count": 12,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "p50": 1.0,
+        "p95": 1.0
+      },
+      "gpu_driver_allocated_memory_bytes": {
+        "count": 12,
+        "max": 3365044224.0,
+        "mean": 3272489642.6666665,
+        "min": 3123937280.0,
+        "p50": 3331153920.0,
+        "p95": 3365044224.0
+      },
+      "gpu_memory_used_bytes": {
+        "count": 12,
+        "max": 394084352.0,
+        "mean": 343298048.0,
+        "min": 296239104.0,
+        "p50": 352567296.0,
+        "p95": 382405836.8
+      },
+      "gpu_renderer_utilization_percent": {
+        "count": 12,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "gpu_system_memory_in_use_bytes": {
+        "count": 12,
+        "max": 394084352.0,
+        "mean": 343298048.0,
+        "min": 296239104.0,
+        "p50": 352567296.0,
+        "p95": 382405836.8
+      },
+      "gpu_tiler_utilization_percent": {
+        "count": 12,
+        "max": 0.0,
+        "mean": 0.0,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.0
+      },
+      "gpu_utilization_percent": {
+        "count": 12,
+        "max": 79.0,
+        "mean": 17.5,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 70.19999999999999
+      },
+      "process_cpu_percent": {
+        "count": 12,
+        "max": 99.4,
+        "mean": 73.58333333333333,
+        "min": 3.7,
+        "p50": 81.75,
+        "p95": 96.75999999999999
+      },
+      "process_rss_bytes": {
+        "count": 12,
+        "max": 2616868864.0,
+        "mean": 1875334485.3333333,
+        "min": 859635712.0,
+        "p50": 2411012096.0,
+        "p95": 2616859852.8
+      },
+      "process_vms_bytes": {
+        "count": 12,
+        "max": 424874999808.0,
+        "mean": 423740116992.0,
+        "min": 422095405056.0,
+        "p50": 424658157568.0,
+        "p95": 424865745305.6
+      },
+      "ram_available_bytes": {
+        "count": 12,
+        "max": 8263745536.0,
+        "mean": 7291304618.666667,
+        "min": 6664634368.0,
+        "p50": 6793986048.0,
+        "p95": 8261727027.2
+      },
+      "ram_percent": {
+        "count": 12,
+        "max": 61.2,
+        "mean": 57.550000000000004,
+        "min": 51.9,
+        "p50": 60.45,
+        "p95": 61.145
+      },
+      "ram_total_bytes": {
+        "count": 12,
+        "max": 17179869184.0,
+        "mean": 17179869184.0,
+        "min": 17179869184.0,
+        "p50": 17179869184.0,
+        "p95": 17179869184.0
+      },
+      "ram_used_bytes": {
+        "count": 12,
+        "max": 8225030144.0,
+        "mean": 7594254336.0,
+        "min": 6618300416.0,
+        "p50": 8092565504.0,
+        "p95": 8215919820.8
+      }
+    },
+    "sample_count": 12,
+    "schema_version": 1
+  },
+  "test": {
+    "accuracy": 0.1,
+    "balanced_accuracy": 0.1,
+    "generated_at": "2026-08-29T01:36:18.802+00:00",
+    "loss": 2.2831172943115234,
+    "macro_f1": 0.07857142857142858,
+    "n_samples": 20,
+    "run_id": "svhn__unit_interval__all_raw__seed-42"
+  },
+  "training": {
+    "epochs_completed": 2,
+    "epochs_recorded": 2,
+    "evaluation_seconds": 0.9719740000145976,
+    "fit_seconds_current_attempt": 10.552957542007789,
+    "max_epoch_seconds": 7.756744541984517,
+    "max_epochs": 2,
+    "mean_epoch_seconds": 4.636571937488043,
+    "mean_train_examples_per_second": 65.04109932102959,
+    "median_train_examples_per_second": 65.04109932102959,
+    "min_epoch_seconds": 1.5163993329915684,
+    "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+    "tensorflow_gpu_memory_after": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "total_seconds": 9.273143874976085,
+    "training_seconds": 9.273143874976085,
+    "wall_seconds_current_attempt": 13.240283249993809
+  }
+}

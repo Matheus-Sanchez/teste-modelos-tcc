@@ -1,0 +1,813 @@
+{
+  "attempt": 1,
+  "config": {
+    "adapter": "kmnist",
+    "balance_mode": "all_raw",
+    "class_names": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "dataset": "kmnist",
+    "dataset_options": {},
+    "dataset_root": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+    "native_channels": 1,
+    "normalization": "unit_interval",
+    "num_classes": 10,
+    "protocol": {
+      "checkpoint_monitor": "val_macro_f1",
+      "dtype_policy": "mixed_float16",
+      "early_stopping": {
+        "patience": 100,
+        "restore_best_weights": true
+      },
+      "evaluation_augmentation": false,
+      "hidden_activation": "swish",
+      "input_channels": "native",
+      "op_determinism": true,
+      "optimizer": "Adam",
+      "pretrained_weights": false,
+      "qat_weight_bits": null,
+      "reduce_lr_on_plateau": {
+        "factor": 0.3,
+        "min_lr": 1e-07,
+        "patience": 100
+      },
+      "resize": "proportional_padding",
+      "test_time_augmentation": false,
+      "training_from_scratch": true
+    },
+    "seed": 42,
+    "smoke": {
+      "epochs": 2,
+      "examples_per_class": 16
+    },
+    "source_fingerprint": "9d57c3da65bab320308bcf003c8fe1f556d1676a62692fed9eab8ba625f9a0b7",
+    "source_manifest": {
+      "class_names": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "joined_samples": 70000,
+      "metadata": {
+        "layout": "kmnist-component-npz"
+      },
+      "name": "kmnist",
+      "native_channels": 1,
+      "smoke_subset": {
+        "examples_per_class": 16,
+        "samples": 160,
+        "seed": 42,
+        "selection_fingerprint": "5e8aff4081cc6e07339bd43c19794e3854ddd1115fb5c8ed69386272e36a06e7"
+      },
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+      "splits": {
+        "test": 10000,
+        "train": 60000
+      },
+      "target_size": 64
+    },
+    "target_size": 64,
+    "test_fraction": 0.15,
+    "train_fraction": 0.7,
+    "training": {
+      "augmentation": {
+        "brightness_delta": 0.03,
+        "contrast_lower": 0.92,
+        "contrast_upper": 1.08,
+        "cutout_max_frac": 0.08,
+        "cutout_prob": 0.25,
+        "flip_lr": true,
+        "noise_std": 0.005,
+        "translate_frac": 0.05,
+        "zoom_max": 1.04,
+        "zoom_min": 0.96
+      },
+      "batch_size": 32,
+      "default_image_size": 64,
+      "dtype_policy": "mixed_float16",
+      "early_stopping_enabled": false,
+      "early_stopping_patience": 100,
+      "extra_fraction": 0.5,
+      "hidden_activation": "swish",
+      "image_size_overrides": {
+        "gtsrb": 128
+      },
+      "keras_verbose": 1,
+      "learning_rate": 0.0003,
+      "max_epochs": 2,
+      "preprocess_cache_max_mib": 1024,
+      "qat_weight_bits": null,
+      "reduce_lr_enabled": false,
+      "reduce_lr_factor": 0.3,
+      "reduce_lr_min_lr": 1e-07,
+      "reduce_lr_patience": 100,
+      "shuffle_buffer_max_mib": 512
+    },
+    "validation_fraction": 0.15
+  },
+  "config_fingerprint": "4c2f98ed657b87d52823acd3c71260849c6fa63b3e1cb29e7b06667599a9a95d",
+  "created_at": "2026-08-29T01:34:36.982+00:00",
+  "data_metadata": {
+    "augmentation": {
+      "brightness_delta": 0.03,
+      "contrast_lower": 0.92,
+      "contrast_upper": 1.08,
+      "cutout_max_frac": 0.08,
+      "cutout_prob": 0.25,
+      "flip_lr": true,
+      "noise_std": 0.005,
+      "translate_frac": 0.05,
+      "zoom_max": 1.04,
+      "zoom_min": 0.96
+    },
+    "balancing": {
+      "class_weights": null,
+      "is_noop": true,
+      "mode": "all_raw",
+      "output_class_counts": {
+        "0": 11,
+        "1": 11,
+        "2": 11,
+        "3": 11,
+        "4": 11,
+        "5": 11,
+        "6": 11,
+        "7": 11,
+        "8": 11,
+        "9": 11
+      },
+      "raw_class_counts": {
+        "0": 11,
+        "1": 11,
+        "2": 11,
+        "3": 11,
+        "4": 11,
+        "5": 11,
+        "6": 11,
+        "7": 11,
+        "8": 11,
+        "9": 11
+      }
+    },
+    "batch_size": 32,
+    "channels": 1,
+    "class_ids": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "datasets": {
+      "test": {
+        "batches": 1,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 327680,
+        "extra_augmented_examples": 0,
+        "shuffle_buffer_examples": 0,
+        "source_examples": 20,
+        "total_examples": 20,
+        "training": false
+      },
+      "train": {
+        "batches": 6,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 1802240,
+        "extra_augmented_examples": 55,
+        "shuffle_buffer_examples": 110,
+        "source_examples": 110,
+        "total_examples": 165,
+        "training": true
+      },
+      "validation": {
+        "batches": 1,
+        "decoded_cache_enabled": true,
+        "decoded_cache_estimated_bytes": 491520,
+        "extra_augmented_examples": 0,
+        "shuffle_buffer_examples": 0,
+        "source_examples": 30,
+        "total_examples": 30,
+        "training": false
+      }
+    },
+    "extra_fraction": 0.5,
+    "fractions": {
+      "test": 0.15,
+      "train": 0.7,
+      "validation": 0.15
+    },
+    "image_size": 64,
+    "normalization": {
+      "channels": 1,
+      "image_size": 64,
+      "mean": [
+        0.0
+      ],
+      "mode": "unit_interval",
+      "pixel_count": 0,
+      "std": [
+        1.0
+      ]
+    },
+    "num_classes": 10,
+    "raw_split_class_counts": {
+      "test": {
+        "0": 2,
+        "1": 2,
+        "2": 2,
+        "3": 2,
+        "4": 2,
+        "5": 2,
+        "6": 2,
+        "7": 2,
+        "8": 2,
+        "9": 2
+      },
+      "train": {
+        "0": 11,
+        "1": 11,
+        "2": 11,
+        "3": 11,
+        "4": 11,
+        "5": 11,
+        "6": 11,
+        "7": 11,
+        "8": 11,
+        "9": 11
+      },
+      "validation": {
+        "0": 3,
+        "1": 3,
+        "2": 3,
+        "3": 3,
+        "4": 3,
+        "5": 3,
+        "6": 3,
+        "7": 3,
+        "8": 3,
+        "9": 3
+      }
+    },
+    "seed": 42,
+    "split": {
+      "fingerprint": "4995292881145ea6ead8e3c3a968f7b1295068ed6a7f77de58e4dc21b98397fa",
+      "test_size": 20,
+      "train_size": 110,
+      "validation_size": 30
+    }
+  },
+  "identity": {
+    "balance_mode": "all_raw",
+    "dataset": "kmnist",
+    "normalization": "unit_interval",
+    "seed": 42
+  },
+  "planning": {
+    "dry_run": false,
+    "source_manifest": {
+      "class_names": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "joined_samples": 70000,
+      "metadata": {
+        "layout": "kmnist-component-npz"
+      },
+      "name": "kmnist",
+      "native_channels": 1,
+      "smoke_subset": {
+        "examples_per_class": 16,
+        "samples": 160,
+        "seed": 42,
+        "selection_fingerprint": "5e8aff4081cc6e07339bd43c19794e3854ddd1115fb5c8ed69386272e36a06e7"
+      },
+      "source_path": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/datasets/kmnist",
+      "splits": {
+        "test": 10000,
+        "train": 60000
+      },
+      "target_size": 64
+    },
+    "split": {
+      "fingerprint": "4995292881145ea6ead8e3c3a968f7b1295068ed6a7f77de58e4dc21b98397fa",
+      "test_size": 20,
+      "train_size": 110,
+      "validation_size": 30
+    }
+  },
+  "run_id": "kmnist__unit_interval__all_raw__seed-42",
+  "runtime": {
+    "accelerator_backend": "apple-metal",
+    "dtype_policy": "mixed_float16",
+    "memory_growth": [
+      {
+        "device": "/physical_device:GPU:0",
+        "enabled": false,
+        "reason": "não aplicável ao backend Metal/Unified Memory"
+      }
+    ],
+    "physical_gpus": [
+      "/physical_device:GPU:0"
+    ],
+    "platform": "macOS-15.0-arm64-arm-64bit",
+    "tensorflow_gpu_memory_before": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "tensorflow_metal_version": "1.2.0",
+    "tensorflow_version": "2.18.1",
+    "tf_force_gpu_allow_growth": null
+  },
+  "schema_version": 1,
+  "split_fingerprint": "4995292881145ea6ead8e3c3a968f7b1295068ed6a7f77de58e4dc21b98397fa",
+  "status": "completed",
+  "status_detail": "Treino e avaliação concluídos",
+  "status_updated_at": "2026-08-29T01:34:50.273+00:00",
+  "telemetry": {
+    "categorical": {
+      "gpu_memory_kind": {
+        "counts": {
+          "shared_unified_driver": 12
+        },
+        "current": "shared_unified_driver"
+      },
+      "thermal_pressure": {
+        "counts": {
+          "nominal": 12
+        },
+        "current": "nominal"
+      }
+    },
+    "elapsed_seconds": 13.067496000003302,
+    "event_counts": {
+      "data_preparation_end": 1,
+      "data_preparation_start": 1,
+      "epoch_end": 2,
+      "evaluation_end": 1,
+      "evaluation_start": 1,
+      "fit_end": 1,
+      "fit_start": 1,
+      "periodic": 2,
+      "run_completed": 1,
+      "train_start": 1
+    },
+    "generated_at": "2026-08-29T01:34:50.066+00:00",
+    "gpu_backend": "apple-metal-ioreg",
+    "interval_seconds": 5.0,
+    "metrics": {
+      "cpu_percent": {
+        "count": 12,
+        "max": 19.8,
+        "mean": 8.924999999999999,
+        "min": 0.0,
+        "p50": 7.6,
+        "p95": 19.14
+      },
+      "disk_data_free_bytes": {
+        "count": 12,
+        "max": 301534957568.0,
+        "mean": 301526681941.3333,
+        "min": 301520740352.0,
+        "p50": 301520887808.0,
+        "p95": 301534955315.2
+      },
+      "disk_data_percent": {
+        "count": 12,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_data_total_bytes": {
+        "count": 12,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_data_used_bytes": {
+        "count": 12,
+        "max": 157250936832.0,
+        "mean": 157244995242.66666,
+        "min": 157236719616.0,
+        "p50": 157250789376.0,
+        "p95": 157250930073.6
+      },
+      "disk_output_free_bytes": {
+        "count": 12,
+        "max": 301534957568.0,
+        "mean": 301526681941.3333,
+        "min": 301520740352.0,
+        "p50": 301520887808.0,
+        "p95": 301534955315.2
+      },
+      "disk_output_percent": {
+        "count": 12,
+        "max": 34.3,
+        "mean": 34.3,
+        "min": 34.3,
+        "p50": 34.3,
+        "p95": 34.3
+      },
+      "disk_output_total_bytes": {
+        "count": 12,
+        "max": 494384795648.0,
+        "mean": 494384795648.0,
+        "min": 494384795648.0,
+        "p50": 494384795648.0,
+        "p95": 494384795648.0
+      },
+      "disk_output_used_bytes": {
+        "count": 12,
+        "max": 157250936832.0,
+        "mean": 157244995242.66666,
+        "min": 157236719616.0,
+        "p50": 157250789376.0,
+        "p95": 157250930073.6
+      },
+      "elapsed_seconds": {
+        "count": 12,
+        "max": 12.986938,
+        "mean": 7.3689575000000005,
+        "min": 0.232318,
+        "p50": 9.9502165,
+        "p95": 12.93854955
+      },
+      "gpu_count": {
+        "count": 12,
+        "max": 1.0,
+        "mean": 1.0,
+        "min": 1.0,
+        "p50": 1.0,
+        "p95": 1.0
+      },
+      "gpu_driver_allocated_memory_bytes": {
+        "count": 12,
+        "max": 3356377088.0,
+        "mean": 3268244821.3333335,
+        "min": 3123937280.0,
+        "p50": 3320922112.0,
+        "p95": 3356377088.0
+      },
+      "gpu_memory_used_bytes": {
+        "count": 12,
+        "max": 444006400.0,
+        "mean": 331307690.6666667,
+        "min": 247971840.0,
+        "p50": 341868544.0,
+        "p95": 408682495.99999994
+      },
+      "gpu_renderer_utilization_percent": {
+        "count": 12,
+        "max": 1.0,
+        "mean": 0.08333333333333333,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.4499999999999993
+      },
+      "gpu_system_memory_in_use_bytes": {
+        "count": 12,
+        "max": 444006400.0,
+        "mean": 331307690.6666667,
+        "min": 247971840.0,
+        "p50": 341868544.0,
+        "p95": 408682495.99999994
+      },
+      "gpu_tiler_utilization_percent": {
+        "count": 12,
+        "max": 1.0,
+        "mean": 0.08333333333333333,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 0.4499999999999993
+      },
+      "gpu_utilization_percent": {
+        "count": 12,
+        "max": 76.0,
+        "mean": 13.083333333333334,
+        "min": 0.0,
+        "p50": 0.0,
+        "p95": 68.29999999999998
+      },
+      "process_cpu_percent": {
+        "count": 12,
+        "max": 99.5,
+        "mean": 74.59166666666667,
+        "min": 3.6,
+        "p50": 85.9,
+        "p95": 97.685
+      },
+      "process_rss_bytes": {
+        "count": 12,
+        "max": 2282913792.0,
+        "mean": 1544873301.3333333,
+        "min": 524009472.0,
+        "p50": 2081062912.0,
+        "p95": 2282904780.8
+      },
+      "process_vms_bytes": {
+        "count": 12,
+        "max": 423724875776.0,
+        "mean": 422922308266.6667,
+        "min": 421762220032.0,
+        "p50": 423513178112.0,
+        "p95": 423715621273.6
+      },
+      "ram_available_bytes": {
+        "count": 12,
+        "max": 8736407552.0,
+        "mean": 7793042773.333333,
+        "min": 7159300096.0,
+        "p50": 7324467200.0,
+        "p95": 8734767513.6
+      },
+      "ram_percent": {
+        "count": 12,
+        "max": 58.3,
+        "mean": 54.63333333333333,
+        "min": 49.1,
+        "p50": 57.349999999999994,
+        "p95": 58.19
+      },
+      "ram_total_bytes": {
+        "count": 12,
+        "max": 17179869184.0,
+        "mean": 17179869184.0,
+        "min": 17179869184.0,
+        "p50": 17179869184.0,
+        "p95": 17179869184.0
+      },
+      "ram_used_bytes": {
+        "count": 12,
+        "max": 7685111808.0,
+        "mean": 7050153984.0,
+        "min": 6105415680.0,
+        "p50": 7517822976.0,
+        "p95": 7661295206.4
+      }
+    },
+    "sample_count": 12,
+    "schema_version": 1
+  },
+  "test_metrics": {
+    "classification": {
+      "accuracy": 0.2,
+      "balanced_accuracy": 0.2,
+      "confusion_matrix": [
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ]
+      ],
+      "macro_f1": 0.08,
+      "macro_ovr_auc": 0.5277777777777778,
+      "macro_precision": 0.05,
+      "macro_recall": 0.2,
+      "per_class": {
+        "0": {
+          "f1": 0.0,
+          "label": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "1": {
+          "f1": 0.0,
+          "label": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "2": {
+          "f1": 0.0,
+          "label": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "3": {
+          "f1": 0.4,
+          "label": 3,
+          "precision": 0.25,
+          "recall": 1.0,
+          "support": 2
+        },
+        "4": {
+          "f1": 0.0,
+          "label": 4,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "5": {
+          "f1": 0.0,
+          "label": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "6": {
+          "f1": 0.4,
+          "label": 6,
+          "precision": 0.25,
+          "recall": 1.0,
+          "support": 2
+        },
+        "7": {
+          "f1": 0.0,
+          "label": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "8": {
+          "f1": 0.0,
+          "label": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        },
+        "9": {
+          "f1": 0.0,
+          "label": 9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "support": 2
+        }
+      }
+    },
+    "keras_metrics": {
+      "accuracy": 0.20000000298023224,
+      "loss": 2.304527759552002
+    }
+  },
+  "training": {
+    "epochs_completed": 2,
+    "evaluation_seconds": 0.9667410829861183,
+    "fit_seconds_current_attempt": 10.308335208013887,
+    "max_epochs": 2,
+    "mean_epoch_seconds": 4.555953499992029,
+    "mean_train_examples_per_second": 68.63812180096063,
+    "median_train_examples_per_second": 68.63812180096063,
+    "selected_checkpoint": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/best.keras",
+    "tensorflow_gpu_memory_after": {
+      "GPU:0": {
+        "current": 0,
+        "peak": 0
+      }
+    },
+    "total_seconds": 9.111906999984058,
+    "training_seconds": 9.111906999984058,
+    "wall_seconds_current_attempt": 12.996267792012077
+  },
+  "updated_at": "2026-08-29T01:34:50.273+00:00"
+}

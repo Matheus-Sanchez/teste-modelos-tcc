@@ -1,0 +1,62 @@
+{
+  "captured_at": "2026-08-29T01:36:25.123+00:00",
+  "hardware": {
+    "cpu_count_logical": 10,
+    "disks": {
+      "data": {
+        "free_bytes": 301459968000,
+        "percent": 34.3,
+        "total_bytes": 494384795648,
+        "used_bytes": 157311709184
+      },
+      "output": {
+        "free_bytes": 301459968000,
+        "percent": 34.3,
+        "total_bytes": 494384795648,
+        "used_bytes": 157311709184
+      }
+    },
+    "gpu_backend": "apple-metal-ioreg",
+    "gpus": [
+      {
+        "driver_allocated_memory_bytes": 3123937280,
+        "driver_memory_in_use_bytes": 0,
+        "gpu_core_count": 10,
+        "index": 0,
+        "memory_kind": "shared_unified_driver",
+        "memory_total_bytes": null,
+        "memory_used_bytes": 247971840,
+        "name": "Apple M4",
+        "power_w": null,
+        "renderer_utilization_percent": 0.0,
+        "system_memory_in_use_bytes": 247971840,
+        "temperature_c": null,
+        "tiler_utilization_percent": 0.0,
+        "utilization_percent": 0.0
+      }
+    ],
+    "macos_version": "15.0",
+    "metal_version": "Metal 3",
+    "ram_total_bytes": 17179869184
+  },
+  "packages": {
+    "numpy": "2.0.2",
+    "psutil": "7.2.2",
+    "pynvml": null,
+    "scikit_learn": "1.7.2",
+    "tensorflow": "2.18.1",
+    "tensorflow_metal": "1.2.0"
+  },
+  "platform": {
+    "machine": "arm64",
+    "processor": "arm",
+    "release": "24.0.0",
+    "system": "Darwin",
+    "version": "Darwin Kernel Version 24.0.0: Fri Aug 16 21:28:00 PDT 2024; root:xnu-11215.1.10~25/RELEASE_ARM64_T8132"
+  },
+  "python": {
+    "executable": "/Users/matheus-duda/Desktop/repos/teste-modelos/teste-modelos-tcc/.venv-mac/bin/python",
+    "implementation": "CPython",
+    "version": "3.10.21 (main, Aug 14 2026, 15:25:49) [Clang 22.1.3 ]"
+  }
+}

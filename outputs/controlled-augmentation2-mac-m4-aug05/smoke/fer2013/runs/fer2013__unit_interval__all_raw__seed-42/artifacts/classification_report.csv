@@ -1,0 +1,8 @@
+class_index,label,class_name,support,precision,recall,f1
+0,0,angry,2,0.0,0.0,0.0
+1,1,disgust,2,0.0,0.0,0.0
+2,2,fear,2,0.0,0.0,0.0
+3,3,happy,2,0.5,1.0,0.6666666666666666
+4,4,sad,2,0.0,0.0,0.0
+5,5,surprise,2,0.0,0.0,0.0
+6,6,neutral,2,0.0,0.0,0.0

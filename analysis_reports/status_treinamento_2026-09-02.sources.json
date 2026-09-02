@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "execution-status",
+      "title": "Estado atual da execução",
+      "queries": [
+        {
+          "id": "process-and-run-reconciliation",
+          "source": {
+            "label": "Processos, status e logs locais",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/pipeline-status.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/logs/pipeline.log"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/status.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/index.json"},
+              {"label": "scripts/run_controlled_pipeline.py"}
+            ],
+            "metricDefinitions": [
+              {"label": "Celula concluida", "definition": "status.json com status completed e artefatos finais de teste/telemetria presentes."},
+              {"label": "Running stale", "definition": "status.json com status running, mas sem processo tcc_benchmark correspondente ao supervisor atual."},
+              {"label": "Matriz batch", "definition": "9 datasets vezes 4 batches, total de 36 celulas planejadas."}
+            ],
+            "filters": ["Suite: controlled-augmentation2-mac-m4-aug05", "Leitura somente", "Snapshot: 2026-09-02 19:49 BRT"],
+            "caveats": [
+              "pipeline-status.json ainda nao registrou a fase batch porque ela nao terminou.",
+              "O comando ativo usa --skip-activation, mas nao usa --skip-quantization.",
+              "A pasta de saida foi reutilizada entre tentativas; tres status running antigos nao devem ser contados como treinos ativos."
+            ],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Treinamento ativo", "detail": "Existe um supervisor caffeinate e um filho TensorFlow ativo em KMNIST batch 64."},
+              {"kind": "validation", "title": "Estados reconciliados", "detail": "Ha 6 celulas completed, 1 running ativo, 3 running stale e 26 celulas ainda sem diretorio de run."}
+            ]
+          },
+          "columns": ["state", "cell", "epochs", "process_match", "final_metric"],
+          "rows": [
+            {"state": "completed", "cell": "MNIST b32", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.988215"},
+            {"state": "completed", "cell": "MNIST b64", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.990785"},
+            {"state": "completed", "cell": "MNIST b256", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.990069"},
+            {"state": "completed", "cell": "Fashion-MNIST b128", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.911170"},
+            {"state": "completed", "cell": "Fashion-MNIST b256", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.909732"},
+            {"state": "completed", "cell": "KMNIST b32", "epochs": 100, "process_match": "nao aplicavel", "final_metric": "test macro-F1 0.986290"},
+            {"state": "running ativo", "cell": "KMNIST b64", "epochs": 13, "process_match": "sim", "final_metric": "sem teste final; melhor val macro-F1 0.974053"},
+            {"state": "running stale", "cell": "Fashion-MNIST b32", "epochs": 2, "process_match": "nao", "final_metric": "sem teste final"},
+            {"state": "running stale", "cell": "Fashion-MNIST b64", "epochs": 58, "process_match": "nao", "final_metric": "sem teste final; melhor val macro-F1 0.918544"},
+            {"state": "running stale", "cell": "MNIST b128", "epochs": 37, "process_match": "nao", "final_metric": "sem teste final; melhor val macro-F1 0.989001"}
+          ],
+          "preview": {"kind": "partial", "note": "A matriz completa ainda nao foi materializada; EMNIST, CIFAR10, CIFAR100 coarse, SVHN, GTSRB e FER2013 ainda nao iniciaram batch neste output-root.", "totalRows": 36},
+          "capturedAt": "2026-09-02T19:49:53-03:00"
+        }
+      ]
+    },
+    {
+      "id": "training-results",
+      "title": "Resultados da configuracao extra_fraction 0.5",
+      "queries": [
+        {
+          "id": "completed-results",
+          "source": {
+            "label": "Summaries, manifests, checkpoints e metricas locais",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/summary.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/manifest.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/checkpoints/epoch_metrics.csv"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/artifacts/metrics.json"}
+            ],
+            "metricDefinitions": [
+              {"label": "Macro-F1 de teste", "definition": "Media nao ponderada do F1 por classe no conjunto de teste do checkpoint selecionado."},
+              {"label": "Tempo por epoca", "definition": "mean_epoch_seconds persistido no resumo do run."},
+              {"label": "Configuracao", "definition": "extra_fraction=0.5, mixed_float16, seed=42, max_epochs=100, swish e augmentacao configurada."}
+            ],
+            "filters": ["extra_fraction: 0.5", "dtype_policy: mixed_float16", "seed: 42", "max_epochs: 100"],
+            "caveats": ["Somente 6 das 36 celulas possuem metricas finais de teste.", "A comparacao de velocidade com o output antigo e uma extrapolacao operacional; a matriz aug05 nao e uma rerun limpa em todas as celulas."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Qualidade observada", "detail": "MNIST b64 foi o melhor MNIST por macro-F1; Fashion-MNIST b128 superou b256 por 0,14 ponto percentual."},
+              {"kind": "validation", "title": "Persistencia", "detail": "Runs completos possuem status completed, checkpoint best/last, metricas finais e resumo de telemetria."}
+            ]
+          },
+          "columns": ["dataset", "batch", "test_macro_f1", "mean_epoch_seconds", "training_hours", "telemetry_samples"],
+          "rows": [
+            {"dataset": "MNIST", "batch": 32, "test_macro_f1": 0.9882149733, "mean_epoch_seconds": 513.556, "training_hours": 14.265, "telemetry_samples": 10763},
+            {"dataset": "MNIST", "batch": 64, "test_macro_f1": 0.9907848733, "mean_epoch_seconds": 297.455, "training_hours": 8.2626, "telemetry_samples": 6362},
+            {"dataset": "MNIST", "batch": 256, "test_macro_f1": 0.9900691562, "mean_epoch_seconds": 140.363, "training_hours": 3.8990, "telemetry_samples": 3027},
+            {"dataset": "Fashion-MNIST", "batch": 128, "test_macro_f1": 0.9111699510, "mean_epoch_seconds": 233.248, "training_hours": 6.4788, "telemetry_samples": 4956},
+            {"dataset": "Fashion-MNIST", "batch": 256, "test_macro_f1": 0.9097322311, "mean_epoch_seconds": 134.238, "training_hours": 3.7288, "telemetry_samples": 2928},
+            {"dataset": "KMNIST", "batch": 32, "test_macro_f1": 0.9862896041, "mean_epoch_seconds": 616.046, "training_hours": 17.1124, "telemetry_samples": 12857}
+          ],
+          "preview": {"kind": "partial", "note": "Os 6 resultados sao finais; os 4 registros running nao possuem teste final valido.", "totalRows": 6},
+          "capturedAt": "2026-09-02T19:49:53-03:00"
+        }
+      ]
+    },
+    {
+      "id": "hardware-capture",
+      "title": "Captura de hardware e integridade operacional",
+      "queries": [
+        {
+          "id": "active-telemetry",
+          "source": {
+            "label": "Telemetria persistida do KMNIST b64 ativo",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/telemetry/summary.json"}
+            ],
+            "metricDefinitions": [
+              {"label": "Amostras", "definition": "Linhas persistidas em telemetry/samples.csv, com intervalo configurado de 5 segundos."},
+              {"label": "GPU", "definition": "Utilizacao informada pelo backend apple-metal-ioreg; a memoria e compartilhada com a RAM do sistema."},
+              {"label": "Pressao termica", "definition": "Estado termico reportado pelo sistema nas amostras de telemetria."}
+            ],
+            "filters": ["Backend: apple-metal-ioreg", "Run: KMNIST b64", "Leitura somente"],
+            "caveats": ["O backend nao fornece percentual de memoria GPU de forma consistente.", "Temperatura e potencia permanecem sem valores consistentes."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Captura ativa", "detail": "O CSV ativo tinha 1.022 linhas na ultima verificacao e continua recebendo amostras."},
+              {"kind": "result", "title": "Estado do dispositivo", "detail": "Ultimo ponto observado: GPU 82%, CPU do processo 75,3%, RAM 65,7%, memoria GPU compartilhada 1,17 GiB e thermal nominal."},
+              {"kind": "validation", "title": "Sem alerta operacional", "detail": "Os 6 runs completos registram thermal_pressure nominal; nao ha evidencia de OOM ou falha termica."}
+            ]
+          },
+          "columns": ["run", "samples", "gpu_or_last_percent", "ram_percent", "thermal_pressure", "storage_free"],
+          "rows": [
+            {"run": "KMNIST b64 ativo", "samples": 1022, "gpu_or_last_percent": 82.0, "ram_percent": 65.7, "thermal_pressure": "nominal", "storage_free": "aprox. 277 GiB"},
+            {"run": "KMNIST b32 completo", "samples": 12857, "gpu_or_last_percent": 76.00, "ram_percent": 79.91, "thermal_pressure": "nominal", "storage_free": "aprox. 280 GiB no periodo"},
+            {"run": "MNIST b32/b64/b256 e Fashion b128/b256", "samples": "ver arquivos individuais", "gpu_or_last_percent": "resumos persistidos", "ram_percent": "resumos persistidos", "thermal_pressure": "nominal", "storage_free": "aprox. 277 GiB atual"}
+          ],
+          "preview": {"kind": "partial", "note": "A ultima linha e um agrupamento; os valores detalhados permanecem nos CSVs e summaries de cada run.", "totalRows": 3},
+          "capturedAt": "2026-09-02T19:49:53-03:00"
+        }
+      ]
+    },
+    {
+      "id": "forecast",
+      "title": "Previsao de termino",
+      "queries": [
+        {
+          "id": "forecast-model",
+          "source": {
+            "label": "Calculo local de ETA",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/summary.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv"},
+              {"label": "analysis_reports/otimizacao_treinamento_pesquisa_2026-08-28.artifact.json"},
+              {"label": "scripts/run_controlled_pipeline.py"}
+            ],
+            "metricDefinitions": [
+              {"label": "Fator de velocidade", "definition": "Razao entre o tempo medio por epoca observado em extra_fraction=0.5 e os tempos da matriz anterior; fator central aproximado de 0.50, com variacao observada de cerca de 0.45 a 0.59."},
+              {"label": "ETA da celula ativa", "definition": "Epocas restantes multiplicadas pelo mean_epoch_seconds atual, mais avaliacao final curta."},
+              {"label": "ETA da fase batch", "definition": "Extrapolacao da previsao anterior de 665,5 h para 27 jobs, ajustada pelo fator de velocidade e pelo progresso atual; baixa a media confianca."},
+              {"label": "ETA de quantizacao", "definition": "Extrapolacao da previsao anterior de 776,4 h para 18 treinos FP32/FP16 e 9 conversoes PTQ, ajustada pelo mesmo fator; baixa confianca."}
+            ],
+            "filters": ["Snapshot: 2026-09-02 19:49 BRT", "Comando: --batch-sizes 32,64,128,256 --skip-activation", "Sem --skip-quantization"],
+            "caveats": ["Os seis datasets ainda nao medidos podem variar muito por resolucao e custo de input pipeline.", "A previsao do comando formal aceita que os tres running stale sejam ignorados; a previsao cientifica exige reroda-los.", "A fase de ativacoes do segundo Mac nao e observavel neste workspace."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Celula ativa", "detail": "KMNIST b64 estava na epoca 13/100, com media atual de 368,8 s por epoca; restam cerca de 8,9 h."},
+              {"kind": "result", "title": "Batch", "detail": "O caminho formal sem --resume tende a terminar a fase batch em cerca de 330-340 h a partir do snapshot; rerodar os tres stale acrescenta aproximadamente 31 h."},
+              {"kind": "result", "title": "Quantizacao", "detail": "Como ainda nao iniciou, a estimativa ajustada e cerca de 390-400 h, dominando o tempo total do Mac."}
+            ]
+          },
+          "columns": ["scope", "central_hours_remaining", "range", "central_finish", "confidence", "interpretation"],
+          "rows": [
+            {"scope": "KMNIST b64 ativo", "central_hours_remaining": 8.9, "range": "8-10 h", "central_finish": "03/09 ~04:45 BRT", "confidence": "media", "interpretation": "Treino continua normalmente."},
+            {"scope": "Fase batch; caminho formal atual", "central_hours_remaining": 337.1, "range": "310-380 h", "central_finish": "16/09 aproximadamente", "confidence": "media-baixa", "interpretation": "Tres running stale permanecem sem teste final."},
+            {"scope": "Fase batch; matriz cientificamente completa", "central_hours_remaining": 368.0, "range": "340-410 h", "central_finish": "17-19/09", "confidence": "baixa", "interpretation": "Inclui rerun de Fashion b32/b64 e MNIST b128."},
+            {"scope": "Comando deste Mac incluindo quantizacao; caminho formal", "central_hours_remaining": 732.0, "range": "680-820 h", "central_finish": "02-07/10", "confidence": "baixa", "interpretation": "Batch mais 18 treinos de quantizacao e 9 PTQ; ativacoes estao fora."},
+            {"scope": "Comando deste Mac incluindo quantizacao; matriz completa", "central_hours_remaining": 763.0, "range": "710-850 h", "central_finish": "03-09/10", "confidence": "baixa", "interpretation": "Inclui a correcao dos tres stale antes de selecionar os vencedores."},
+            {"scope": "Ativacoes no segundo Mac, se iniciadas agora", "central_hours_remaining": 142.0, "range": "120-170 h", "central_finish": "08-10/09", "confidence": "baixa", "interpretation": "27 testes; nao ha evidencia local de que essa frente tenha iniciado."}
+          ],
+          "preview": {"kind": "partial", "note": "As ETAs sao previsoes operacionais, nao garantias; o intervalo e deliberadamente amplo para datasets ainda nao medidos.", "totalRows": 6},
+          "capturedAt": "2026-09-02T19:49:53-03:00"
+        }
+      ]
+    }
+  ]
+}
