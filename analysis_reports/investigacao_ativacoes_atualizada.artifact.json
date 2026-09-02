@@ -1,0 +1,4026 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Investigação atualizada: por que o Softmax colapsa no teste de ativação",
+    "description": "Investigação atualizada e demonstrativa do colapso do Softmax em ativações internas.",
+    "generatedAt": "2026-09-01T00:17:44.392718+00:00",
+    "sources": [
+      {
+        "id": "run_artifacts",
+        "label": "Runs de ativação: lote anterior e lote novo",
+        "path": "analysis_reports/investigacao_ativacoes_atualizada_snapshot.sql",
+        "query": {
+          "language": "Python/JSON/CSV/NumPy",
+          "description": "Manifestos, históricos, test_metrics.json, predictions.csv e logits.npy das execuções completas; o snapshot SQL registra as linhas-chave usadas no relatório.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00",
+          "metric_definitions": [
+            "Acurácia, balanced accuracy e F1 macro são as métricas independentes salvas em classification.",
+            "Participação dominante é a fração atribuída à classe prevista mais frequente.",
+            "Variação dos logits é o desvio-padrão médio por componente entre linhas do teste.",
+            "Variação intermediária usa 256 exemplos do primeiro lote de teste e best.keras."
+          ]
+        }
+      },
+      {
+        "id": "analysis_script",
+        "label": "Script reprodutível da investigação atualizada",
+        "path": "analysis_reports/investigate_activation_matrix_updated.py",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Reenumera a matriz, recalcula concentração/variação e sonda camadas intermediárias.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "model_code",
+        "label": "Implementação da arquitetura e da loss",
+        "path": "src/tcc_benchmark/model.py",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Verificação de GroupNormalization, ativações ocultas repetidas, camada final linear e from_logits=True.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "data_code",
+        "label": "Implementação do protocolo de dados",
+        "path": "src/tcc_benchmark/data.py",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Verificação da semântica de extra_fraction e da construção determinística dos datasets.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "metrics_code",
+        "label": "Métricas do benchmark",
+        "path": "src/tcc_benchmark/metrics.py",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Implementação das métricas independentes de classificação.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "benchmark_docs",
+        "label": "Documentação do protocolo controlado",
+        "path": "docs/BENCHMARK_CONTROLADO.md",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Definições e controles do benchmark de ativações.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "technical_guide",
+        "label": "Guia técnico do projeto",
+        "path": "docs/GUIA_TECNICO.md",
+        "query": {
+          "language": "Python/Markdown",
+          "description": "Descrição técnica de hidden_activation, logits e treinamento.",
+          "executed_at": "2026-09-01T00:17:44.392718+00:00"
+        }
+      },
+      {
+        "id": "keras_softmax",
+        "label": "Keras — Softmax layer",
+        "href": "https://keras.io/api/layers/activation_layers/softmax/",
+        "query": {
+          "language": "documentation",
+          "description": "Definição do softmax, eixo de normalização e soma unitária."
+        }
+      },
+      {
+        "id": "keras_activations",
+        "label": "Keras — Layer activation functions",
+        "href": "https://keras.io/api/layers/activations/",
+        "query": {
+          "language": "documentation",
+          "description": "Uso das ativações e propriedades de ReLU, Sigmoid e Softmax."
+        }
+      },
+      {
+        "id": "keras_dense",
+        "label": "Keras — Dense layer",
+        "href": "https://keras.io/api/layers/core_layers/dense/",
+        "query": {
+          "language": "documentation",
+          "description": "Operação Dense e aplicação da activation."
+        }
+      },
+      {
+        "id": "tensorflow_loss",
+        "label": "TensorFlow — SparseCategoricalCrossentropy",
+        "href": "https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy",
+        "query": {
+          "language": "documentation",
+          "description": "Contrato de from_logits=True para saídas em logits."
+        }
+      },
+      {
+        "id": "keras_group_norm",
+        "label": "Keras — GroupNormalization",
+        "href": "https://keras.io/2/api/layers/normalization_layers/group_normalization/",
+        "query": {
+          "language": "documentation",
+          "description": "Normalização por grupos e eixo de canais/features."
+        }
+      },
+      {
+        "id": "mnist_source",
+        "label": "MNIST database — Yann LeCun",
+        "href": "https://yann.lecun.com/exdb/mnist/",
+        "query": {
+          "language": "documentation",
+          "description": "Referência da base MNIST."
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "layout": "full",
+        "body": "# Investigação atualizada: por que o Softmax colapsa no teste de ativação"
+      },
+      {
+        "id": "executive",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Resumo executivo\n\nOs novos treinos não corrigiram o problema do Softmax: nos dois casos completos do lote novo, MNIST e Fashion-MNIST, ele prevê uma única classe em 100% do teste. No MNIST novo, a acurácia é 11,25% e o F1 macro 2,02%; no Fashion-MNIST, 10,00% e 1,82%. No probe novo de MNIST, o desvio médio entre exemplos cai de 8,02e-03 no primeiro bloco para zero numérico em `dense1`/`dense2`. A causa melhor sustentada é arquitetural/dinâmica: Softmax foi usado como ativação oculta em 10 pontos convolucionais e 2 camadas densas. A camada final continua linear e a loss usa `from_logits=True`, portanto a evidência não aponta para dupla aplicação na saída.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "headline",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": [
+          "new_runs",
+          "mnist_softmax_accuracy",
+          "mnist_softmax_f1",
+          "collapsed_runs"
+        ]
+      },
+      {
+        "id": "performance_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "performance_chart"
+      },
+      {
+        "id": "performance_finding",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Desempenho no lote novo\n\nO Softmax é o único que falha de forma catastrófica nas duas bases com resultado completo. ReLU e Sigmoid preservam classificação em MNIST, Fashion-MNIST e, nas células disponíveis, KMNIST; Softmax fica no regime de uma classe.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "robustness_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "robustness_chart"
+      },
+      {
+        "id": "robustness_finding",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Robustez do padrão de colapso\n\nA concentração de 100% não depende de um único lote de augmentation: ela aparece no MNIST com `extra_fraction=2,0` e `0,5`, e no Fashion-MNIST com `0,5`. A classe escolhida muda entre bases, mas o mecanismo é o mesmo: a saída deixa de depender do exemplo.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "history_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "history_chart"
+      },
+      {
+        "id": "hidden_variation_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "hidden_variation_table"
+      },
+      {
+        "id": "diagnosis",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## O que está acontecendo\n\n1. `hidden_activation` é aplicado após cada GroupNormalization nos 5 blocos convolucionais e em `Dense(256, activation=...)` duas vezes.\n2. Com `softmax` e eixo padrão `-1`, cada posição espacial convolucional é normalizada entre canais; nas camadas densas, cada vetor de 256 unidades vira uma distribuição que soma aproximadamente 1.\n3. A aplicação repetida restringe escala e geometria da representação. Sem residual/atalho para preservar o sinal pré-Softmax, os blocos seguintes recebem vetores progressivamente menos dependentes da imagem.\n4. O vetor final de logits fica quase constante; a argmax escolhe sempre uma classe e a acurácia se aproxima da prevalência dela, enquanto balanced accuracy e F1 macro caem porque as demais classes têm recall zero.\n\nEsta é uma inferência causal apoiada conjuntamente pelo código, pela concentração das predições, pelas curvas de validação e pelo probe intermediário; não é uma prova de que nenhuma outra implementação poderia produzir o mesmo sintoma."
+      },
+      {
+        "id": "protocol",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## O que mudou nos novos treinos\n\nO lote novo mantém seed 42, split estratificado 70/15/15, batch 256, learning rate 0,0003, mixed_float16, arquitetura, normalização e avaliação sem augmentation. A mudança principal é `extra_fraction`: 2,0 no lote anterior versus 0,5 no novo, isto é, base + aproximadamente duas cópias aumentadas versus base + meia cópia no treino.\n\nA redução de dados aumentados cortou aproximadamente pela metade o tempo de treino, mas não alterou o colapso do Softmax. As diferenças de ReLU/Sigmoid entre lotes são observacionais; com uma única seed por célula, não são intervalos de confiança.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "paired_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "paired_table"
+      },
+      {
+        "id": "demonstration",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Demonstração e interpretação das métricas\n\n- **Concentração:** os 3 runs Softmax completos disponíveis têm participação da classe dominante igual a 100%.\n- **MNIST:** o Softmax novo fica em 11,25% de acurácia, próximo da prevalência da classe escolhida, mas com F1 macro de 2,02%.\n- **Logits:** a variação média por componente no MNIST novo é 9,00e-12; no lote anterior, 3,94e-08.\n- **Camadas:** no MNIST novo, a variação média do Softmax cai de 8,02e-3 no primeiro bloco para 2,18e-5 no bloco 3 e zero numérico nas densas; ReLU e Sigmoid mantêm variação não nula.\n\nPor isso, acurácia isolada é insuficiente: balanced accuracy e F1 macro revelam que nove classes não estão sendo reconhecidas.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "metrics_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "metrics_table"
+      },
+      {
+        "id": "status_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "status_table"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Limitações, qualidade e próximos testes\n\nA matriz esperada tem 18 células; 13 execuções estão completas e 5 estão ausentes/incompletas. O lote novo tem 8/9 células completas; KMNIST–Softmax possui apenas preflight e é inconclusivo. Todos os runs usam seed 42.\n\nO diagnóstico do Softmax é robusto ao que foi repetido: colapso em MNIST com dois valores de extra_fraction e em Fashion-MNIST no lote novo. As variações de ReLU/Sigmoid entre lotes não devem ser atribuídas exclusivamente a augmentation sem replicação por seed.\n\nRecomendação: retirar Softmax das ativações ocultas ou registrá-lo como ablação negativa. Se o objetivo for testar Softmax como saída, separar `hidden_activation` de `output_activation`, treinar com logits lineares e `from_logits=True` e aplicar Softmax somente na inferência. Um teste de 5–10 épocas pode confirmar o colapso antes de repetir 100 épocas.",
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "sources",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Fontes utilizadas\n\n**Evidência local:** manifests, históricos, métricas, previsões e logits dos diretórios `outputs/controlled-augmentation2-activations-mac2/` e `outputs/controlled-augmentation05-activations-mac2/`; `src/tcc_benchmark/model.py`, `src/tcc_benchmark/data.py`, `src/tcc_benchmark/metrics.py`, `docs/BENCHMARK_CONTROLADO.md` e `docs/GUIA_TECNICO.md`.\n\n**Referências técnicas:** [Keras Softmax layer](https://keras.io/api/layers/activation_layers/softmax/), [Keras activation functions](https://keras.io/api/layers/activations/), [Keras Dense layer](https://keras.io/api/layers/core_layers/dense/), [TensorFlow SparseCategoricalCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy), [Keras GroupNormalization](https://keras.io/2/api/layers/normalization_layers/group_normalization/) e [MNIST database](https://yann.lecun.com/exdb/mnist/)."
+      }
+    ],
+    "cards": [
+      {
+        "id": "new_runs",
+        "dataset": "headline",
+        "description": "Execuções completas do lote novo",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "Completas",
+            "field": "new_completed_runs",
+            "format": "number"
+          },
+          {
+            "label": "Esperadas",
+            "field": "new_expected_runs",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "mnist_softmax_accuracy",
+        "dataset": "headline",
+        "description": "Softmax no MNIST novo",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "Acurácia",
+            "field": "new_mnist_softmax_accuracy",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "mnist_softmax_f1",
+        "dataset": "headline",
+        "description": "Softmax no MNIST novo",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "F1 macro",
+            "field": "new_mnist_softmax_macro_f1",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "collapsed_runs",
+        "dataset": "headline",
+        "description": "Runs Softmax completos com uma única classe prevista",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "Colapsados",
+            "field": "softmax_completed_collapsed_runs",
+            "format": "number"
+          },
+          {
+            "label": "Softmax completos",
+            "field": "softmax_completed_runs",
+            "format": "number"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "performance_chart",
+        "dataset": "performance_chart",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Métricas de teste por ativação — lote novo",
+        "subtitle": "Softmax cai para o regime de uma única classe; ReLU/Sigmoid permanecem altos.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "dataset",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "test_macro_f1",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "activation",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "robustness_chart",
+        "dataset": "robustness_chart",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Concentração das predições nos Softmax completos",
+        "subtitle": "Todos os runs Softmax completos atribuem 100% das amostras à classe dominante.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "scenario",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "predicted_mode_share",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "dataset",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "history_chart",
+        "dataset": "history_chart",
+        "type": "line",
+        "intent": "trend",
+        "title": "F1 macro de validação por época — MNIST novo",
+        "subtitle": "ReLU e Sigmoid aprendem; Softmax permanece próximo de zero.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "epoch",
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "val_macro_f1",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "activation",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      }
+    ],
+    "tables": [
+      {
+        "id": "hidden_variation_table",
+        "dataset": "hidden_variation",
+        "title": "Variação entre exemplos nas camadas internas",
+        "subtitle": "Probe de 256 exemplos do primeiro lote de teste nos checkpoints do lote novo.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "dataset",
+            "label": "Dataset"
+          },
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "layer",
+            "label": "Camada"
+          },
+          {
+            "field": "sample_count",
+            "label": "Amostras",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "mean_feature_std_across_samples",
+            "label": "Desvio médio entre exemplos",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "mean_l2_distance_from_sample_mean",
+            "label": "Distância L2 média",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "max_abs_difference_from_first",
+            "label": "Máx. diferença vs. primeira",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "softmax_last_axis_sum_mean",
+            "label": "Soma eixo Softmax",
+            "type": "number",
+            "format": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "dataset",
+          "direction": "asc"
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "paired_table",
+        "dataset": "paired_table",
+        "title": "Efeito observado da redução de extra_fraction",
+        "subtitle": "Pares disponíveis; deltas = novo menos anterior.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "dataset",
+            "label": "Dataset"
+          },
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "old_f1",
+            "label": "F1 anterior",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "new_f1",
+            "label": "F1 novo",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "delta_f1",
+            "label": "Delta F1",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "old_accuracy",
+            "label": "Acc. anterior",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "new_accuracy",
+            "label": "Acc. nova",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "delta_training_hours",
+            "label": "Delta horas",
+            "type": "number",
+            "format": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "dataset",
+          "direction": "asc"
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "metrics_table",
+        "dataset": "metrics_table",
+        "title": "Tabela completa das execuções disponíveis",
+        "subtitle": "Uma linha por execução completa; valores de teste e sinais de concentração.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "lote",
+            "label": "Lote"
+          },
+          {
+            "field": "dataset",
+            "label": "Dataset"
+          },
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "test_accuracy",
+            "label": "Acurácia",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_balanced_accuracy",
+            "label": "Balanced acc.",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_macro_f1",
+            "label": "F1 macro",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_loss",
+            "label": "Loss",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "epochs",
+            "label": "Épocas",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "predicted_class_count",
+            "label": "Classes previstas",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "predicted_mode_share",
+            "label": "Dominante",
+            "type": "percent",
+            "format": "percent"
+          }
+        ],
+        "defaultSort": {
+          "field": "test_macro_f1",
+          "direction": "desc"
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "status_table",
+        "dataset": "status_table",
+        "title": "Matriz de completude",
+        "subtitle": "Células ausentes/incompletas não foram interpretadas como resultados.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "lote",
+            "label": "Lote"
+          },
+          {
+            "field": "dataset",
+            "label": "Dataset"
+          },
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "status",
+            "label": "Status"
+          },
+          {
+            "field": "run_id",
+            "label": "Run ID"
+          }
+        ],
+        "defaultSort": {
+          "field": "status",
+          "direction": "asc"
+        },
+        "sourceId": "run_artifacts"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-09-01T00:17:44.392718+00:00",
+    "datasets": {
+      "headline": [
+        {
+          "new_completed_runs": 8,
+          "new_expected_runs": 9,
+          "new_mnist_softmax_accuracy": 0.112497618594,
+          "new_mnist_softmax_macro_f1": 0.020224334275,
+          "softmax_completed_collapsed_runs": 3,
+          "softmax_completed_runs": 3
+        }
+      ],
+      "performance_chart": [
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.87819047619,
+          "test_macro_f1": 0.875009941372,
+          "test_loss": 0.327285259962,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.900476190476,
+          "test_macro_f1": 0.900415028206,
+          "test_loss": 0.277063459158,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "test_accuracy": 0.1,
+          "test_macro_f1": 0.018181818182,
+          "test_loss": 2.302587509155,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "KMNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.97019047619,
+          "test_macro_f1": 0.970159630162,
+          "test_loss": 0.138363972306,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "KMNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.971142857143,
+          "test_macro_f1": 0.971143229199,
+          "test_loss": 0.106368862092,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.983711183082,
+          "test_macro_f1": 0.983603280405,
+          "test_loss": 0.059442941099,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.984568489236,
+          "test_macro_f1": 0.984366446096,
+          "test_loss": 0.055624689907,
+          "root": "Lote novo — extra_fraction=0,5"
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "test_accuracy": 0.112497618594,
+          "test_macro_f1": 0.020224334275,
+          "test_loss": 2.301443815231,
+          "root": "Lote novo — extra_fraction=0,5"
+        }
+      ],
+      "robustness_chart": [
+        {
+          "scenario": "MNIST — extra_fraction=2_0",
+          "dataset": "MNIST",
+          "root": "Lote anterior — extra_fraction=2,0",
+          "test_accuracy": 0.112497618594,
+          "test_macro_f1": 0.020224334275,
+          "predicted_mode_share": 1.0,
+          "predicted_class": 1,
+          "logit_component_std": 3.9369e-08
+        },
+        {
+          "scenario": "Fashion-MNIST — extra_fraction=0_5",
+          "dataset": "Fashion-MNIST",
+          "root": "Lote novo — extra_fraction=0,5",
+          "test_accuracy": 0.1,
+          "test_macro_f1": 0.018181818182,
+          "predicted_mode_share": 1.0,
+          "predicted_class": 5,
+          "logit_component_std": 1.2e-11
+        },
+        {
+          "scenario": "MNIST — extra_fraction=0_5",
+          "dataset": "MNIST",
+          "root": "Lote novo — extra_fraction=0,5",
+          "test_accuracy": 0.112497618594,
+          "test_macro_f1": 0.020224334275,
+          "predicted_mode_share": 1.0,
+          "predicted_class": 1,
+          "logit_component_std": 9e-12
+        }
+      ],
+      "history_chart": [
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 1,
+          "val_macro_f1": 0.844771475542,
+          "val_accuracy": 0.880605518818
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 2,
+          "val_macro_f1": 0.923201951424,
+          "val_accuracy": 0.929543912411
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 3,
+          "val_macro_f1": 0.923661770366,
+          "val_accuracy": 0.944968104362
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 4,
+          "val_macro_f1": 0.946404520785,
+          "val_accuracy": 0.949443042278
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 5,
+          "val_macro_f1": 0.948838283859,
+          "val_accuracy": 0.949062168598
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 6,
+          "val_macro_f1": 0.959560712413,
+          "val_accuracy": 0.95763117075
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 7,
+          "val_macro_f1": 0.957986876051,
+          "val_accuracy": 0.958964109421
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 8,
+          "val_macro_f1": 0.9603041284,
+          "val_accuracy": 0.965724050999
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 9,
+          "val_macro_f1": 0.942303389152,
+          "val_accuracy": 0.947919666767
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 10,
+          "val_macro_f1": 0.903600579563,
+          "val_accuracy": 0.914786279202
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 11,
+          "val_macro_f1": 0.950983872383,
+          "val_accuracy": 0.957155108452
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 12,
+          "val_macro_f1": 0.939685239366,
+          "val_accuracy": 0.947729229927
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 13,
+          "val_macro_f1": 0.960931414683,
+          "val_accuracy": 0.961344361305
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 14,
+          "val_macro_f1": 0.965172530644,
+          "val_accuracy": 0.967057049274
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 15,
+          "val_macro_f1": 0.962462175422,
+          "val_accuracy": 0.963438987732
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 16,
+          "val_macro_f1": 0.962885791318,
+          "val_accuracy": 0.966390550137
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 17,
+          "val_macro_f1": 0.974338397401,
+          "val_accuracy": 0.976006865501
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 18,
+          "val_macro_f1": 0.973891817601,
+          "val_accuracy": 0.974007427692
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 19,
+          "val_macro_f1": 0.975723949027,
+          "val_accuracy": 0.977339804173
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 20,
+          "val_macro_f1": 0.975348558506,
+          "val_accuracy": 0.978291928768
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 21,
+          "val_macro_f1": 0.973917706378,
+          "val_accuracy": 0.976863741875
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 22,
+          "val_macro_f1": 0.9741806883,
+          "val_accuracy": 0.978958368301
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 23,
+          "val_macro_f1": 0.972122360368,
+          "val_accuracy": 0.972388863564
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 24,
+          "val_macro_f1": 0.98075391093,
+          "val_accuracy": 0.982481181622
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 25,
+          "val_macro_f1": 0.975627542723,
+          "val_accuracy": 0.977911055088
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 26,
+          "val_macro_f1": 0.980332126645,
+          "val_accuracy": 0.982957243919
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 27,
+          "val_macro_f1": 0.981057144226,
+          "val_accuracy": 0.982005119324
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 28,
+          "val_macro_f1": 0.981314963088,
+          "val_accuracy": 0.982481181622
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 29,
+          "val_macro_f1": 0.980007414637,
+          "val_accuracy": 0.979434430599
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 30,
+          "val_macro_f1": 0.982114381727,
+          "val_accuracy": 0.984575808048
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 31,
+          "val_macro_f1": 0.985104944672,
+          "val_accuracy": 0.985908806324
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 32,
+          "val_macro_f1": 0.981709610659,
+          "val_accuracy": 0.98133867979
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 33,
+          "val_macro_f1": 0.982399841537,
+          "val_accuracy": 0.983338117599
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 34,
+          "val_macro_f1": 0.984001236112,
+          "val_accuracy": 0.985718369484
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 35,
+          "val_macro_f1": 0.984726178759,
+          "val_accuracy": 0.984766244888
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 36,
+          "val_macro_f1": 0.983624408735,
+          "val_accuracy": 0.982671618462
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 37,
+          "val_macro_f1": 0.979383521039,
+          "val_accuracy": 0.977530241013
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 38,
+          "val_macro_f1": 0.97842632564,
+          "val_accuracy": 0.981433868408
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 39,
+          "val_macro_f1": 0.978124099934,
+          "val_accuracy": 0.982766807079
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 40,
+          "val_macro_f1": 0.983379301634,
+          "val_accuracy": 0.984575808048
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 41,
+          "val_macro_f1": 0.98254018393,
+          "val_accuracy": 0.984956681728
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 42,
+          "val_macro_f1": 0.979902273831,
+          "val_accuracy": 0.98648005724
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 43,
+          "val_macro_f1": 0.979719162876,
+          "val_accuracy": 0.981719493866
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 44,
+          "val_macro_f1": 0.986392820758,
+          "val_accuracy": 0.987622559071
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 45,
+          "val_macro_f1": 0.983156513089,
+          "val_accuracy": 0.982957243919
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 46,
+          "val_macro_f1": 0.984886479548,
+          "val_accuracy": 0.985623180866
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 47,
+          "val_macro_f1": 0.981821432692,
+          "val_accuracy": 0.984480619431
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 48,
+          "val_macro_f1": 0.9834937416,
+          "val_accuracy": 0.985718369484
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 49,
+          "val_macro_f1": 0.986058167778,
+          "val_accuracy": 0.986289620399
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 50,
+          "val_macro_f1": 0.983801964186,
+          "val_accuracy": 0.986194431782
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 51,
+          "val_macro_f1": 0.984121890358,
+          "val_accuracy": 0.985432744026
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 52,
+          "val_macro_f1": 0.985695202139,
+          "val_accuracy": 0.986765682697
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 53,
+          "val_macro_f1": 0.987145616053,
+          "val_accuracy": 0.985432744026
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 54,
+          "val_macro_f1": 0.983590469924,
+          "val_accuracy": 0.985242307186
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 55,
+          "val_macro_f1": 0.984081232793,
+          "val_accuracy": 0.983242869377
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 56,
+          "val_macro_f1": 0.984974277521,
+          "val_accuracy": 0.984194993973
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 57,
+          "val_macro_f1": 0.984813539985,
+          "val_accuracy": 0.986956119537
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 58,
+          "val_macro_f1": 0.983516046094,
+          "val_accuracy": 0.986860871315
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 59,
+          "val_macro_f1": 0.974605520037,
+          "val_accuracy": 0.978672742844
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 60,
+          "val_macro_f1": 0.98303311835,
+          "val_accuracy": 0.986575245857
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 61,
+          "val_macro_f1": 0.982700833299,
+          "val_accuracy": 0.987336933613
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 62,
+          "val_macro_f1": 0.98696651414,
+          "val_accuracy": 0.986765682697
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 63,
+          "val_macro_f1": 0.985729450325,
+          "val_accuracy": 0.987622559071
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 64,
+          "val_macro_f1": 0.980146295506,
+          "val_accuracy": 0.983528494835
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 65,
+          "val_macro_f1": 0.982473246149,
+          "val_accuracy": 0.986194431782
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 66,
+          "val_macro_f1": 0.986821745882,
+          "val_accuracy": 0.9901933074
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 67,
+          "val_macro_f1": 0.985311980532,
+          "val_accuracy": 0.985337495804
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 68,
+          "val_macro_f1": 0.984537019879,
+          "val_accuracy": 0.98667049408
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 69,
+          "val_macro_f1": 0.985663995264,
+          "val_accuracy": 0.987812995911
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 70,
+          "val_macro_f1": 0.984224041112,
+          "val_accuracy": 0.987432181835
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 71,
+          "val_macro_f1": 0.986331110804,
+          "val_accuracy": 0.986956119537
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 72,
+          "val_macro_f1": 0.987781046488,
+          "val_accuracy": 0.988003432751
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 73,
+          "val_macro_f1": 0.985947843287,
+          "val_accuracy": 0.987336933613
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 74,
+          "val_macro_f1": 0.984784895684,
+          "val_accuracy": 0.988003432751
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 75,
+          "val_macro_f1": 0.98412985553,
+          "val_accuracy": 0.985623180866
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 76,
+          "val_macro_f1": 0.984142030927,
+          "val_accuracy": 0.987527370453
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 77,
+          "val_macro_f1": 0.983794463849,
+          "val_accuracy": 0.986956119537
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 78,
+          "val_macro_f1": 0.982101906938,
+          "val_accuracy": 0.98648005724
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 79,
+          "val_macro_f1": 0.982343390729,
+          "val_accuracy": 0.981624305248
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 80,
+          "val_macro_f1": 0.986462300015,
+          "val_accuracy": 0.988193869591
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 81,
+          "val_macro_f1": 0.98897327389,
+          "val_accuracy": 0.987908244133
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 82,
+          "val_macro_f1": 0.986012713697,
+          "val_accuracy": 0.988384246826
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 83,
+          "val_macro_f1": 0.985167599426,
+          "val_accuracy": 0.985813558102
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 84,
+          "val_macro_f1": 0.986888085017,
+          "val_accuracy": 0.98962199688
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 85,
+          "val_macro_f1": 0.982370344951,
+          "val_accuracy": 0.987146556377
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 86,
+          "val_macro_f1": 0.983581263233,
+          "val_accuracy": 0.982385993004
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 87,
+          "val_macro_f1": 0.984452576903,
+          "val_accuracy": 0.987146556377
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 88,
+          "val_macro_f1": 0.984798003884,
+          "val_accuracy": 0.986003994942
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 89,
+          "val_macro_f1": 0.984566934751,
+          "val_accuracy": 0.985337495804
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 90,
+          "val_macro_f1": 0.986753655529,
+          "val_accuracy": 0.986860871315
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 91,
+          "val_macro_f1": 0.984709581862,
+          "val_accuracy": 0.984194993973
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 92,
+          "val_macro_f1": 0.984254958717,
+          "val_accuracy": 0.987051308155
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 93,
+          "val_macro_f1": 0.984163495703,
+          "val_accuracy": 0.986194431782
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 94,
+          "val_macro_f1": 0.983584511157,
+          "val_accuracy": 0.98095780611
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 95,
+          "val_macro_f1": 0.983686319192,
+          "val_accuracy": 0.984480619431
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 96,
+          "val_macro_f1": 0.981572112293,
+          "val_accuracy": 0.983909368515
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 97,
+          "val_macro_f1": 0.983532634672,
+          "val_accuracy": 0.987812995911
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 98,
+          "val_macro_f1": 0.988623780098,
+          "val_accuracy": 0.988860309124
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 99,
+          "val_macro_f1": 0.984989915392,
+          "val_accuracy": 0.988003432751
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "series": "MNIST — ReLU",
+          "epoch": 100,
+          "val_macro_f1": 0.979719233315,
+          "val_accuracy": 0.984385430813
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 1,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 2,
+          "val_macro_f1": 0.094035215147,
+          "val_accuracy": 0.218889847398
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 3,
+          "val_macro_f1": 0.201517115533,
+          "val_accuracy": 0.318575650454
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 4,
+          "val_macro_f1": 0.287312441465,
+          "val_accuracy": 0.387698739767
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 5,
+          "val_macro_f1": 0.565576944784,
+          "val_accuracy": 0.630200922489
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 6,
+          "val_macro_f1": 0.733639441287,
+          "val_accuracy": 0.762734472752
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 7,
+          "val_macro_f1": 0.781930738977,
+          "val_accuracy": 0.80243742466
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 8,
+          "val_macro_f1": 0.8230587418,
+          "val_accuracy": 0.836427688599
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 9,
+          "val_macro_f1": 0.87354645742,
+          "val_accuracy": 0.878130078316
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 10,
+          "val_macro_f1": 0.892861857354,
+          "val_accuracy": 0.896124899387
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 11,
+          "val_macro_f1": 0.929275120214,
+          "val_accuracy": 0.930400848389
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 12,
+          "val_macro_f1": 0.920975365485,
+          "val_accuracy": 0.922783970833
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 13,
+          "val_macro_f1": 0.930471221943,
+          "val_accuracy": 0.93154335022
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 14,
+          "val_macro_f1": 0.932948463873,
+          "val_accuracy": 0.933447599411
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 15,
+          "val_macro_f1": 0.942553982024,
+          "val_accuracy": 0.943254292011
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 16,
+          "val_macro_f1": 0.948854042053,
+          "val_accuracy": 0.949728667736
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 17,
+          "val_macro_f1": 0.957454612403,
+          "val_accuracy": 0.958107233047
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 18,
+          "val_macro_f1": 0.958706981483,
+          "val_accuracy": 0.959535360336
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 19,
+          "val_macro_f1": 0.959462066389,
+          "val_accuracy": 0.960106611252
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 20,
+          "val_macro_f1": 0.95951447332,
+          "val_accuracy": 0.960106611252
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 21,
+          "val_macro_f1": 0.962402435657,
+          "val_accuracy": 0.962962985039
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 22,
+          "val_macro_f1": 0.962832384807,
+          "val_accuracy": 0.963343799114
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 23,
+          "val_macro_f1": 0.956514399232,
+          "val_accuracy": 0.957059860229
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 24,
+          "val_macro_f1": 0.960699745932,
+          "val_accuracy": 0.961249172688
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 25,
+          "val_macro_f1": 0.963860078249,
+          "val_accuracy": 0.96429592371
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 26,
+          "val_macro_f1": 0.95942131115,
+          "val_accuracy": 0.959725797176
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 27,
+          "val_macro_f1": 0.968407003424,
+          "val_accuracy": 0.968961238861
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 28,
+          "val_macro_f1": 0.971063330375,
+          "val_accuracy": 0.971531927586
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 29,
+          "val_macro_f1": 0.969195851431,
+          "val_accuracy": 0.969627737999
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 30,
+          "val_macro_f1": 0.967921571597,
+          "val_accuracy": 0.968294799328
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 31,
+          "val_macro_f1": 0.96937894716,
+          "val_accuracy": 0.969913363457
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 32,
+          "val_macro_f1": 0.968868309931,
+          "val_accuracy": 0.969246864319
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 33,
+          "val_macro_f1": 0.971022899495,
+          "val_accuracy": 0.971627175808
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 34,
+          "val_macro_f1": 0.972129340321,
+          "val_accuracy": 0.972484052181
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 35,
+          "val_macro_f1": 0.970799460563,
+          "val_accuracy": 0.97115111351
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 36,
+          "val_macro_f1": 0.968268738637,
+          "val_accuracy": 0.968770802021
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 37,
+          "val_macro_f1": 0.966776719773,
+          "val_accuracy": 0.96724742651
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 38,
+          "val_macro_f1": 0.97400123418,
+          "val_accuracy": 0.974388241768
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 39,
+          "val_macro_f1": 0.972534731182,
+          "val_accuracy": 0.972960114479
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 40,
+          "val_macro_f1": 0.973322233382,
+          "val_accuracy": 0.973912239075
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 41,
+          "val_macro_f1": 0.969398378535,
+          "val_accuracy": 0.969722926617
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 42,
+          "val_macro_f1": 0.973342629889,
+          "val_accuracy": 0.973626554012
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 43,
+          "val_macro_f1": 0.974755951655,
+          "val_accuracy": 0.975149929523
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 44,
+          "val_macro_f1": 0.962607039179,
+          "val_accuracy": 0.963248610497
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 45,
+          "val_macro_f1": 0.97384760793,
+          "val_accuracy": 0.974197864532
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 46,
+          "val_macro_f1": 0.971930265111,
+          "val_accuracy": 0.972293615341
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 47,
+          "val_macro_f1": 0.975625269156,
+          "val_accuracy": 0.976102054119
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 48,
+          "val_macro_f1": 0.976230167094,
+          "val_accuracy": 0.976673305035
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 49,
+          "val_macro_f1": 0.974638786001,
+          "val_accuracy": 0.974959552288
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 50,
+          "val_macro_f1": 0.970480296077,
+          "val_accuracy": 0.971055865288
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 51,
+          "val_macro_f1": 0.976072596373,
+          "val_accuracy": 0.976482927799
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 52,
+          "val_macro_f1": 0.968989340111,
+          "val_accuracy": 0.969342112541
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 53,
+          "val_macro_f1": 0.979268066665,
+          "val_accuracy": 0.979624867439
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 54,
+          "val_macro_f1": 0.979393301832,
+          "val_accuracy": 0.979720056057
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 55,
+          "val_macro_f1": 0.97880691117,
+          "val_accuracy": 0.979053616524
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 56,
+          "val_macro_f1": 0.976311739303,
+          "val_accuracy": 0.976768553257
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 57,
+          "val_macro_f1": 0.977470938317,
+          "val_accuracy": 0.97781586647
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 58,
+          "val_macro_f1": 0.978662979462,
+          "val_accuracy": 0.978863179684
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 59,
+          "val_macro_f1": 0.978207743657,
+          "val_accuracy": 0.978577554226
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 60,
+          "val_macro_f1": 0.971187118052,
+          "val_accuracy": 0.971627175808
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 61,
+          "val_macro_f1": 0.97513340802,
+          "val_accuracy": 0.975816428661
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 62,
+          "val_macro_f1": 0.979454484279,
+          "val_accuracy": 0.979720056057
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 63,
+          "val_macro_f1": 0.977998641459,
+          "val_accuracy": 0.978291928768
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 64,
+          "val_macro_f1": 0.976882451442,
+          "val_accuracy": 0.977149367332
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 65,
+          "val_macro_f1": 0.979336905639,
+          "val_accuracy": 0.979624867439
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 66,
+          "val_macro_f1": 0.979561506109,
+          "val_accuracy": 0.979815304279
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 67,
+          "val_macro_f1": 0.976565475708,
+          "val_accuracy": 0.976863741875
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 68,
+          "val_macro_f1": 0.976482564163,
+          "val_accuracy": 0.976673305035
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 69,
+          "val_macro_f1": 0.977157120916,
+          "val_accuracy": 0.977530241013
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 70,
+          "val_macro_f1": 0.978846681135,
+          "val_accuracy": 0.979148805141
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 71,
+          "val_macro_f1": 0.975667549133,
+          "val_accuracy": 0.975911617279
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 72,
+          "val_macro_f1": 0.980790528665,
+          "val_accuracy": 0.981053054333
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 73,
+          "val_macro_f1": 0.977198415445,
+          "val_accuracy": 0.977530241013
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 74,
+          "val_macro_f1": 0.979290548094,
+          "val_accuracy": 0.979624867439
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 75,
+          "val_macro_f1": 0.982618370339,
+          "val_accuracy": 0.982862055302
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 76,
+          "val_macro_f1": 0.979028262183,
+          "val_accuracy": 0.979339241982
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 77,
+          "val_macro_f1": 0.978623158054,
+          "val_accuracy": 0.978958368301
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 78,
+          "val_macro_f1": 0.979748265997,
+          "val_accuracy": 0.980100929737
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 79,
+          "val_macro_f1": 0.977086115061,
+          "val_accuracy": 0.97762542963
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 80,
+          "val_macro_f1": 0.979940247301,
+          "val_accuracy": 0.980196118355
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 81,
+          "val_macro_f1": 0.977724267193,
+          "val_accuracy": 0.97800630331
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 82,
+          "val_macro_f1": 0.982620949447,
+          "val_accuracy": 0.982862055302
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 83,
+          "val_macro_f1": 0.981331043212,
+          "val_accuracy": 0.981624305248
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 84,
+          "val_macro_f1": 0.978636698239,
+          "val_accuracy": 0.978767991066
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 85,
+          "val_macro_f1": 0.981563927125,
+          "val_accuracy": 0.981814742088
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 86,
+          "val_macro_f1": 0.978731373973,
+          "val_accuracy": 0.978958368301
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 87,
+          "val_macro_f1": 0.981696957573,
+          "val_accuracy": 0.981909930706
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 88,
+          "val_macro_f1": 0.982578785445,
+          "val_accuracy": 0.982862055302
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 89,
+          "val_macro_f1": 0.981326947898,
+          "val_accuracy": 0.981624305248
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 90,
+          "val_macro_f1": 0.980644259925,
+          "val_accuracy": 0.980862617493
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 91,
+          "val_macro_f1": 0.981791327856,
+          "val_accuracy": 0.982005119324
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 92,
+          "val_macro_f1": 0.984060333859,
+          "val_accuracy": 0.98429018259
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 93,
+          "val_macro_f1": 0.983135941028,
+          "val_accuracy": 0.983338117599
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 94,
+          "val_macro_f1": 0.983060812649,
+          "val_accuracy": 0.983242869377
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 95,
+          "val_macro_f1": 0.978670267511,
+          "val_accuracy": 0.978958368301
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 96,
+          "val_macro_f1": 0.980799330204,
+          "val_accuracy": 0.981053054333
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 97,
+          "val_macro_f1": 0.979365287272,
+          "val_accuracy": 0.979624867439
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 98,
+          "val_macro_f1": 0.978921374899,
+          "val_accuracy": 0.979244053364
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 99,
+          "val_macro_f1": 0.985719286825,
+          "val_accuracy": 0.985908806324
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "series": "MNIST — Sigmoid",
+          "epoch": 100,
+          "val_macro_f1": 0.980512503895,
+          "val_accuracy": 0.980672180653
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 1,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 2,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 3,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 4,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 5,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 6,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 7,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 8,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 9,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 10,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 11,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 12,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 13,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 14,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 15,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 16,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 17,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 18,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 19,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 20,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 21,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 22,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 23,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 24,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 25,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 26,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 27,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 28,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 29,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 30,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 31,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 32,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 33,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 34,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 35,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 36,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 37,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 38,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 39,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 40,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 41,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 42,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 43,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 44,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 45,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 46,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 47,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 48,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 49,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 50,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 51,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 52,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 53,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 54,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 55,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 56,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 57,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 58,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 59,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 60,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 61,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 62,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 63,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 64,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 65,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 66,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 67,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 68,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 69,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 70,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 71,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 72,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 73,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 74,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 75,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 76,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 77,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 78,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 79,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 80,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 81,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 82,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 83,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 84,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 85,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 86,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 87,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 88,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 89,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 90,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 91,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 92,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 93,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 94,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 95,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 96,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 97,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 98,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 99,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "series": "MNIST — Softmax",
+          "epoch": 100,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481
+        }
+      ],
+      "hidden_variation": [
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.283498525061,
+          "mean_l2_distance_from_sample_mean": 84.877371599245,
+          "max_abs_difference_from_first": 9.7421875,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.330984341757,
+          "mean_l2_distance_from_sample_mean": 25.913326086295,
+          "max_abs_difference_from_first": 4.6171875,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.523180621526,
+          "mean_l2_distance_from_sample_mean": 13.564753435838,
+          "max_abs_difference_from_first": 4.3125,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.417046483968,
+          "mean_l2_distance_from_sample_mean": 39.158635121558,
+          "max_abs_difference_from_first": 15.0,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 7.379676024357,
+          "mean_l2_distance_from_sample_mean": 118.311758379554,
+          "max_abs_difference_from_first": 60.375,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 4.280458397962,
+          "mean_l2_distance_from_sample_mean": 12.588457437685,
+          "max_abs_difference_from_first": 16.387612104416,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.093151603373,
+          "mean_l2_distance_from_sample_mean": 22.637908607739,
+          "max_abs_difference_from_first": 0.767456054688,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.12814283155,
+          "mean_l2_distance_from_sample_mean": 8.714988562401,
+          "max_abs_difference_from_first": 0.922378540039,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.257724247395,
+          "mean_l2_distance_from_sample_mean": 6.085144083107,
+          "max_abs_difference_from_first": 0.98738861084,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.328998208196,
+          "mean_l2_distance_from_sample_mean": 5.343545701262,
+          "max_abs_difference_from_first": 0.993663787842,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.334382282343,
+          "mean_l2_distance_from_sample_mean": 5.37473108892,
+          "max_abs_difference_from_first": 0.99854683876,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 4.492804628414,
+          "mean_l2_distance_from_sample_mean": 14.25561942433,
+          "max_abs_difference_from_first": 20.448679924011,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.008017284798,
+          "mean_l2_distance_from_sample_mean": 2.046918861801,
+          "max_abs_difference_from_first": 0.15495300293,
+          "softmax_last_axis_sum_mean": 0.999999747622,
+          "softmax_last_axis_entropy_mean_nats": 3.328544258002
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.178303e-05,
+          "mean_l2_distance_from_sample_mean": 0.001469631673,
+          "max_abs_difference_from_first": 0.000274658203,
+          "softmax_last_axis_sum_mean": 1.000000183471,
+          "softmax_last_axis_entropy_mean_nats": 4.148937933161
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 9.77e-09,
+          "mean_l2_distance_from_sample_mean": 2.18605e-06,
+          "max_abs_difference_from_first": 7.629395e-06,
+          "softmax_last_axis_sum_mean": 1.000010129064,
+          "softmax_last_axis_entropy_mean_nats": 4.851730333795
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": 1.000001907349,
+          "softmax_last_axis_entropy_mean_nats": 5.545148767817
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": 1.000005722046,
+          "softmax_last_axis_entropy_mean_nats": 5.545064320738
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.335422864534,
+          "mean_l2_distance_from_sample_mean": 81.466657473947,
+          "max_abs_difference_from_first": 7.45556640625,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.282335561241,
+          "mean_l2_distance_from_sample_mean": 22.408887197142,
+          "max_abs_difference_from_first": 4.316772460938,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.461282871945,
+          "mean_l2_distance_from_sample_mean": 11.973670209637,
+          "max_abs_difference_from_first": 4.625,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 1.076206705447,
+          "mean_l2_distance_from_sample_mean": 18.432467914116,
+          "max_abs_difference_from_first": 7.08203125,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 1.406229576836,
+          "mean_l2_distance_from_sample_mean": 23.98335971868,
+          "max_abs_difference_from_first": 14.15625,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 3.489782368685,
+          "mean_l2_distance_from_sample_mean": 11.202962630532,
+          "max_abs_difference_from_first": 15.596078634262,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.142240638784,
+          "mean_l2_distance_from_sample_mean": 28.28942707506,
+          "max_abs_difference_from_first": 0.998107910156,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.130408884638,
+          "mean_l2_distance_from_sample_mean": 8.866714221841,
+          "max_abs_difference_from_first": 0.934661865234,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.259282702901,
+          "mean_l2_distance_from_sample_mean": 6.180424809687,
+          "max_abs_difference_from_first": 0.993005752563,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.336738710494,
+          "mean_l2_distance_from_sample_mean": 5.477847527995,
+          "max_abs_difference_from_first": 0.994152069092,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.338899761488,
+          "mean_l2_distance_from_sample_mean": 5.502472233569,
+          "max_abs_difference_from_first": 0.999411761761,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 5.60229673143,
+          "mean_l2_distance_from_sample_mean": 17.882128810869,
+          "max_abs_difference_from_first": 23.027626037598,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.011305759338,
+          "mean_l2_distance_from_sample_mean": 2.467196443379,
+          "max_abs_difference_from_first": 0.19482421875,
+          "softmax_last_axis_sum_mean": 1.000001670139,
+          "softmax_last_axis_entropy_mean_nats": 3.230771260608
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.4215736e-05,
+          "mean_l2_distance_from_sample_mean": 0.001636749717,
+          "max_abs_difference_from_first": 0.000259399414,
+          "softmax_last_axis_sum_mean": 0.999999878462,
+          "softmax_last_axis_entropy_mean_nats": 4.148965501743
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 1.2314e-08,
+          "mean_l2_distance_from_sample_mean": 3.314792e-06,
+          "max_abs_difference_from_first": 3.814697e-06,
+          "softmax_last_axis_sum_mean": 1.000004466623,
+          "softmax_last_axis_entropy_mean_nats": 4.851708520709
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": 1.000007629395,
+          "softmax_last_axis_entropy_mean_nats": 5.545177077184
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": 0.999979019165,
+          "softmax_last_axis_entropy_mean_nats": 5.545065128551
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.0,
+          "mean_l2_distance_from_sample_mean": 0.0,
+          "max_abs_difference_from_first": 0.0,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        }
+      ],
+      "paired_table": [
+        {
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "old_f1": 0.987190471562,
+          "new_f1": 0.983603280405,
+          "delta_f1": -0.003587191157,
+          "old_accuracy": 0.987426176415,
+          "new_accuracy": 0.983711183082,
+          "delta_accuracy": -0.003714993333,
+          "old_training_hours": 6.287638300799,
+          "new_training_hours": 3.199442705832,
+          "delta_training_hours": -3.088195594967
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "old_f1": 0.989162898279,
+          "new_f1": 0.984366446096,
+          "delta_f1": -0.004796452183,
+          "old_accuracy": 0.989236044961,
+          "new_accuracy": 0.984568489236,
+          "delta_accuracy": -0.004667555725,
+          "old_training_hours": 8.19269564949,
+          "new_training_hours": 4.232837351007,
+          "delta_training_hours": -3.959858298483
+        },
+        {
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "old_f1": 0.020224334275,
+          "new_f1": 0.020224334275,
+          "delta_f1": 0.0,
+          "old_accuracy": 0.112497618594,
+          "new_accuracy": 0.112497618594,
+          "delta_accuracy": 0.0,
+          "old_training_hours": 6.420723226516,
+          "new_training_hours": 3.270891015731,
+          "delta_training_hours": -3.149832210785
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "old_f1": 0.870729984236,
+          "new_f1": 0.875009941372,
+          "delta_f1": 0.004279957136,
+          "old_accuracy": 0.876,
+          "new_accuracy": 0.87819047619,
+          "delta_accuracy": 0.00219047619,
+          "old_training_hours": 5.719692840716,
+          "new_training_hours": 3.274023909363,
+          "delta_training_hours": -2.445668931353
+        },
+        {
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "old_f1": 0.91791175673,
+          "new_f1": 0.900415028206,
+          "delta_f1": -0.017496728524,
+          "old_accuracy": 0.918095238095,
+          "new_accuracy": 0.900476190476,
+          "delta_accuracy": -0.017619047619,
+          "old_training_hours": 8.284538620729,
+          "new_training_hours": 4.176079825638,
+          "delta_training_hours": -4.108458795091
+        }
+      ],
+      "metrics_table": [
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.876,
+          "test_balanced_accuracy": 0.876,
+          "test_macro_f1": 0.870729984236,
+          "test_loss": 0.31127589941,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.127047619048,
+          "logit_component_std": 4.980807801716
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.918095238095,
+          "test_balanced_accuracy": 0.918095238095,
+          "test_macro_f1": 0.91791175673,
+          "test_loss": 0.223579868674,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.10580952381,
+          "logit_component_std": 6.370195172721
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.987426176415,
+          "test_balanced_accuracy": 0.987168599752,
+          "test_macro_f1": 0.987190471562,
+          "test_loss": 0.052007563412,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.112497618594,
+          "logit_component_std": 6.56775238438
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.989236044961,
+          "test_balanced_accuracy": 0.989138068751,
+          "test_macro_f1": 0.989162898279,
+          "test_loss": 0.03717764467,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.112592874833,
+          "logit_component_std": 5.220622597309
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "test_accuracy": 0.112497618594,
+          "test_balanced_accuracy": 0.1,
+          "test_macro_f1": 0.020224334275,
+          "test_loss": 2.301202058792,
+          "epochs": 100,
+          "predicted_class_count": 1,
+          "predicted_mode_share": 1.0,
+          "logit_component_std": 3.9369e-08
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.87819047619,
+          "test_balanced_accuracy": 0.87819047619,
+          "test_macro_f1": 0.875009941372,
+          "test_loss": 0.327285259962,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.132095238095,
+          "logit_component_std": 3.487454152381
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.900476190476,
+          "test_balanced_accuracy": 0.900476190476,
+          "test_macro_f1": 0.900415028206,
+          "test_loss": 0.277063459158,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.115238095238,
+          "logit_component_std": 5.476228433189
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "test_accuracy": 0.1,
+          "test_balanced_accuracy": 0.1,
+          "test_macro_f1": 0.018181818182,
+          "test_loss": 2.302587509155,
+          "epochs": 100,
+          "predicted_class_count": 1,
+          "predicted_mode_share": 1.0,
+          "logit_component_std": 1.2e-11
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "KMNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.97019047619,
+          "test_balanced_accuracy": 0.97019047619,
+          "test_macro_f1": 0.970159630162,
+          "test_loss": 0.138363972306,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.10419047619,
+          "logit_component_std": 16.264376311866
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "KMNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.971142857143,
+          "test_balanced_accuracy": 0.971142857143,
+          "test_macro_f1": 0.971143229199,
+          "test_loss": 0.106368862092,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.102476190476,
+          "logit_component_std": 3.758276488012
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "test_accuracy": 0.983711183082,
+          "test_balanced_accuracy": 0.983492121631,
+          "test_macro_f1": 0.983603280405,
+          "test_loss": 0.059442941099,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.11440274338,
+          "logit_component_std": 4.467336233782
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "test_accuracy": 0.984568489236,
+          "test_balanced_accuracy": 0.984298213401,
+          "test_macro_f1": 0.984366446096,
+          "test_loss": 0.055624689907,
+          "epochs": 100,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.112783387312,
+          "logit_component_std": 4.515069414822
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "test_accuracy": 0.112497618594,
+          "test_balanced_accuracy": 0.1,
+          "test_macro_f1": 0.020224334275,
+          "test_loss": 2.301443815231,
+          "epochs": 100,
+          "predicted_class_count": 1,
+          "predicted_mode_share": 1.0,
+          "logit_component_std": 9e-12
+        }
+      ],
+      "status_table": [
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "status": "Completo",
+          "run_id": "fashion_mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "status": "Completo",
+          "run_id": "fashion_mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "status": "Ausente/incompleto",
+          "run_id": "—"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "KMNIST",
+          "activation": "ReLU",
+          "status": "Ausente/incompleto",
+          "run_id": "—"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "KMNIST",
+          "activation": "Sigmoid",
+          "status": "Ausente/incompleto",
+          "run_id": "—"
+        },
+        {
+          "lote": "Lote anterior — extra_fraction=2,0",
+          "dataset": "KMNIST",
+          "activation": "Softmax",
+          "status": "Ausente/incompleto",
+          "run_id": "—"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "ReLU",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "Sigmoid",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "MNIST",
+          "activation": "Softmax",
+          "status": "Completo",
+          "run_id": "mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "ReLU",
+          "status": "Completo",
+          "run_id": "fashion_mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "Sigmoid",
+          "status": "Completo",
+          "run_id": "fashion_mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "Fashion-MNIST",
+          "activation": "Softmax",
+          "status": "Completo",
+          "run_id": "fashion_mnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "KMNIST",
+          "activation": "ReLU",
+          "status": "Completo",
+          "run_id": "kmnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "KMNIST",
+          "activation": "Sigmoid",
+          "status": "Completo",
+          "run_id": "kmnist__unit_interval__all_raw__seed-42"
+        },
+        {
+          "lote": "Lote novo — extra_fraction=0,5",
+          "dataset": "KMNIST",
+          "activation": "Softmax",
+          "status": "Ausente/incompleto",
+          "run_id": "—"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "run_artifacts",
+      "label": "Runs de ativação: lote anterior e lote novo",
+      "path": "analysis_reports/investigacao_ativacoes_atualizada_snapshot.sql",
+      "query": {
+        "language": "Python/JSON/CSV/NumPy",
+        "description": "Manifestos, históricos, test_metrics.json, predictions.csv e logits.npy das execuções completas; o snapshot SQL registra as linhas-chave usadas no relatório.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00",
+        "metric_definitions": [
+          "Acurácia, balanced accuracy e F1 macro são as métricas independentes salvas em classification.",
+          "Participação dominante é a fração atribuída à classe prevista mais frequente.",
+          "Variação dos logits é o desvio-padrão médio por componente entre linhas do teste.",
+          "Variação intermediária usa 256 exemplos do primeiro lote de teste e best.keras."
+        ]
+      }
+    },
+    {
+      "id": "analysis_script",
+      "label": "Script reprodutível da investigação atualizada",
+      "path": "analysis_reports/investigate_activation_matrix_updated.py",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Reenumera a matriz, recalcula concentração/variação e sonda camadas intermediárias.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "model_code",
+      "label": "Implementação da arquitetura e da loss",
+      "path": "src/tcc_benchmark/model.py",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Verificação de GroupNormalization, ativações ocultas repetidas, camada final linear e from_logits=True.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "data_code",
+      "label": "Implementação do protocolo de dados",
+      "path": "src/tcc_benchmark/data.py",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Verificação da semântica de extra_fraction e da construção determinística dos datasets.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "metrics_code",
+      "label": "Métricas do benchmark",
+      "path": "src/tcc_benchmark/metrics.py",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Implementação das métricas independentes de classificação.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "benchmark_docs",
+      "label": "Documentação do protocolo controlado",
+      "path": "docs/BENCHMARK_CONTROLADO.md",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Definições e controles do benchmark de ativações.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "technical_guide",
+      "label": "Guia técnico do projeto",
+      "path": "docs/GUIA_TECNICO.md",
+      "query": {
+        "language": "Python/Markdown",
+        "description": "Descrição técnica de hidden_activation, logits e treinamento.",
+        "executed_at": "2026-09-01T00:17:44.392718+00:00"
+      }
+    },
+    {
+      "id": "keras_softmax",
+      "label": "Keras — Softmax layer",
+      "href": "https://keras.io/api/layers/activation_layers/softmax/",
+      "query": {
+        "language": "documentation",
+        "description": "Definição do softmax, eixo de normalização e soma unitária."
+      }
+    },
+    {
+      "id": "keras_activations",
+      "label": "Keras — Layer activation functions",
+      "href": "https://keras.io/api/layers/activations/",
+      "query": {
+        "language": "documentation",
+        "description": "Uso das ativações e propriedades de ReLU, Sigmoid e Softmax."
+      }
+    },
+    {
+      "id": "keras_dense",
+      "label": "Keras — Dense layer",
+      "href": "https://keras.io/api/layers/core_layers/dense/",
+      "query": {
+        "language": "documentation",
+        "description": "Operação Dense e aplicação da activation."
+      }
+    },
+    {
+      "id": "tensorflow_loss",
+      "label": "TensorFlow — SparseCategoricalCrossentropy",
+      "href": "https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy",
+      "query": {
+        "language": "documentation",
+        "description": "Contrato de from_logits=True para saídas em logits."
+      }
+    },
+    {
+      "id": "keras_group_norm",
+      "label": "Keras — GroupNormalization",
+      "href": "https://keras.io/2/api/layers/normalization_layers/group_normalization/",
+      "query": {
+        "language": "documentation",
+        "description": "Normalização por grupos e eixo de canais/features."
+      }
+    },
+    {
+      "id": "mnist_source",
+      "label": "MNIST database — Yann LeCun",
+      "href": "https://yann.lecun.com/exdb/mnist/",
+      "query": {
+        "language": "documentation",
+        "description": "Referência da base MNIST."
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "dataset": "fashion_mnist",
+  "generated_at": "2026-09-01T16:16:27.892+00:00",
+  "run_count": 1,
+  "runs": [
+    {
+      "attempt": 1,
+      "balance_mode": "all_raw",
+      "balance_no_op": true,
+      "config_fingerprint": "838f88b420cab92ae5ca51092770f4e2b2f1513b59714de01a72004c02dd50e0",
+      "gpu_backend": "apple-metal-ioreg",
+      "gpu_memory_kind": "shared_unified_driver",
+      "mean_epoch_seconds": 117.14336134247046,
+      "normalization": "unit_interval",
+      "output_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "peak_cpu_percent": 32.8,
+      "peak_gpu_driver_allocated_memory_bytes": 3402334208.0,
+      "peak_gpu_memory_used_bytes": 1368014848.0,
+      "peak_gpu_renderer_utilization_percent": 100.0,
+      "peak_gpu_system_memory_in_use_bytes": 1368014848.0,
+      "peak_gpu_tiler_utilization_percent": 100.0,
+      "peak_gpu_utilization_percent": 100.0,
+      "peak_process_rss_bytes": 4259069952.0,
+      "peak_ram_used_bytes": 7333478400.0,
+      "raw_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "report_path": "runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/report.html",
+      "run_id": "fashion_mnist__unit_interval__all_raw__seed-42",
+      "seed": 42,
+      "split_fingerprint": "7d52ffaa0b79c6f8e5e510c6c95e9243e81e25c358269a10fe142381e9f5befb",
+      "status": "completed",
+      "telemetry_samples": 2479,
+      "test_accuracy": 0.1,
+      "test_balanced_accuracy": 0.1,
+      "test_loss": 2.3025875091552734,
+      "test_macro_f1": 0.01818181818181818,
+      "test_samples": 10500,
+      "thermal_pressure": "nominal",
+      "training_total_seconds": 11714.336134247045
+    }
+  ],
+  "schema_version": 1,
+  "status_counts": {
+    "completed": 1
+  }
+}

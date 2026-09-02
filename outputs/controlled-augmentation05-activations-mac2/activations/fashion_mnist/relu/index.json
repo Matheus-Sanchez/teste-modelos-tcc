@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    {
+      "dataset": "fashion_mnist",
+      "report_path": "fashion_mnist/report.html",
+      "run_count": 1,
+      "status_counts": {
+        "completed": 1
+      }
+    }
+  ],
+  "generated_at": "2026-09-01T16:16:22.216+00:00",
+  "schema_version": 1
+}

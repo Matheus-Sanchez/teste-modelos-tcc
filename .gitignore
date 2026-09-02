@@ -10,7 +10,9 @@ data/
 datasets/
 datasets.local.yaml
 *.egg-info/
+node_modules/
 *.keras
 *.h5
 *.log
 .DS_Store
+node_modules

@@ -1,0 +1,67 @@
+{
+  "dataset": "mnist",
+  "generated_at": "2026-09-01T16:16:19.288+00:00",
+  "run_count": 1,
+  "runs": [
+    {
+      "attempt": 1,
+      "balance_mode": "all_raw",
+      "balance_no_op": true,
+      "config_fingerprint": "9a11f4616b0e6a750b963f0a0f5eb70e73be24825a0509c79bf011bbad380e5d",
+      "gpu_backend": "apple-metal-ioreg",
+      "gpu_memory_kind": "shared_unified_driver",
+      "mean_epoch_seconds": 117.75207656631072,
+      "normalization": "unit_interval",
+      "output_train_class_counts": {
+        "0": 4832,
+        "1": 5514,
+        "2": 4893,
+        "3": 4999,
+        "4": 4777,
+        "5": 4419,
+        "6": 4813,
+        "7": 5105,
+        "8": 4777,
+        "9": 4870
+      },
+      "peak_cpu_percent": 47.2,
+      "peak_gpu_driver_allocated_memory_bytes": 3321053184.0,
+      "peak_gpu_memory_used_bytes": 1320796160.0,
+      "peak_gpu_renderer_utilization_percent": 100.0,
+      "peak_gpu_system_memory_in_use_bytes": 1320796160.0,
+      "peak_gpu_tiler_utilization_percent": 100.0,
+      "peak_gpu_utilization_percent": 100.0,
+      "peak_process_rss_bytes": 4648058880.0,
+      "peak_ram_used_bytes": 7532445696.0,
+      "raw_train_class_counts": {
+        "0": 4832,
+        "1": 5514,
+        "2": 4893,
+        "3": 4999,
+        "4": 4777,
+        "5": 4419,
+        "6": 4813,
+        "7": 5105,
+        "8": 4777,
+        "9": 4870
+      },
+      "report_path": "runs/mnist__unit_interval__all_raw__seed-42/artifacts/report.html",
+      "run_id": "mnist__unit_interval__all_raw__seed-42",
+      "seed": 42,
+      "split_fingerprint": "e318c7442df3e0a1d1f67bd6fa1eac1602b6440bf135240aca0008293af1e6c8",
+      "status": "completed",
+      "telemetry_samples": 2489,
+      "test_accuracy": 0.11249761859401791,
+      "test_balanced_accuracy": 0.1,
+      "test_loss": 2.3014438152313232,
+      "test_macro_f1": 0.020224334275194798,
+      "test_samples": 10498,
+      "thermal_pressure": "nominal",
+      "training_total_seconds": 11775.207656631072
+    }
+  ],
+  "schema_version": 1,
+  "status_counts": {
+    "completed": 1
+  }
+}

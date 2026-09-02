@@ -1,0 +1,127 @@
+{
+  "class_names": [
+    "airplane",
+    "automobile",
+    "bird",
+    "cat",
+    "deer",
+    "dog",
+    "frog",
+    "horse",
+    "ship",
+    "truck"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "airplane",
+      "f1": 0.667394866193337,
+      "label": 0,
+      "precision": 0.6562835660580022,
+      "recall": 0.6788888888888889,
+      "support": 900
+    },
+    {
+      "class_index": 1,
+      "class_name": "automobile",
+      "f1": 0.7334826427771556,
+      "label": 1,
+      "precision": 0.7392776523702032,
+      "recall": 0.7277777777777777,
+      "support": 900
+    },
+    {
+      "class_index": 2,
+      "class_name": "bird",
+      "f1": 0.45217391304347826,
+      "label": 2,
+      "precision": 0.5680672268907563,
+      "recall": 0.37555555555555553,
+      "support": 900
+    },
+    {
+      "class_index": 3,
+      "class_name": "cat",
+      "f1": 0.24615384615384614,
+      "label": 3,
+      "precision": 0.36129032258064514,
+      "recall": 0.18666666666666668,
+      "support": 900
+    },
+    {
+      "class_index": 4,
+      "class_name": "deer",
+      "f1": 0.4639912039582188,
+      "label": 4,
+      "precision": 0.4591947769314472,
+      "recall": 0.4688888888888889,
+      "support": 900
+    },
+    {
+      "class_index": 5,
+      "class_name": "dog",
+      "f1": 0.4962486602357985,
+      "label": 5,
+      "precision": 0.47929606625258797,
+      "recall": 0.5144444444444445,
+      "support": 900
+    },
+    {
+      "class_index": 6,
+      "class_name": "frog",
+      "f1": 0.6651026392961877,
+      "label": 6,
+      "precision": 0.7043478260869566,
+      "recall": 0.63,
+      "support": 900
+    },
+    {
+      "class_index": 7,
+      "class_name": "horse",
+      "f1": 0.6864766525166768,
+      "label": 7,
+      "precision": 0.7556742323097463,
+      "recall": 0.6288888888888889,
+      "support": 900
+    },
+    {
+      "class_index": 8,
+      "class_name": "ship",
+      "f1": 0.7532467532467533,
+      "label": 8,
+      "precision": 0.8035264483627204,
+      "recall": 0.7088888888888889,
+      "support": 900
+    },
+    {
+      "class_index": 9,
+      "class_name": "truck",
+      "f1": 0.48028673835125446,
+      "label": 9,
+      "precision": 0.3544973544973545,
+      "recall": 0.7444444444444445,
+      "support": 900
+    }
+  ],
+  "test": {
+    "accuracy": 0.5664444444444444,
+    "balanced_accuracy": 0.5664444444444444,
+    "generated_at": "2026-09-02T15:36:10.129+00:00",
+    "loss": 1.160674810409546,
+    "macro_f1": 0.5644557915772705,
+    "n_samples": 9000,
+    "run_id": "cifar10__unit_interval__all_raw__seed-42"
+  }
+}

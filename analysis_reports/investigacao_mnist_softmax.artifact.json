@@ -1,0 +1,3067 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Por que o softmax colapsou no teste de ativação do MNIST",
+    "description": "Investigação técnica e demonstrativa do colapso observado quando softmax é usado em todas as ativações internas do CNN no MNIST.",
+    "generatedAt": "2026-08-28T17:27:37.460085+00:00",
+    "sources": [
+      {
+        "id": "run_artifacts",
+        "label": "Artefatos dos três runs de ativação MNIST",
+        "path": "analysis_reports/investigacao_mnist_softmax_snapshot.sql",
+        "query": {
+          "language": "Python/JSON/CSV/NumPy",
+          "description": "Leitura dos manifestos, históricos por época, test_metrics.json, predictions.csv e logits.npy dos runs ReLU, Sigmoid e Softmax.",
+          "executed_at": "2026-08-28T17:27:37.460085+00:00",
+          "metric_definitions": [
+            "Acurácia, balanced accuracy e F1 macro são as métricas de classificação recomputadas a partir dos rótulos previstos.",
+            "O conjunto de teste tem 10.498 amostras no split estratificado 70/15/15, seed 42.",
+            "Variação dos logits = desvio-padrão médio por componente entre as 10.498 linhas de logits.",
+            "Variação intermediária = estatísticas entre 256 amostras do primeiro lote do teste, usando os checkpoints best.keras."
+          ]
+        }
+      },
+      {
+        "id": "model_code",
+        "label": "Implementação da arquitetura e da loss",
+        "path": "src/tcc_benchmark/model.py",
+        "query": {
+          "language": "Python",
+          "description": "Inspeção de build_legacy_cnn e compile_legacy_cnn para verificar onde a ativação é aplicada e como os logits são treinados.",
+          "executed_at": "2026-08-28T17:27:37.460085+00:00"
+        }
+      },
+      {
+        "id": "analysis_script",
+        "label": "Script reprodutível da investigação",
+        "path": "analysis_reports/investigate_mnist_softmax.py",
+        "query": {
+          "language": "Python",
+          "description": "Reproduz a comparação, as contagens de previsão, a variação dos logits e as estatísticas das ativações intermediárias.",
+          "executed_at": "2026-08-28T17:27:37.460085+00:00"
+        }
+      },
+      {
+        "id": "keras_softmax",
+        "label": "Keras — Softmax layer",
+        "href": "https://keras.io/api/layers/activation_layers/softmax/",
+        "query": {
+          "language": "documentation",
+          "description": "Definição da operação softmax, do eixo de normalização e da forma do resultado."
+        }
+      },
+      {
+        "id": "keras_activations",
+        "label": "Keras — Layer activation functions",
+        "href": "https://keras.io/api/layers/activations/",
+        "query": {
+          "language": "documentation",
+          "description": "Uso de ativações como argumento de camadas e propriedades das ativações sigmoid e softmax."
+        }
+      },
+      {
+        "id": "keras_dense",
+        "label": "Keras — Dense layer",
+        "href": "https://keras.io/api/layers/core_layers/dense/",
+        "query": {
+          "language": "documentation",
+          "description": "Operação Dense: activation(dot(input, kernel) + bias)."
+        }
+      },
+      {
+        "id": "tensorflow_loss",
+        "label": "TensorFlow — SparseCategoricalCrossentropy",
+        "href": "https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy",
+        "query": {
+          "language": "documentation",
+          "description": "Contrato de from_logits=True para entradas que são logits."
+        }
+      },
+      {
+        "id": "keras_group_norm",
+        "label": "Keras — GroupNormalization",
+        "href": "https://keras.io/2/api/layers/normalization_layers/group_normalization/",
+        "query": {
+          "language": "documentation",
+          "description": "Normalização por grupos de canais e uso do eixo de features."
+        }
+      },
+      {
+        "id": "mnist_source",
+        "label": "MNIST database — Yann LeCun",
+        "href": "https://yann.lecun.com/exdb/mnist/",
+        "query": {
+          "language": "dataset documentation",
+          "description": "Fonte de referência do MNIST; o experimento local juntou os splits oficiais e refez o split estratificado conforme o protocolo do repositório."
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "layout": "full",
+        "body": "# Por que o softmax colapsou no teste de ativação do MNIST"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Resumo técnico\n\nO resultado muito inferior do softmax não é explicado por um erro de loss, por diferença no conjunto de teste ou por falha de hardware. O código aplica softmax como ativação interna em todos os 5 blocos convolucionais e nas 2 camadas densas; no run MNIST, essa escolha fez a representação perder dependência da imagem. Ao final, as 10.498 amostras receberam o mesmo vetor de logits, com diferença absoluta máxima de 2.27e-07 entre qualquer linha e a primeira.\n\nNo teste, o softmax obteve acurácia de 11,25%, balanced accuracy de 10,00% e F1 macro de 2,02%. ReLU e Sigmoid ficaram em 98,72% e 98,92% de F1 macro. A evidência aponta para colapso arquitetural/dinâmico causado pelo uso do softmax em camadas ocultas; a loss final permaneceu corretamente configurada para receber logits."
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": [
+          "softmax_accuracy",
+          "softmax_f1",
+          "prediction_concentration"
+        ]
+      },
+      {
+        "id": "performance_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "performance_chart"
+      },
+      {
+        "id": "performance_finding",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "run_artifacts",
+        "body": "## A queda é incompatível com uma simples variação aleatória entre ativações\n\nO softmax perdeu 87.67 pontos percentuais de acurácia e 96.89 pontos percentuais de F1 macro em relação ao Sigmoid, que foi a melhor das outras duas variantes. A balanced accuracy de 10,00% e o F1 macro de 2,02% são compatíveis com uma regra que praticamente não distingue classes. Como o conjunto tem 10 classes, a referência de acaso uniforme é 10%; o softmax ficou em 11,25% porque escolheu a classe 1, que representa 11,25% do teste."
+      },
+      {
+        "id": "history_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "history_chart"
+      },
+      {
+        "id": "history_finding",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "run_artifacts",
+        "body": "## O treinamento do softmax não sai do regime de chance\n\nA curva de validação mostra a diferença de dinâmica: ReLU e Sigmoid crescem ao longo das 100 épocas, enquanto o Softmax começa em F1 macro de 2,02%, atinge o máximo na época 1 e permanece em 2,02%. A loss de validação fica próxima de 2,301 e a acurácia de treino termina em 11,25%; portanto, não há sinal de que o modelo tenha aprendido e apenas generalizado mal."
+      },
+      {
+        "id": "prediction_distribution_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "prediction_distribution_chart"
+      },
+      {
+        "id": "prediction_finding",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "run_artifacts",
+        "body": "## A matriz de confusão confirma o colapso em uma única classe\n\nA distribuição real contém as dez classes, mas `predictions.csv` registra 1 classe prevista: o dígito 1 em 100% das 10.498 amostras. A matriz de confusão tem uma única coluna preenchida; a classe 1 tem recall 100%, as outras nove têm recall 0%. Isso explica o F1 macro de 2,02% e separa o problema de um conjunto de classes desbalanceado: o desbalanceamento existe, mas é pequeno e a validação usa o mesmo split estratificado."
+      },
+      {
+        "id": "metrics_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "metrics_table"
+      },
+      {
+        "id": "scope_and_definitions",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "run_artifacts",
+        "body": "## O protocolo foi controlado; a ativação foi a variável principal\n\nOs três runs usam seed 42, o mesmo fingerprint de split `e318c7442df3e0a1d1f67bd6fa1eac1602b6440bf135240aca0008293af1e6c8`, as mesmas frações 70/15/15, batch 256, taxa de aprendizado 0.0003, política `mixed_float16`, normalização `unit_interval` e balanceamento `all_raw`. A avaliação não aplica augmentação. Cada run treinou 100 épocas e o checkpoint usado foi o `best.keras`, selecionado pelo F1 macro de validação.\n\nA comparação principal usa métricas derivadas dos rótulos e logits salvos: acurácia é a fração de rótulos corretos; balanced accuracy é a média dos recalls das dez classes; F1 macro é a média não ponderada dos dez F1 por classe."
+      },
+      {
+        "id": "hidden_variation_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "hidden_variation_table"
+      },
+      {
+        "id": "architecture_diagnosis",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## A causa está no lugar em que o softmax foi aplicado\n\nNo `build_legacy_cnn`, `hidden_activation` é reutilizado em 10 ativações após GroupNormalization nos blocos convolucionais e em `Dense(256, activation=hidden_activation)` duas vezes. Com `softmax` e eixo padrão `-1`, cada posição espacial vira uma distribuição entre canais e cada vetor denso vira uma distribuição entre 256 unidades: valores não negativos, soma aproximadamente 1 e perda da escala comum do vetor.\n\nEssa restrição não é equivalente a usar softmax na saída de um classificador. Ela é aplicada repetidamente antes de convoluções, pooling e dropout, sem conexões residuais para preservar a informação. O probe do primeiro lote mostra a variação média entre amostras caindo de aproximadamente 8,02e-3 em `block1_activation1` para 5,62e-9 em `block5_activation2` e 2,43e-9 nas camadas densas; os logits finais ficam praticamente constantes."
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Como o diagnóstico foi demonstrado\n\n1. Comparei os manifestos para confirmar que os três runs têm o mesmo dataset, split, seed, batch, normalização, balanceamento, dtype, resolução e número de épocas.\n2. Recalculei a distribuição de previsões a partir de `predictions.csv`, a variação das linhas em `logits.npy` e as métricas de classificação presentes em `test_metrics.json`.\n3. Carreguei os checkpoints `best.keras` e medi a variação entre 256 exemplos do mesmo primeiro lote de teste em camadas intermediárias.\n4. Tracei a arquitetura no código para distinguir softmax oculto de softmax de saída e conferi o contrato `from_logits=True` da loss.\n\nA fórmula usada na interpretação é a própria definição do softmax: `softmax(z_i) = exp(z_i) / Σ_j exp(z_j)`, ao longo do eixo escolhido. A inferência adicional — que a aplicação repetida, combinada com GroupNorm e ausência de atalhos, colapsou a informação dependente da imagem — é sustentada conjuntamente pelas curvas, pelos logits e pelo probe de ativações; não é uma prova formal de unicidade da causa."
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "run_artifacts",
+        "body": "## Limitações e verificações de robustez\n\nA matriz de ativações disponível contém um run por variante, todos com seed 42; portanto, a magnitude exata do desempenho não deve ser tratada como intervalo estatístico entre seeds. O padrão de colapso, porém, é muito forte: validação e teste exibem a mesma classe dominante, 100 épocas permanecem planas e os logits são quase invariantes entre imagens.\n\nHá uma pequena inconsistência operacional nos artefatos legados: no run ReLU, o campo `keras_metrics.accuracy` registra 98,83%, enquanto a acurácia independente derivada dos logits/predictions é 98,74%; Sigmoid e Softmax coincidem essencialmente. A comparação deste relatório usa as métricas independentes salvas em `classification`, e a discrepância do wrapper de métrica Keras deve ser revalidada antes da publicação final do TCC."
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Próximos passos recomendados\n\n- Retirar `softmax` do conjunto de ativações internas do benchmark ou mantê-lo explicitamente como um resultado negativo esperado, sem misturá-lo com uma comparação de ativações ocultas convencionais.\n- Se a pergunta for testar softmax na saída, separar `hidden_activation` de `output_activation`: manter a última camada linear com `SparseCategoricalCrossentropy(from_logits=True)` para treino e aplicar softmax apenas na decodificação/inferência, ou usar a combinação probabilística equivalente com `from_logits=False`.\n- Repetir ReLU e Sigmoid com pelo menos 3 seeds se a conclusão precisar de incerteza estatística; para Softmax, uma ablação curta de poucas épocas já deve reproduzir o colapso e economizar horas.\n- Corrigir ou documentar a diferença entre a métrica Keras e a métrica independente antes de consolidar a tabela final."
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Questões em aberto\n\n- O colapso desaparece se o softmax for usado somente em uma camada, com temperatura ajustável ou com uma conexão residual?\n- Qual das normalizações internas — GroupNorm, eixo de softmax ou repetição em profundidade — produz a maior perda de variação quando alterada isoladamente?\n- A discrepância de 9 exemplos no campo `keras_metrics.accuracy` do ReLU vem do wrapper de métricas do Keras 3, da avaliação em GPU Metal ou de algum detalhe de cardinalidade do dataset?"
+      },
+      {
+        "id": "sources_used",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Fontes utilizadas\n\n**Artefatos e código do experimento:** `outputs/controlled-augmentation2-activations-mac2/activations/mnist/`, `outputs/controlled-augmentation2-activations-mac2/generated-suites/activations/`, `src/tcc_benchmark/model.py`, `src/tcc_benchmark/metrics.py` e `analysis_reports/investigate_mnist_softmax.py`.\n\n**Referências técnicas:** [Keras Softmax layer](https://keras.io/api/layers/activation_layers/softmax/), [Keras activation functions](https://keras.io/api/layers/activations/), [Keras Dense layer](https://keras.io/api/layers/core_layers/dense/), [TensorFlow SparseCategoricalCrossentropy](https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy), [Keras GroupNormalization](https://keras.io/2/api/layers/normalization_layers/group_normalization/) e [documentação do MNIST](https://yann.lecun.com/exdb/mnist/)."
+      }
+    ],
+    "cards": [
+      {
+        "id": "softmax_accuracy",
+        "dataset": "headline",
+        "description": "Acurácia de teste do run Softmax.",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "Acurácia Softmax",
+            "field": "softmax_test_accuracy",
+            "format": "percent"
+          },
+          {
+            "label": "Amostras",
+            "field": "softmax_test_samples",
+            "format": "number"
+          }
+        ]
+      },
+      {
+        "id": "softmax_f1",
+        "dataset": "headline",
+        "description": "F1 macro do run Softmax em comparação com a melhor outra ativação.",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "F1 macro Softmax",
+            "field": "softmax_test_macro_f1",
+            "format": "percent"
+          },
+          {
+            "label": "Melhor outra ativação",
+            "field": "best_other_test_macro_f1",
+            "format": "percent"
+          }
+        ]
+      },
+      {
+        "id": "prediction_concentration",
+        "dataset": "headline",
+        "description": "Concentração das previsões do Softmax.",
+        "sourceId": "run_artifacts",
+        "metrics": [
+          {
+            "label": "Classe dominante",
+            "field": "softmax_predicted_class_count",
+            "format": "number"
+          },
+          {
+            "label": "Participação da dominante",
+            "field": "softmax_predicted_mode_share",
+            "format": "percent"
+          }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "performance_chart",
+        "dataset": "performance_chart",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Métricas de teste por ativação",
+        "subtitle": "ReLU e Sigmoid ficam próximas de 99%; Softmax cai para 11,25% de acurácia e 2,02% de F1 macro.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "activation",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "value",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "metric",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "history_chart",
+        "dataset": "history_chart",
+        "type": "line",
+        "intent": "trend",
+        "title": "F1 macro de validação por época",
+        "subtitle": "ReLU e Sigmoid aprendem ao longo das épocas; Softmax permanece em aproximadamente 2,02%.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "epoch",
+            "type": "quantitative"
+          },
+          "y": {
+            "field": "val_macro_f1",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "activation",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "prediction_distribution_chart",
+        "dataset": "prediction_distribution_chart",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Rótulos reais e predições do Softmax",
+        "subtitle": "O teste contém as dez classes; todas as 10.498 predições foram atribuídas à classe 1.",
+        "showDescription": true,
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "count",
+            "type": "quantitative"
+          },
+          "color": {
+            "field": "kind",
+            "type": "nominal"
+          }
+        },
+        "sourceId": "run_artifacts"
+      }
+    ],
+    "tables": [
+      {
+        "id": "metrics_table",
+        "dataset": "metrics_table",
+        "title": "Tabela comparativa dos runs",
+        "subtitle": "Métricas de teste e sinais de colapso; uma linha por ativação, seed 42.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "test_accuracy",
+            "label": "Acurácia teste",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_balanced_accuracy",
+            "label": "Balanced accuracy",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_macro_f1",
+            "label": "F1 macro teste",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "test_loss",
+            "label": "Loss teste",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "best_val_macro_f1",
+            "label": "Melhor F1 validação",
+            "type": "percent",
+            "format": "percent"
+          },
+          {
+            "field": "best_val_epoch",
+            "label": "Época melhor",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "predicted_class_count",
+            "label": "Classes previstas",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "predicted_mode_share",
+            "label": "Participação dominante",
+            "type": "percent",
+            "format": "percent"
+          }
+        ],
+        "defaultSort": {
+          "field": "test_macro_f1",
+          "direction": "desc"
+        },
+        "sourceId": "run_artifacts"
+      },
+      {
+        "id": "hidden_variation_table",
+        "dataset": "hidden_variation",
+        "title": "Variação entre exemplos nas ativações",
+        "subtitle": "Estatísticas do primeiro lote de teste (256 amostras); valores menores indicam representação mais invariável entre imagens.",
+        "showDescription": true,
+        "columns": [
+          {
+            "field": "activation",
+            "label": "Ativação"
+          },
+          {
+            "field": "layer",
+            "label": "Camada"
+          },
+          {
+            "field": "sample_count",
+            "label": "Amostras",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "mean_feature_std_across_samples",
+            "label": "Desvio médio entre amostras",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "mean_l2_distance_from_sample_mean",
+            "label": "Distância L2 média",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "max_abs_difference_from_first",
+            "label": "Máx. diferença vs. 1ª",
+            "type": "number",
+            "format": "number"
+          },
+          {
+            "field": "softmax_last_axis_sum_mean",
+            "label": "Soma do eixo softmax",
+            "type": "number",
+            "format": "number"
+          }
+        ],
+        "defaultSort": {
+          "field": "activation",
+          "direction": "asc"
+        },
+        "sourceId": "run_artifacts"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "generatedAt": "2026-08-28T17:27:37.460085+00:00",
+    "datasets": {
+      "headline": [
+        {
+          "softmax_test_accuracy": 0.112497618594,
+          "softmax_test_macro_f1": 0.020224334275,
+          "best_other_test_macro_f1": 0.989162898279,
+          "softmax_predicted_mode_share": 1.0,
+          "softmax_predicted_class_count": 1,
+          "softmax_logit_row_l2_from_mean": 9.2301e-08,
+          "softmax_test_samples": 10498
+        }
+      ],
+      "performance_chart": [
+        {
+          "activation": "ReLU",
+          "metric": "Acurácia",
+          "value": 0.987426176415,
+          "test_loss": 0.052007563412
+        },
+        {
+          "activation": "ReLU",
+          "metric": "Balanced accuracy",
+          "value": 0.987168599752,
+          "test_loss": 0.052007563412
+        },
+        {
+          "activation": "ReLU",
+          "metric": "F1 macro",
+          "value": 0.987190471562,
+          "test_loss": 0.052007563412
+        },
+        {
+          "activation": "Sigmoid",
+          "metric": "Acurácia",
+          "value": 0.989236044961,
+          "test_loss": 0.03717764467
+        },
+        {
+          "activation": "Sigmoid",
+          "metric": "Balanced accuracy",
+          "value": 0.989138068751,
+          "test_loss": 0.03717764467
+        },
+        {
+          "activation": "Sigmoid",
+          "metric": "F1 macro",
+          "value": 0.989162898279,
+          "test_loss": 0.03717764467
+        },
+        {
+          "activation": "Softmax",
+          "metric": "Acurácia",
+          "value": 0.112497618594,
+          "test_loss": 2.301202058792
+        },
+        {
+          "activation": "Softmax",
+          "metric": "Balanced accuracy",
+          "value": 0.1,
+          "test_loss": 2.301202058792
+        },
+        {
+          "activation": "Softmax",
+          "metric": "F1 macro",
+          "value": 0.020224334275,
+          "test_loss": 2.301202058792
+        }
+      ],
+      "history_chart": [
+        {
+          "activation": "ReLU",
+          "epoch": 1,
+          "val_macro_f1": 0.898057040412,
+          "val_accuracy": 0.915643155575,
+          "val_loss": 0.333912283182
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 2,
+          "val_macro_f1": 0.943155048754,
+          "val_accuracy": 0.951061606407,
+          "val_loss": 0.183467000723
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 3,
+          "val_macro_f1": 0.956161422969,
+          "val_accuracy": 0.960106611252,
+          "val_loss": 0.148949965835
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 4,
+          "val_macro_f1": 0.960775849065,
+          "val_accuracy": 0.956202983856,
+          "val_loss": 0.15046158433
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 5,
+          "val_macro_f1": 0.961778833734,
+          "val_accuracy": 0.965724050999,
+          "val_loss": 0.113010600209
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 6,
+          "val_macro_f1": 0.966743503195,
+          "val_accuracy": 0.969818174839,
+          "val_loss": 0.106335327029
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 7,
+          "val_macro_f1": 0.973099806791,
+          "val_accuracy": 0.974769115448,
+          "val_loss": 0.083051808178
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 8,
+          "val_macro_f1": 0.97239533971,
+          "val_accuracy": 0.974197864532,
+          "val_loss": 0.081152997911
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 9,
+          "val_macro_f1": 0.970767656512,
+          "val_accuracy": 0.975340366364,
+          "val_loss": 0.078935429454
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 10,
+          "val_macro_f1": 0.978880737563,
+          "val_accuracy": 0.978482365608,
+          "val_loss": 0.068266883492
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 11,
+          "val_macro_f1": 0.97725797206,
+          "val_accuracy": 0.977911055088,
+          "val_loss": 0.071308091283
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 12,
+          "val_macro_f1": 0.97480082921,
+          "val_accuracy": 0.980672180653,
+          "val_loss": 0.062881886959
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 13,
+          "val_macro_f1": 0.981961290183,
+          "val_accuracy": 0.982766807079,
+          "val_loss": 0.053036656231
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 14,
+          "val_macro_f1": 0.978722933288,
+          "val_accuracy": 0.978196680546,
+          "val_loss": 0.068340271711
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 15,
+          "val_macro_f1": 0.982938737898,
+          "val_accuracy": 0.984385430813,
+          "val_loss": 0.048898562789
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 16,
+          "val_macro_f1": 0.973977109374,
+          "val_accuracy": 0.978672742844,
+          "val_loss": 0.068395487964
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 17,
+          "val_macro_f1": 0.982295568587,
+          "val_accuracy": 0.982576429844,
+          "val_loss": 0.054311804473
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 18,
+          "val_macro_f1": 0.983923610899,
+          "val_accuracy": 0.985147118568,
+          "val_loss": 0.050500907004
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 19,
+          "val_macro_f1": 0.983262768917,
+          "val_accuracy": 0.987717807293,
+          "val_loss": 0.042708188295
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 20,
+          "val_macro_f1": 0.98205247821,
+          "val_accuracy": 0.986956119537,
+          "val_loss": 0.040484521538
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 21,
+          "val_macro_f1": 0.981099095195,
+          "val_accuracy": 0.983909368515,
+          "val_loss": 0.055047161877
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 22,
+          "val_macro_f1": 0.982619813127,
+          "val_accuracy": 0.985337495804,
+          "val_loss": 0.052164696157
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 23,
+          "val_macro_f1": 0.985963064918,
+          "val_accuracy": 0.984671056271,
+          "val_loss": 0.057062704116
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 24,
+          "val_macro_f1": 0.985119873735,
+          "val_accuracy": 0.985908806324,
+          "val_loss": 0.041353110224
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 25,
+          "val_macro_f1": 0.987629214828,
+          "val_accuracy": 0.988669931889,
+          "val_loss": 0.038685977459
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 26,
+          "val_macro_f1": 0.983466062231,
+          "val_accuracy": 0.983052432537,
+          "val_loss": 0.062368374318
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 27,
+          "val_macro_f1": 0.986192841892,
+          "val_accuracy": 0.986384868622,
+          "val_loss": 0.043960105628
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 28,
+          "val_macro_f1": 0.985085180351,
+          "val_accuracy": 0.985337495804,
+          "val_loss": 0.047790750861
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 29,
+          "val_macro_f1": 0.98792036222,
+          "val_accuracy": 0.986956119537,
+          "val_loss": 0.042908512056
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 30,
+          "val_macro_f1": 0.988884575701,
+          "val_accuracy": 0.988003432751,
+          "val_loss": 0.039682984352
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 31,
+          "val_macro_f1": 0.980159337878,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.041001409292
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 32,
+          "val_macro_f1": 0.987203453853,
+          "val_accuracy": 0.987527370453,
+          "val_loss": 0.045597337186
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 33,
+          "val_macro_f1": 0.98513786455,
+          "val_accuracy": 0.987908244133,
+          "val_loss": 0.041587930173
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 34,
+          "val_macro_f1": 0.985055762944,
+          "val_accuracy": 0.984766244888,
+          "val_loss": 0.055671028793
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 35,
+          "val_macro_f1": 0.98622109191,
+          "val_accuracy": 0.989526808262,
+          "val_loss": 0.033448379487
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 36,
+          "val_macro_f1": 0.988460630053,
+          "val_accuracy": 0.989145934582,
+          "val_loss": 0.03613692522
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 37,
+          "val_macro_f1": 0.9873098787,
+          "val_accuracy": 0.988669931889,
+          "val_loss": 0.040232602507
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 38,
+          "val_macro_f1": 0.983689190292,
+          "val_accuracy": 0.986099183559,
+          "val_loss": 0.045124009252
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 39,
+          "val_macro_f1": 0.98658294181,
+          "val_accuracy": 0.989431619644,
+          "val_loss": 0.041381075978
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 40,
+          "val_macro_f1": 0.986350119976,
+          "val_accuracy": 0.983814120293,
+          "val_loss": 0.066865637898
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 41,
+          "val_macro_f1": 0.986941638957,
+          "val_accuracy": 0.986765682697,
+          "val_loss": 0.0529977642
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 42,
+          "val_macro_f1": 0.986295672305,
+          "val_accuracy": 0.986860871315,
+          "val_loss": 0.052231546491
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 43,
+          "val_macro_f1": 0.984796359839,
+          "val_accuracy": 0.985718369484,
+          "val_loss": 0.051186900586
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 44,
+          "val_macro_f1": 0.986738065073,
+          "val_accuracy": 0.989241182804,
+          "val_loss": 0.038439556956
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 45,
+          "val_macro_f1": 0.98372212791,
+          "val_accuracy": 0.988479495049,
+          "val_loss": 0.040005467832
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 46,
+          "val_macro_f1": 0.986891209013,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.044097755104
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 47,
+          "val_macro_f1": 0.989058871853,
+          "val_accuracy": 0.99000287056,
+          "val_loss": 0.037773728371
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 48,
+          "val_macro_f1": 0.984333125824,
+          "val_accuracy": 0.988193869591,
+          "val_loss": 0.049173567444
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 49,
+          "val_macro_f1": 0.985052283399,
+          "val_accuracy": 0.987241744995,
+          "val_loss": 0.049150705338
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 50,
+          "val_macro_f1": 0.988363470812,
+          "val_accuracy": 0.986384868622,
+          "val_loss": 0.050124660134
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 51,
+          "val_macro_f1": 0.987619295498,
+          "val_accuracy": 0.988384246826,
+          "val_loss": 0.046407397836
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 52,
+          "val_macro_f1": 0.987757778389,
+          "val_accuracy": 0.988860309124,
+          "val_loss": 0.045320376754
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 53,
+          "val_macro_f1": 0.98695021112,
+          "val_accuracy": 0.987908244133,
+          "val_loss": 0.046173661947
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 54,
+          "val_macro_f1": 0.988039896133,
+          "val_accuracy": 0.988669931889,
+          "val_loss": 0.042157117277
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 55,
+          "val_macro_f1": 0.98536158764,
+          "val_accuracy": 0.985908806324,
+          "val_loss": 0.058058869094
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 56,
+          "val_macro_f1": 0.986303559399,
+          "val_accuracy": 0.988955557346,
+          "val_loss": 0.04353300482
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 57,
+          "val_macro_f1": 0.987167378455,
+          "val_accuracy": 0.989717245102,
+          "val_loss": 0.045032538474
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 58,
+          "val_macro_f1": 0.984806706342,
+          "val_accuracy": 0.987432181835,
+          "val_loss": 0.050781551749
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 59,
+          "val_macro_f1": 0.984223611323,
+          "val_accuracy": 0.987717807293,
+          "val_loss": 0.054169174284
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 60,
+          "val_macro_f1": 0.986194441581,
+          "val_accuracy": 0.989050745964,
+          "val_loss": 0.049596235156
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 61,
+          "val_macro_f1": 0.987414750441,
+          "val_accuracy": 0.987432181835,
+          "val_loss": 0.0534327887
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 62,
+          "val_macro_f1": 0.987085103799,
+          "val_accuracy": 0.988574683666,
+          "val_loss": 0.044219773263
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 63,
+          "val_macro_f1": 0.988792853456,
+          "val_accuracy": 0.990383684635,
+          "val_loss": 0.040173344314
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 64,
+          "val_macro_f1": 0.989107443206,
+          "val_accuracy": 0.987622559071,
+          "val_loss": 0.059391606599
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 65,
+          "val_macro_f1": 0.987035408477,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.057746812701
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 66,
+          "val_macro_f1": 0.987679459891,
+          "val_accuracy": 0.989336371422,
+          "val_loss": 0.050658091903
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 67,
+          "val_macro_f1": 0.988429554016,
+          "val_accuracy": 0.98962199688,
+          "val_loss": 0.045344766229
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 68,
+          "val_macro_f1": 0.986723191303,
+          "val_accuracy": 0.984575808048,
+          "val_loss": 0.069986477494
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 69,
+          "val_macro_f1": 0.989731155573,
+          "val_accuracy": 0.988384246826,
+          "val_loss": 0.041670784354
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 70,
+          "val_macro_f1": 0.987181484596,
+          "val_accuracy": 0.987717807293,
+          "val_loss": 0.061036497355
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 71,
+          "val_macro_f1": 0.988786962916,
+          "val_accuracy": 0.989241182804,
+          "val_loss": 0.0458224006
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 72,
+          "val_macro_f1": 0.99044649248,
+          "val_accuracy": 0.991145372391,
+          "val_loss": 0.037808675319
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 73,
+          "val_macro_f1": 0.989112386656,
+          "val_accuracy": 0.989907622337,
+          "val_loss": 0.047085985541
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 74,
+          "val_macro_f1": 0.983867568031,
+          "val_accuracy": 0.988574683666,
+          "val_loss": 0.054153263569
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 75,
+          "val_macro_f1": 0.98871397238,
+          "val_accuracy": 0.990574121475,
+          "val_loss": 0.043855920434
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 76,
+          "val_macro_f1": 0.987841607731,
+          "val_accuracy": 0.989145934582,
+          "val_loss": 0.052974179387
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 77,
+          "val_macro_f1": 0.9804120115,
+          "val_accuracy": 0.988098621368,
+          "val_loss": 0.05598513782
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 78,
+          "val_macro_f1": 0.986536135517,
+          "val_accuracy": 0.987622559071,
+          "val_loss": 0.054028775543
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 79,
+          "val_macro_f1": 0.982871346854,
+          "val_accuracy": 0.983623743057,
+          "val_loss": 0.089490145445
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 80,
+          "val_macro_f1": 0.9868805774,
+          "val_accuracy": 0.988574683666,
+          "val_loss": 0.058743149042
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 81,
+          "val_macro_f1": 0.9795508566,
+          "val_accuracy": 0.988955557346,
+          "val_loss": 0.05777560547
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 82,
+          "val_macro_f1": 0.981397770116,
+          "val_accuracy": 0.990764558315,
+          "val_loss": 0.052178550512
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 83,
+          "val_macro_f1": 0.990070913741,
+          "val_accuracy": 0.991526246071,
+          "val_loss": 0.040248136967
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 84,
+          "val_macro_f1": 0.985683883063,
+          "val_accuracy": 0.990478932858,
+          "val_loss": 0.045407950878
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 85,
+          "val_macro_f1": 0.984711881136,
+          "val_accuracy": 0.992383122444,
+          "val_loss": 0.044520635158
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 86,
+          "val_macro_f1": 0.988851065711,
+          "val_accuracy": 0.989907622337,
+          "val_loss": 0.054767981172
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 87,
+          "val_macro_f1": 0.988812974353,
+          "val_accuracy": 0.990098059177,
+          "val_loss": 0.055968035012
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 88,
+          "val_macro_f1": 0.985499756796,
+          "val_accuracy": 0.990574121475,
+          "val_loss": 0.053699985147
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 89,
+          "val_macro_f1": 0.989402878188,
+          "val_accuracy": 0.990478932858,
+          "val_loss": 0.057734929025
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 90,
+          "val_macro_f1": 0.987933531351,
+          "val_accuracy": 0.990954935551,
+          "val_loss": 0.050381422043
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 91,
+          "val_macro_f1": 0.98382311773,
+          "val_accuracy": 0.988765120506,
+          "val_loss": 0.061639621854
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 92,
+          "val_macro_f1": 0.985762191553,
+          "val_accuracy": 0.986765682697,
+          "val_loss": 0.077527947724
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 93,
+          "val_macro_f1": 0.982474758442,
+          "val_accuracy": 0.990574121475,
+          "val_loss": 0.054762378335
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 94,
+          "val_macro_f1": 0.988482326435,
+          "val_accuracy": 0.990098059177,
+          "val_loss": 0.060106892139
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 95,
+          "val_macro_f1": 0.981893810235,
+          "val_accuracy": 0.991335809231,
+          "val_loss": 0.045782059431
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 96,
+          "val_macro_f1": 0.984199656478,
+          "val_accuracy": 0.990954935551,
+          "val_loss": 0.059731818736
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 97,
+          "val_macro_f1": 0.988779762767,
+          "val_accuracy": 0.991526246071,
+          "val_loss": 0.053185917437
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 98,
+          "val_macro_f1": 0.985048969303,
+          "val_accuracy": 0.990288496017,
+          "val_loss": 0.054590076208
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 99,
+          "val_macro_f1": 0.986823541885,
+          "val_accuracy": 0.990383684635,
+          "val_loss": 0.064706981182
+        },
+        {
+          "activation": "ReLU",
+          "epoch": 100,
+          "val_macro_f1": 0.987838238679,
+          "val_accuracy": 0.990478932858,
+          "val_loss": 0.07396556437
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 1,
+          "val_macro_f1": 0.113060138402,
+          "val_accuracy": 0.229934304953,
+          "val_loss": 1.715507984161
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 2,
+          "val_macro_f1": 0.375849101338,
+          "val_accuracy": 0.458535671234,
+          "val_loss": 1.307233572006
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 3,
+          "val_macro_f1": 0.610688454588,
+          "val_accuracy": 0.659144997597,
+          "val_loss": 0.858000457287
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 4,
+          "val_macro_f1": 0.730360798055,
+          "val_accuracy": 0.760735034943,
+          "val_loss": 0.630354404449
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 5,
+          "val_macro_f1": 0.875480045309,
+          "val_accuracy": 0.878796517849,
+          "val_loss": 0.427938520908
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 6,
+          "val_macro_f1": 0.923412998847,
+          "val_accuracy": 0.924688160419,
+          "val_loss": 0.270170390606
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 7,
+          "val_macro_f1": 0.931929700345,
+          "val_accuracy": 0.932876348495,
+          "val_loss": 0.246188148856
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 8,
+          "val_macro_f1": 0.937741551001,
+          "val_accuracy": 0.938874602318,
+          "val_loss": 0.211321875453
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 9,
+          "val_macro_f1": 0.956697233988,
+          "val_accuracy": 0.95744073391,
+          "val_loss": 0.154601678252
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 10,
+          "val_macro_f1": 0.955766449041,
+          "val_accuracy": 0.956488609314,
+          "val_loss": 0.150507807732
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 11,
+          "val_macro_f1": 0.962782323571,
+          "val_accuracy": 0.963153362274,
+          "val_loss": 0.132304027677
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 12,
+          "val_macro_f1": 0.965412270152,
+          "val_accuracy": 0.965819299221,
+          "val_loss": 0.115408875048
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 13,
+          "val_macro_f1": 0.960398112209,
+          "val_accuracy": 0.96115398407,
+          "val_loss": 0.131575867534
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 14,
+          "val_macro_f1": 0.967233804165,
+          "val_accuracy": 0.967723488808,
+          "val_loss": 0.112075142562
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 15,
+          "val_macro_f1": 0.969815289797,
+          "val_accuracy": 0.970294177532,
+          "val_loss": 0.100108973682
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 16,
+          "val_macro_f1": 0.971717588076,
+          "val_accuracy": 0.972103238106,
+          "val_loss": 0.097501650453
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 17,
+          "val_macro_f1": 0.973200245492,
+          "val_accuracy": 0.973531365395,
+          "val_loss": 0.093468248844
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 18,
+          "val_macro_f1": 0.972279420724,
+          "val_accuracy": 0.972674489021,
+          "val_loss": 0.090872831643
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 19,
+          "val_macro_f1": 0.97384706973,
+          "val_accuracy": 0.974197864532,
+          "val_loss": 0.087290979922
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 20,
+          "val_macro_f1": 0.974407098891,
+          "val_accuracy": 0.974769115448,
+          "val_loss": 0.084203191102
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 21,
+          "val_macro_f1": 0.974785784885,
+          "val_accuracy": 0.975149929523,
+          "val_loss": 0.081392459571
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 22,
+          "val_macro_f1": 0.977140735225,
+          "val_accuracy": 0.97743499279,
+          "val_loss": 0.071293599904
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 23,
+          "val_macro_f1": 0.97289862033,
+          "val_accuracy": 0.973340928555,
+          "val_loss": 0.095934957266
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 24,
+          "val_macro_f1": 0.976752790721,
+          "val_accuracy": 0.977054178715,
+          "val_loss": 0.069010570645
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 25,
+          "val_macro_f1": 0.978326489011,
+          "val_accuracy": 0.978577554226,
+          "val_loss": 0.071548290551
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 26,
+          "val_macro_f1": 0.978461321933,
+          "val_accuracy": 0.978672742844,
+          "val_loss": 0.072085879743
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 27,
+          "val_macro_f1": 0.977106995713,
+          "val_accuracy": 0.977244615555,
+          "val_loss": 0.072835579515
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 28,
+          "val_macro_f1": 0.980167294265,
+          "val_accuracy": 0.980386555195,
+          "val_loss": 0.062758333981
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 29,
+          "val_macro_f1": 0.982056822343,
+          "val_accuracy": 0.982290744781,
+          "val_loss": 0.055851694196
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 30,
+          "val_macro_f1": 0.982359997034,
+          "val_accuracy": 0.982576429844,
+          "val_loss": 0.06003312394
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 31,
+          "val_macro_f1": 0.982175137473,
+          "val_accuracy": 0.982385993004,
+          "val_loss": 0.058519702405
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 32,
+          "val_macro_f1": 0.981155838109,
+          "val_accuracy": 0.981433868408,
+          "val_loss": 0.060942832381
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 33,
+          "val_macro_f1": 0.981980183084,
+          "val_accuracy": 0.982195556164,
+          "val_loss": 0.05969049409
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 34,
+          "val_macro_f1": 0.980539334876,
+          "val_accuracy": 0.980767428875,
+          "val_loss": 0.066438376904
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 35,
+          "val_macro_f1": 0.984609074938,
+          "val_accuracy": 0.984766244888,
+          "val_loss": 0.051498506218
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 36,
+          "val_macro_f1": 0.983619207774,
+          "val_accuracy": 0.983814120293,
+          "val_loss": 0.056132107973
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 37,
+          "val_macro_f1": 0.982911749349,
+          "val_accuracy": 0.983147680759,
+          "val_loss": 0.055583938956
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 38,
+          "val_macro_f1": 0.983872899806,
+          "val_accuracy": 0.984099805355,
+          "val_loss": 0.055770095438
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 39,
+          "val_macro_f1": 0.981254284285,
+          "val_accuracy": 0.981433868408,
+          "val_loss": 0.059555012733
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 40,
+          "val_macro_f1": 0.981589766894,
+          "val_accuracy": 0.981814742088,
+          "val_loss": 0.05956851691
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 41,
+          "val_macro_f1": 0.984211385073,
+          "val_accuracy": 0.984385430813,
+          "val_loss": 0.049243498594
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 42,
+          "val_macro_f1": 0.984386336435,
+          "val_accuracy": 0.984575808048,
+          "val_loss": 0.047895647585
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 43,
+          "val_macro_f1": 0.986906893004,
+          "val_accuracy": 0.987051308155,
+          "val_loss": 0.04280044511
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 44,
+          "val_macro_f1": 0.985423697984,
+          "val_accuracy": 0.985623180866,
+          "val_loss": 0.046688664705
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 45,
+          "val_macro_f1": 0.983975192378,
+          "val_accuracy": 0.984194993973,
+          "val_loss": 0.053602285683
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 46,
+          "val_macro_f1": 0.984257348107,
+          "val_accuracy": 0.984385430813,
+          "val_loss": 0.052105411887
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 47,
+          "val_macro_f1": 0.982075849348,
+          "val_accuracy": 0.982290744781,
+          "val_loss": 0.056629259139
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 48,
+          "val_macro_f1": 0.985142126191,
+          "val_accuracy": 0.985337495804,
+          "val_loss": 0.04642495513
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 49,
+          "val_macro_f1": 0.985141191929,
+          "val_accuracy": 0.985337495804,
+          "val_loss": 0.046330008656
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 50,
+          "val_macro_f1": 0.983734393039,
+          "val_accuracy": 0.983909368515,
+          "val_loss": 0.055371861905
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 51,
+          "val_macro_f1": 0.986293019454,
+          "val_accuracy": 0.98648005724,
+          "val_loss": 0.043025221676
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 52,
+          "val_macro_f1": 0.987674010705,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.039752908051
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 53,
+          "val_macro_f1": 0.985702231255,
+          "val_accuracy": 0.985908806324,
+          "val_loss": 0.048544123769
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 54,
+          "val_macro_f1": 0.985233639295,
+          "val_accuracy": 0.985432744026,
+          "val_loss": 0.04896164313
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 55,
+          "val_macro_f1": 0.988657625112,
+          "val_accuracy": 0.988765120506,
+          "val_loss": 0.039737090468
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 56,
+          "val_macro_f1": 0.986559021841,
+          "val_accuracy": 0.986765682697,
+          "val_loss": 0.043338414282
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 57,
+          "val_macro_f1": 0.983121306523,
+          "val_accuracy": 0.983338117599,
+          "val_loss": 0.054193928838
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 58,
+          "val_macro_f1": 0.98677189233,
+          "val_accuracy": 0.986956119537,
+          "val_loss": 0.040731366724
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 59,
+          "val_macro_f1": 0.986424183506,
+          "val_accuracy": 0.986575245857,
+          "val_loss": 0.040647245944
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 60,
+          "val_macro_f1": 0.988220560023,
+          "val_accuracy": 0.988384246826,
+          "val_loss": 0.03740060702
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 61,
+          "val_macro_f1": 0.986883167855,
+          "val_accuracy": 0.987051308155,
+          "val_loss": 0.042257290334
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 62,
+          "val_macro_f1": 0.987249228248,
+          "val_accuracy": 0.987432181835,
+          "val_loss": 0.042086917907
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 63,
+          "val_macro_f1": 0.987255005141,
+          "val_accuracy": 0.987336933613,
+          "val_loss": 0.040540546179
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 64,
+          "val_macro_f1": 0.987207423231,
+          "val_accuracy": 0.987336933613,
+          "val_loss": 0.042741488665
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 65,
+          "val_macro_f1": 0.986157502988,
+          "val_accuracy": 0.986384868622,
+          "val_loss": 0.043988309801
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 66,
+          "val_macro_f1": 0.987121673477,
+          "val_accuracy": 0.987241744995,
+          "val_loss": 0.045694392174
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 67,
+          "val_macro_f1": 0.986572411079,
+          "val_accuracy": 0.986765682697,
+          "val_loss": 0.039660420269
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 68,
+          "val_macro_f1": 0.9888863515,
+          "val_accuracy": 0.989050745964,
+          "val_loss": 0.038384638727
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 69,
+          "val_macro_f1": 0.988647259886,
+          "val_accuracy": 0.988765120506,
+          "val_loss": 0.037901677191
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 70,
+          "val_macro_f1": 0.987287001155,
+          "val_accuracy": 0.987432181835,
+          "val_loss": 0.040047220886
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 71,
+          "val_macro_f1": 0.986548303669,
+          "val_accuracy": 0.986765682697,
+          "val_loss": 0.0436264202
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 72,
+          "val_macro_f1": 0.984482717653,
+          "val_accuracy": 0.984766244888,
+          "val_loss": 0.04632845521
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 73,
+          "val_macro_f1": 0.988010331765,
+          "val_accuracy": 0.988098621368,
+          "val_loss": 0.040663398802
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 74,
+          "val_macro_f1": 0.986968194773,
+          "val_accuracy": 0.987146556377,
+          "val_loss": 0.040589038283
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 75,
+          "val_macro_f1": 0.988416328027,
+          "val_accuracy": 0.988574683666,
+          "val_loss": 0.038778670132
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 76,
+          "val_macro_f1": 0.988185655332,
+          "val_accuracy": 0.988289058208,
+          "val_loss": 0.038022208959
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 77,
+          "val_macro_f1": 0.986642702962,
+          "val_accuracy": 0.986860871315,
+          "val_loss": 0.040628455579
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 78,
+          "val_macro_f1": 0.987443375625,
+          "val_accuracy": 0.987622559071,
+          "val_loss": 0.041685219854
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 79,
+          "val_macro_f1": 0.985830246623,
+          "val_accuracy": 0.986003994942,
+          "val_loss": 0.045748863369
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 80,
+          "val_macro_f1": 0.987829641059,
+          "val_accuracy": 0.988003432751,
+          "val_loss": 0.038432244211
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 81,
+          "val_macro_f1": 0.988776493384,
+          "val_accuracy": 0.988955557346,
+          "val_loss": 0.038172427565
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 82,
+          "val_macro_f1": 0.987698779744,
+          "val_accuracy": 0.987908244133,
+          "val_loss": 0.03914584592
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 83,
+          "val_macro_f1": 0.991438163924,
+          "val_accuracy": 0.991526246071,
+          "val_loss": 0.029775483534
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 84,
+          "val_macro_f1": 0.988529602861,
+          "val_accuracy": 0.988669931889,
+          "val_loss": 0.038734592497
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 85,
+          "val_macro_f1": 0.986204745555,
+          "val_accuracy": 0.986384868622,
+          "val_loss": 0.044634282589
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 86,
+          "val_macro_f1": 0.989483643025,
+          "val_accuracy": 0.98962199688,
+          "val_loss": 0.034836038947
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 87,
+          "val_macro_f1": 0.989026920993,
+          "val_accuracy": 0.989241182804,
+          "val_loss": 0.036340113729
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 88,
+          "val_macro_f1": 0.987673524707,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.03823389858
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 89,
+          "val_macro_f1": 0.989190104341,
+          "val_accuracy": 0.989336371422,
+          "val_loss": 0.035409148782
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 90,
+          "val_macro_f1": 0.987928250916,
+          "val_accuracy": 0.988098621368,
+          "val_loss": 0.038406636566
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 91,
+          "val_macro_f1": 0.989185272169,
+          "val_accuracy": 0.989336371422,
+          "val_loss": 0.035432823002
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 92,
+          "val_macro_f1": 0.988985175665,
+          "val_accuracy": 0.989145934582,
+          "val_loss": 0.032537639141
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 93,
+          "val_macro_f1": 0.988810717452,
+          "val_accuracy": 0.988955557346,
+          "val_loss": 0.035112082958
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 94,
+          "val_macro_f1": 0.988050435955,
+          "val_accuracy": 0.988193869591,
+          "val_loss": 0.037879191339
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 95,
+          "val_macro_f1": 0.988108561975,
+          "val_accuracy": 0.988289058208,
+          "val_loss": 0.039053410292
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 96,
+          "val_macro_f1": 0.988784634904,
+          "val_accuracy": 0.988955557346,
+          "val_loss": 0.038286160678
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 97,
+          "val_macro_f1": 0.987646112319,
+          "val_accuracy": 0.987812995911,
+          "val_loss": 0.039110861719
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 98,
+          "val_macro_f1": 0.988059101418,
+          "val_accuracy": 0.988289058208,
+          "val_loss": 0.036548983306
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 99,
+          "val_macro_f1": 0.988742988874,
+          "val_accuracy": 0.988860309124,
+          "val_loss": 0.034604329616
+        },
+        {
+          "activation": "Sigmoid",
+          "epoch": 100,
+          "val_macro_f1": 0.990438003204,
+          "val_accuracy": 0.990574121475,
+          "val_loss": 0.031157698482
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 1,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301199197769
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 2,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137924194
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 3,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 4,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 5,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137208939
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 6,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 7,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 8,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 9,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 10,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 11,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 12,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 13,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 14,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 15,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137208939
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 16,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 17,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 18,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 19,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 20,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 21,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 22,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137685776
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 23,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 24,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 25,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 26,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 27,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137208939
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 28,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 29,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 30,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 31,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 32,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135063171
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 33,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 34,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137208939
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 35,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 36,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 37,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 38,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 39,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 40,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 41,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 42,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 43,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 44,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 45,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 46,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 47,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 48,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 49,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 50,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137685776
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 51,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 52,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 53,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 54,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 55,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 56,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 57,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 58,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 59,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 60,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 61,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 62,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 63,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 64,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 65,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 66,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 67,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 68,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 69,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 70,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 71,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 72,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 73,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 74,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 75,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 76,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 77,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 78,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 79,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 80,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 81,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 82,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 83,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 84,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137208939
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 85,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 86,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 87,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 88,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 89,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301137447357
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 90,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 91,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.30113697052
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 92,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136016846
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 93,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 94,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 95,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 96,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301135778427
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 97,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136732101
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 98,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 99,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136493683
+        },
+        {
+          "activation": "Softmax",
+          "epoch": 100,
+          "val_macro_f1": 0.020231065469,
+          "val_accuracy": 0.112539276481,
+          "val_loss": 2.301136255264
+        }
+      ],
+      "prediction_distribution_chart": [
+        {
+          "label": "0",
+          "kind": "Rótulo real",
+          "count": 1035
+        },
+        {
+          "label": "0",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "1",
+          "kind": "Rótulo real",
+          "count": 1181
+        },
+        {
+          "label": "1",
+          "kind": "Predição softmax",
+          "count": 10498
+        },
+        {
+          "label": "2",
+          "kind": "Rótulo real",
+          "count": 1048
+        },
+        {
+          "label": "2",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "3",
+          "kind": "Rótulo real",
+          "count": 1071
+        },
+        {
+          "label": "3",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "4",
+          "kind": "Rótulo real",
+          "count": 1023
+        },
+        {
+          "label": "4",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "5",
+          "kind": "Rótulo real",
+          "count": 947
+        },
+        {
+          "label": "5",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "6",
+          "kind": "Rótulo real",
+          "count": 1031
+        },
+        {
+          "label": "6",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "7",
+          "kind": "Rótulo real",
+          "count": 1094
+        },
+        {
+          "label": "7",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "8",
+          "kind": "Rótulo real",
+          "count": 1024
+        },
+        {
+          "label": "8",
+          "kind": "Predição softmax",
+          "count": 0
+        },
+        {
+          "label": "9",
+          "kind": "Rótulo real",
+          "count": 1044
+        },
+        {
+          "label": "9",
+          "kind": "Predição softmax",
+          "count": 0
+        }
+      ],
+      "metrics_table": [
+        {
+          "activation": "ReLU",
+          "test_accuracy": 0.987426176415,
+          "test_balanced_accuracy": 0.987168599752,
+          "test_macro_f1": 0.987190471562,
+          "test_loss": 0.052007563412,
+          "initial_val_macro_f1": 0.898057040412,
+          "best_val_macro_f1": 0.99044649248,
+          "best_val_epoch": 72,
+          "final_val_macro_f1": 0.987838238679,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.112497618594,
+          "logit_max_abs_difference_from_first": 29.34553194046
+        },
+        {
+          "activation": "Sigmoid",
+          "test_accuracy": 0.989236044961,
+          "test_balanced_accuracy": 0.989138068751,
+          "test_macro_f1": 0.989162898279,
+          "test_loss": 0.03717764467,
+          "initial_val_macro_f1": 0.113060138402,
+          "best_val_macro_f1": 0.991438163924,
+          "best_val_epoch": 83,
+          "final_val_macro_f1": 0.990438003204,
+          "predicted_class_count": 10,
+          "predicted_mode_share": 0.112592874833,
+          "logit_max_abs_difference_from_first": 24.639972686768
+        },
+        {
+          "activation": "Softmax",
+          "test_accuracy": 0.112497618594,
+          "test_balanced_accuracy": 0.1,
+          "test_macro_f1": 0.020224334275,
+          "test_loss": 2.301202058792,
+          "initial_val_macro_f1": 0.020231065469,
+          "best_val_macro_f1": 0.020231065469,
+          "best_val_epoch": 1,
+          "final_val_macro_f1": 0.020231065469,
+          "predicted_class_count": 1,
+          "predicted_mode_share": 1.0,
+          "logit_max_abs_difference_from_first": 2.27243e-07
+        }
+      ],
+      "hidden_variation": [
+        {
+          "activation": "ReLU",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.335331599748,
+          "mean_l2_distance_from_sample_mean": 101.602372928122,
+          "max_abs_difference_from_first": 7.734375,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "ReLU",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.317132769684,
+          "mean_l2_distance_from_sample_mean": 24.872938006363,
+          "max_abs_difference_from_first": 4.24609375,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "ReLU",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.520796537281,
+          "mean_l2_distance_from_sample_mean": 13.65185650427,
+          "max_abs_difference_from_first": 5.2890625,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "ReLU",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 3.134566292717,
+          "mean_l2_distance_from_sample_mean": 50.523257104535,
+          "max_abs_difference_from_first": 17.34375,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "ReLU",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 13.041827556942,
+          "mean_l2_distance_from_sample_mean": 209.079590125541,
+          "max_abs_difference_from_first": 94.890625,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "ReLU",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 6.606842298872,
+          "mean_l2_distance_from_sample_mean": 18.100996583578,
+          "max_abs_difference_from_first": 26.045666992664,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.095200144676,
+          "mean_l2_distance_from_sample_mean": 22.902774494466,
+          "max_abs_difference_from_first": 0.798095703125,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.127811347794,
+          "mean_l2_distance_from_sample_mean": 8.769238204547,
+          "max_abs_difference_from_first": 0.93408203125,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.257286513613,
+          "mean_l2_distance_from_sample_mean": 6.172477271151,
+          "max_abs_difference_from_first": 0.993156909943,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.337181630324,
+          "mean_l2_distance_from_sample_mean": 5.460404275336,
+          "max_abs_difference_from_first": 0.995225906372,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.354072603089,
+          "mean_l2_distance_from_sample_mean": 5.700777803324,
+          "max_abs_difference_from_first": 0.999990999699,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Sigmoid",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 5.189786319661,
+          "mean_l2_distance_from_sample_mean": 16.534391024614,
+          "max_abs_difference_from_first": 24.5080909729,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        },
+        {
+          "activation": "Softmax",
+          "layer": "block1_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 0.008017284798,
+          "mean_l2_distance_from_sample_mean": 2.046918861801,
+          "max_abs_difference_from_first": 0.15495300293,
+          "softmax_last_axis_sum_mean": 0.999999747622,
+          "softmax_last_axis_entropy_mean_nats": 3.328544258002
+        },
+        {
+          "activation": "Softmax",
+          "layer": "block3_activation1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.178303e-05,
+          "mean_l2_distance_from_sample_mean": 0.001469631673,
+          "max_abs_difference_from_first": 0.000274658203,
+          "softmax_last_axis_sum_mean": 1.000000183471,
+          "softmax_last_axis_entropy_mean_nats": 4.148937933161
+        },
+        {
+          "activation": "Softmax",
+          "layer": "block5_activation2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 5.623e-09,
+          "mean_l2_distance_from_sample_mean": 1.725037e-06,
+          "max_abs_difference_from_first": 3.814697e-06,
+          "softmax_last_axis_sum_mean": 1.000009190291,
+          "softmax_last_axis_entropy_mean_nats": 4.851726741468
+        },
+        {
+          "activation": "Softmax",
+          "layer": "dense1",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.431e-09,
+          "mean_l2_distance_from_sample_mean": 4.05998e-07,
+          "max_abs_difference_from_first": 1.907349e-06,
+          "softmax_last_axis_sum_mean": 0.999986417592,
+          "softmax_last_axis_entropy_mean_nats": 5.545070035651
+        },
+        {
+          "activation": "Softmax",
+          "layer": "dense2",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 2.431e-09,
+          "mean_l2_distance_from_sample_mean": 4.05998e-07,
+          "max_abs_difference_from_first": 1.907349e-06,
+          "softmax_last_axis_sum_mean": 1.000011213124,
+          "softmax_last_axis_entropy_mean_nats": 5.544931351824
+        },
+        {
+          "activation": "Softmax",
+          "layer": "logits",
+          "sample_count": 256,
+          "mean_feature_std_across_samples": 3.8404e-08,
+          "mean_l2_distance_from_sample_mean": 8.7831e-08,
+          "max_abs_difference_from_first": 2.27243e-07,
+          "softmax_last_axis_sum_mean": null,
+          "softmax_last_axis_entropy_mean_nats": null
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "run_artifacts",
+      "label": "Artefatos dos três runs de ativação MNIST",
+      "path": "analysis_reports/investigacao_mnist_softmax_snapshot.sql",
+      "query": {
+        "language": "Python/JSON/CSV/NumPy",
+        "description": "Leitura dos manifestos, históricos por época, test_metrics.json, predictions.csv e logits.npy dos runs ReLU, Sigmoid e Softmax.",
+        "executed_at": "2026-08-28T17:27:37.460085+00:00",
+        "metric_definitions": [
+          "Acurácia, balanced accuracy e F1 macro são as métricas de classificação recomputadas a partir dos rótulos previstos.",
+          "O conjunto de teste tem 10.498 amostras no split estratificado 70/15/15, seed 42.",
+          "Variação dos logits = desvio-padrão médio por componente entre as 10.498 linhas de logits.",
+          "Variação intermediária = estatísticas entre 256 amostras do primeiro lote do teste, usando os checkpoints best.keras."
+        ]
+      }
+    },
+    {
+      "id": "model_code",
+      "label": "Implementação da arquitetura e da loss",
+      "path": "src/tcc_benchmark/model.py",
+      "query": {
+        "language": "Python",
+        "description": "Inspeção de build_legacy_cnn e compile_legacy_cnn para verificar onde a ativação é aplicada e como os logits são treinados.",
+        "executed_at": "2026-08-28T17:27:37.460085+00:00"
+      }
+    },
+    {
+      "id": "analysis_script",
+      "label": "Script reprodutível da investigação",
+      "path": "analysis_reports/investigate_mnist_softmax.py",
+      "query": {
+        "language": "Python",
+        "description": "Reproduz a comparação, as contagens de previsão, a variação dos logits e as estatísticas das ativações intermediárias.",
+        "executed_at": "2026-08-28T17:27:37.460085+00:00"
+      }
+    },
+    {
+      "id": "keras_softmax",
+      "label": "Keras — Softmax layer",
+      "href": "https://keras.io/api/layers/activation_layers/softmax/",
+      "query": {
+        "language": "documentation",
+        "description": "Definição da operação softmax, do eixo de normalização e da forma do resultado."
+      }
+    },
+    {
+      "id": "keras_activations",
+      "label": "Keras — Layer activation functions",
+      "href": "https://keras.io/api/layers/activations/",
+      "query": {
+        "language": "documentation",
+        "description": "Uso de ativações como argumento de camadas e propriedades das ativações sigmoid e softmax."
+      }
+    },
+    {
+      "id": "keras_dense",
+      "label": "Keras — Dense layer",
+      "href": "https://keras.io/api/layers/core_layers/dense/",
+      "query": {
+        "language": "documentation",
+        "description": "Operação Dense: activation(dot(input, kernel) + bias)."
+      }
+    },
+    {
+      "id": "tensorflow_loss",
+      "label": "TensorFlow — SparseCategoricalCrossentropy",
+      "href": "https://www.tensorflow.org/api_docs/python/tf/keras/losses/SparseCategoricalCrossentropy",
+      "query": {
+        "language": "documentation",
+        "description": "Contrato de from_logits=True para entradas que são logits."
+      }
+    },
+    {
+      "id": "keras_group_norm",
+      "label": "Keras — GroupNormalization",
+      "href": "https://keras.io/2/api/layers/normalization_layers/group_normalization/",
+      "query": {
+        "language": "documentation",
+        "description": "Normalização por grupos de canais e uso do eixo de features."
+      }
+    },
+    {
+      "id": "mnist_source",
+      "label": "MNIST database — Yann LeCun",
+      "href": "https://yann.lecun.com/exdb/mnist/",
+      "query": {
+        "language": "dataset documentation",
+        "description": "Fonte de referência do MNIST; o experimento local juntou os splits oficiais e refez o split estratificado conforme o protocolo do repositório."
+      }
+    }
+  ]
+}

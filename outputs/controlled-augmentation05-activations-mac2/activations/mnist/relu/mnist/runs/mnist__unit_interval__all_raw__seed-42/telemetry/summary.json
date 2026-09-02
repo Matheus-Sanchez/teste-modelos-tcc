@@ -1,0 +1,228 @@
+{
+  "categorical": {
+    "gpu_memory_kind": {
+      "counts": {
+        "shared_unified_driver": 2440
+      },
+      "current": "shared_unified_driver"
+    },
+    "thermal_pressure": {
+      "counts": {
+        "nominal": 2440
+      },
+      "current": "nominal"
+    }
+  },
+  "elapsed_seconds": 11978.513068166998,
+  "event_counts": {
+    "data_preparation_end": 1,
+    "data_preparation_start": 1,
+    "epoch_end": 100,
+    "evaluation_end": 1,
+    "evaluation_start": 1,
+    "fit_end": 1,
+    "fit_start": 1,
+    "periodic": 2332,
+    "run_completed": 1,
+    "train_start": 1
+  },
+  "generated_at": "2026-08-29T04:56:03.676+00:00",
+  "gpu_backend": "apple-metal-ioreg",
+  "interval_seconds": 5.0,
+  "metrics": {
+    "cpu_percent": {
+      "count": 2440,
+      "max": 69.5,
+      "mean": 18.781639344262295,
+      "min": 0.0,
+      "p50": 18.6,
+      "p95": 20.5
+    },
+    "disk_data_free_bytes": {
+      "count": 2440,
+      "max": 263102128128.0,
+      "mean": 263055263854.79346,
+      "min": 263007764480.0,
+      "p50": 263062933504.0,
+      "p95": 263084814336.0
+    },
+    "disk_data_percent": {
+      "count": 2440,
+      "max": 42.3,
+      "mean": 42.3,
+      "min": 42.3,
+      "p50": 42.3,
+      "p95": 42.3
+    },
+    "disk_data_total_bytes": {
+      "count": 2440,
+      "max": 494384795648.0,
+      "mean": 494384795648.0,
+      "min": 494384795648.0,
+      "p50": 494384795648.0,
+      "p95": 494384795648.0
+    },
+    "disk_data_used_bytes": {
+      "count": 2440,
+      "max": 193078714368.0,
+      "mean": 193031528001.46884,
+      "min": 192984842240.0,
+      "p50": 193024036864.0,
+      "p95": 193070010777.6
+    },
+    "disk_output_free_bytes": {
+      "count": 2440,
+      "max": 263102128128.0,
+      "mean": 263055263853.11475,
+      "min": 263007764480.0,
+      "p50": 263062933504.0,
+      "p95": 263084814336.0
+    },
+    "disk_output_percent": {
+      "count": 2440,
+      "max": 42.3,
+      "mean": 42.3,
+      "min": 42.3,
+      "p50": 42.3,
+      "p95": 42.3
+    },
+    "disk_output_total_bytes": {
+      "count": 2440,
+      "max": 494384795648.0,
+      "mean": 494384795648.0,
+      "min": 494384795648.0,
+      "p50": 494384795648.0,
+      "p95": 494384795648.0
+    },
+    "disk_output_used_bytes": {
+      "count": 2440,
+      "max": 193078714368.0,
+      "mean": 193031528003.14755,
+      "min": 192984842240.0,
+      "p50": 193024036864.0,
+      "p95": 193070010777.6
+    },
+    "elapsed_seconds": {
+      "count": 2440,
+      "max": 11978.347038,
+      "mean": 5988.69445480082,
+      "min": 0.240109,
+      "p50": 5985.4538085,
+      "p95": 11393.611918200002
+    },
+    "gpu_count": {
+      "count": 2440,
+      "max": 1.0,
+      "mean": 1.0,
+      "min": 1.0,
+      "p50": 1.0,
+      "p95": 1.0
+    },
+    "gpu_driver_allocated_memory_bytes": {
+      "count": 2440,
+      "max": 3346022400.0,
+      "mean": 3286826652.118033,
+      "min": 2520530944.0,
+      "p50": 3301130240.0,
+      "p95": 3326198579.2
+    },
+    "gpu_memory_used_bytes": {
+      "count": 2440,
+      "max": 1340981248.0,
+      "mean": 954179046.8196721,
+      "min": 381632512.0,
+      "p50": 1004929024.0,
+      "p95": 1035124736.0
+    },
+    "gpu_renderer_utilization_percent": {
+      "count": 2440,
+      "max": 100.0,
+      "mean": 80.48237704918033,
+      "min": 0.0,
+      "p50": 84.0,
+      "p95": 88.0
+    },
+    "gpu_system_memory_in_use_bytes": {
+      "count": 2440,
+      "max": 1340981248.0,
+      "mean": 954179046.8196721,
+      "min": 381632512.0,
+      "p50": 1004929024.0,
+      "p95": 1035124736.0
+    },
+    "gpu_tiler_utilization_percent": {
+      "count": 2440,
+      "max": 100.0,
+      "mean": 80.54262295081968,
+      "min": 0.0,
+      "p50": 84.0,
+      "p95": 88.0
+    },
+    "gpu_utilization_percent": {
+      "count": 2440,
+      "max": 100.0,
+      "mean": 92.98524590163935,
+      "min": 0.0,
+      "p50": 96.0,
+      "p95": 97.0
+    },
+    "process_cpu_percent": {
+      "count": 2440,
+      "max": 154.4,
+      "mean": 84.26950819672132,
+      "min": 4.4,
+      "p50": 83.0,
+      "p95": 92.90500000000003
+    },
+    "process_rss_bytes": {
+      "count": 2440,
+      "max": 4145889280.0,
+      "mean": 3039171607.5016394,
+      "min": 647053312.0,
+      "p50": 3031621632.0,
+      "p95": 3344335667.2
+    },
+    "process_vms_bytes": {
+      "count": 2440,
+      "max": 429261799424.0,
+      "mean": 427750610520.9705,
+      "min": 422545866752.0,
+      "p50": 427771281408.0,
+      "p95": 428906889216.0
+    },
+    "ram_available_bytes": {
+      "count": 2440,
+      "max": 6033342464.0,
+      "mean": 4444986351.213115,
+      "min": 3668115456.0,
+      "p50": 4411670528.0,
+      "p95": 4810432512.0
+    },
+    "ram_percent": {
+      "count": 2440,
+      "max": 78.6,
+      "mean": 74.1270081967213,
+      "min": 64.9,
+      "p50": 74.3,
+      "p95": 75.8
+    },
+    "ram_total_bytes": {
+      "count": 2440,
+      "max": 17179869184.0,
+      "mean": 17179869184.0,
+      "min": 17179869184.0,
+      "p50": 17179869184.0,
+      "p95": 17179869184.0
+    },
+    "ram_used_bytes": {
+      "count": 2440,
+      "max": 7983546368.0,
+      "mean": 7050992307.619672,
+      "min": 6501597184.0,
+      "p50": 7028539392.0,
+      "p95": 7394364620.8
+    }
+  },
+  "sample_count": 2440,
+  "schema_version": 1
+}

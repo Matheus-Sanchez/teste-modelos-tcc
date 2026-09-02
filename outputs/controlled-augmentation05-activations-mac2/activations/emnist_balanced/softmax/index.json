@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    {
+      "dataset": "emnist_balanced",
+      "report_path": "emnist_balanced/report.html",
+      "run_count": 1,
+      "status_counts": {
+        "completed": 1
+      }
+    }
+  ],
+  "generated_at": "2026-09-02T12:17:21.346+00:00",
+  "schema_version": 1
+}

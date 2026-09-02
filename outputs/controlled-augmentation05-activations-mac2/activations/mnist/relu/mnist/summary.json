@@ -1,0 +1,67 @@
+{
+  "dataset": "mnist",
+  "generated_at": "2026-09-01T16:16:13.356+00:00",
+  "run_count": 1,
+  "runs": [
+    {
+      "attempt": 1,
+      "balance_mode": "all_raw",
+      "balance_no_op": true,
+      "config_fingerprint": "209b2d04b01bf185d47bb71661b156c39a86b21d825dc6c1dd385c10277bcf77",
+      "gpu_backend": "apple-metal-ioreg",
+      "gpu_memory_kind": "shared_unified_driver",
+      "mean_epoch_seconds": 115.17993740995954,
+      "normalization": "unit_interval",
+      "output_train_class_counts": {
+        "0": 4832,
+        "1": 5514,
+        "2": 4893,
+        "3": 4999,
+        "4": 4777,
+        "5": 4419,
+        "6": 4813,
+        "7": 5105,
+        "8": 4777,
+        "9": 4870
+      },
+      "peak_cpu_percent": 69.5,
+      "peak_gpu_driver_allocated_memory_bytes": 3346022400.0,
+      "peak_gpu_memory_used_bytes": 1340981248.0,
+      "peak_gpu_renderer_utilization_percent": 100.0,
+      "peak_gpu_system_memory_in_use_bytes": 1340981248.0,
+      "peak_gpu_tiler_utilization_percent": 100.0,
+      "peak_gpu_utilization_percent": 100.0,
+      "peak_process_rss_bytes": 4145889280.0,
+      "peak_ram_used_bytes": 7983546368.0,
+      "raw_train_class_counts": {
+        "0": 4832,
+        "1": 5514,
+        "2": 4893,
+        "3": 4999,
+        "4": 4777,
+        "5": 4419,
+        "6": 4813,
+        "7": 5105,
+        "8": 4777,
+        "9": 4870
+      },
+      "report_path": "runs/mnist__unit_interval__all_raw__seed-42/artifacts/report.html",
+      "run_id": "mnist__unit_interval__all_raw__seed-42",
+      "seed": 42,
+      "split_fingerprint": "e318c7442df3e0a1d1f67bd6fa1eac1602b6440bf135240aca0008293af1e6c8",
+      "status": "completed",
+      "telemetry_samples": 2440,
+      "test_accuracy": 0.983711183082492,
+      "test_balanced_accuracy": 0.9834921216306836,
+      "test_loss": 0.05944294109940529,
+      "test_macro_f1": 0.9836032804048654,
+      "test_samples": 10498,
+      "thermal_pressure": "nominal",
+      "training_total_seconds": 11517.993740995953
+    }
+  ],
+  "schema_version": 1,
+  "status_counts": {
+    "completed": 1
+  }
+}

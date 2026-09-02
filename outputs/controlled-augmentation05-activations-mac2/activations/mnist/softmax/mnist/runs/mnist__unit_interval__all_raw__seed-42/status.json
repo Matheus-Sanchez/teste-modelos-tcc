@@ -1,0 +1,9 @@
+{
+  "attempt": 1,
+  "detail": "Treino e avaliação concluídos",
+  "error": null,
+  "run_id": "mnist__unit_interval__all_raw__seed-42",
+  "status": "completed",
+  "status_updated_at": "2026-08-29T12:53:55.780+00:00",
+  "updated_at": "2026-08-29T12:53:55.780+00:00"
+}

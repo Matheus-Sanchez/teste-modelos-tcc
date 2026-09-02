@@ -1,0 +1,67 @@
+{
+  "dataset": "kmnist",
+  "generated_at": "2026-09-01T16:16:31.162+00:00",
+  "run_count": 1,
+  "runs": [
+    {
+      "attempt": 1,
+      "balance_mode": "all_raw",
+      "balance_no_op": true,
+      "config_fingerprint": "313921887d1e3c1f544b71c31bcf1e3fd61092fabe2ecaf178bd6e3abbf406dd",
+      "gpu_backend": "apple-metal-ioreg",
+      "gpu_memory_kind": "shared_unified_driver",
+      "mean_epoch_seconds": 115.12946026501915,
+      "normalization": "unit_interval",
+      "output_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "peak_cpu_percent": 26.6,
+      "peak_gpu_driver_allocated_memory_bytes": 3422584832.0,
+      "peak_gpu_memory_used_bytes": 1350565888.0,
+      "peak_gpu_renderer_utilization_percent": 100.0,
+      "peak_gpu_system_memory_in_use_bytes": 1350565888.0,
+      "peak_gpu_tiler_utilization_percent": 100.0,
+      "peak_gpu_utilization_percent": 100.0,
+      "peak_process_rss_bytes": 4267163648.0,
+      "peak_ram_used_bytes": 7385481216.0,
+      "raw_train_class_counts": {
+        "0": 4900,
+        "1": 4900,
+        "2": 4900,
+        "3": 4900,
+        "4": 4900,
+        "5": 4900,
+        "6": 4900,
+        "7": 4900,
+        "8": 4900,
+        "9": 4900
+      },
+      "report_path": "runs/kmnist__unit_interval__all_raw__seed-42/artifacts/report.html",
+      "run_id": "kmnist__unit_interval__all_raw__seed-42",
+      "seed": 42,
+      "split_fingerprint": "161c642197f73a5c2a9888f8f889988f3853ec4a3aa1a4101c2c1fe0d3478f81",
+      "status": "completed",
+      "telemetry_samples": 2441,
+      "test_accuracy": 0.9701904761904762,
+      "test_balanced_accuracy": 0.9701904761904763,
+      "test_loss": 0.13836397230625153,
+      "test_macro_f1": 0.9701596301619635,
+      "test_samples": 10500,
+      "thermal_pressure": "nominal",
+      "training_total_seconds": 11512.946026501915
+    }
+  ],
+  "schema_version": 1,
+  "status_counts": {
+    "completed": 1
+  }
+}

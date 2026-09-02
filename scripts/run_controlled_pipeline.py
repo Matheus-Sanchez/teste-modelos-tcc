@@ -240,7 +240,7 @@ def prepare_data(suite_path: Path, registry_path: Path, dataset: str) -> tuple[A
         validation_fraction=settings.validation_fraction,
         test_fraction=settings.test_fraction,
         extra_fraction=settings.training.extra_fraction,
-        augmentation=_augmentation_from_training(settings),
+        augmentation=_augmentation_from_training(settings.training),
         preprocess_cache_max_mib=settings.training.preprocess_cache_max_mib,
         shuffle_buffer_max_mib=settings.training.shuffle_buffer_max_mib,
     )
@@ -471,6 +471,7 @@ def run_stage_activation(
     resume: bool,
     dry_run: bool,
     activations: tuple[str, ...] = ACTIVATIONS,
+    skip_litert: bool = False,
 ) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     if dry_run:
@@ -489,7 +490,11 @@ def run_stage_activation(
                     activation,
                     output,
                     kind="activation",
-                    extra={"selected_quantization": selected, "return_code": 0},
+                    extra={
+                        "selected_quantization": selected,
+                        "return_code": 0,
+                        "litert_status": "skipped" if skip_litert else "planned",
+                    },
                 )
                 row["status"] = "planned"
                 rows.append(row)
@@ -507,25 +512,34 @@ def run_stage_activation(
             rc = execute_training(dataset, suite, registry, resume=resume, dry_run=False)
             if rc or status_of(run_root(output, dataset)) == "failed":
                 raise RuntimeError(f"Ativação {activation} falhou em {dataset}.")
-            post = export_litert(dataset, output, suite, registry, export_mode, resume=resume)
-            benchmark = post.get("benchmark", {}) if isinstance(post, dict) else {}
-            classification = benchmark.get("classification", {}) if isinstance(benchmark, dict) else {}
             row = training_row(
                 dataset,
                 activation,
                 output,
                 kind="activation",
-                extra={
-                    "selected_quantization": selected,
-                    "median_batch_latency_ms": benchmark.get("median_batch_latency_ms"),
-                    "throughput_examples_per_second": benchmark.get("throughput_examples_per_second"),
-                    "serialized_litert_bytes": post.get("serialized_litert_bytes"),
-                },
+                extra={"selected_quantization": selected},
             )
-            row.update({"status": post.get("status", row["status"]), "macro_f1": classification.get("macro_f1"), "accuracy": classification.get("accuracy")})
+            if skip_litert:
+                row["litert_status"] = "skipped"
+            else:
+                post = export_litert(dataset, output, suite, registry, export_mode, resume=resume)
+                benchmark = post.get("benchmark", {}) if isinstance(post, dict) else {}
+                classification = benchmark.get("classification", {}) if isinstance(benchmark, dict) else {}
+                row.update(
+                    {
+                        "status": post.get("status", row["status"]),
+                        "macro_f1": classification.get("macro_f1"),
+                        "accuracy": classification.get("accuracy"),
+                        "median_batch_latency_ms": benchmark.get("median_batch_latency_ms"),
+                        "throughput_examples_per_second": benchmark.get("throughput_examples_per_second"),
+                        "serialized_litert_bytes": post.get("serialized_litert_bytes"),
+                        "litert_status": post.get("status", "missing"),
+                    }
+                )
             rows.append(row)
             if row["status"] != "completed":
-                raise RuntimeError(f"Exportação {export_mode} falhou para {dataset}/{activation}.")
+                stage = "Treino" if skip_litert else f"Exportação {export_mode}"
+                raise RuntimeError(f"{stage} falhou para {dataset}/{activation}.")
     winners = {dataset: select_activation([row for row in rows if row["dataset"] == dataset]) for dataset in DATASETS}
     write_phase_report(root / "reports", phase="activation", rows=rows, winners=winners)
     return {"rows": rows, "winners": winners}
@@ -663,6 +677,11 @@ def main() -> int:
         action="store_true",
         help="Não executa preflight, auditoria nem smoke; permitido apenas com --activation-only.",
     )
+    parser.add_argument(
+        "--skip-litert",
+        action="store_true",
+        help="Não exporta nem mede LiteRT na fase de ativações; permitido apenas com --activation-only.",
+    )
     args = parser.parse_args()
     if args.skip_gates and not args.activation_only:
         parser.error("--skip-gates só pode ser usado com --activation-only.")
@@ -670,6 +689,8 @@ def main() -> int:
         parser.error("--skip-quantization não pode ser usado com --activation-only.")
     if args.skip_quantization and not args.skip_activation:
         parser.error("--skip-quantization exige --skip-activation, pois ativações dependem da quantização.")
+    if args.skip_litert and not args.activation_only:
+        parser.error("--skip-litert só pode ser usado com --activation-only.")
     if args.activation_batch_size is not None and not args.activation_only:
         parser.error("--activation-batch-size exige --activation-only.")
     if args.activation_only and args.activation_batch_size is None:
@@ -713,6 +734,7 @@ def main() -> int:
                 resume=args.resume,
                 dry_run=args.dry_run,
                 activations=args.activations,
+                skip_litert=args.skip_litert,
             )
             state["stages"]["activation"] = {
                 "status": stage_status,
@@ -722,6 +744,7 @@ def main() -> int:
                 "forced_batch_size": int(args.activation_batch_size),
                 "forced_dtype_policy": args.activation_dtype_policy,
                 "activations": list(args.activations),
+                "litert_status": "skipped" if args.skip_litert else "enabled",
             }
             phase_rows["activation"] = activation["rows"]
             winners["activation"] = activation["winners"]
@@ -790,6 +813,7 @@ def main() -> int:
                         resume=args.resume,
                         dry_run=args.dry_run,
                         activations=args.activations,
+                        skip_litert=args.skip_litert,
                     )
                     state["stages"]["activation"] = {
                         "status": stage_status,
