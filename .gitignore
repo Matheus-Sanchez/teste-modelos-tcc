@@ -11,6 +11,9 @@ datasets/
 datasets.local.yaml
 *.egg-info/
 node_modules/
+analysis_reports/augmentation05_status_diff/
+analysis_reports/mnist_softmax_report_app/
+analysis_reports/investigacao_ativacoes_atualizada.json
 *.keras
 *.h5
 *.log

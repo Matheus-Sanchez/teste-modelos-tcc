@@ -1,0 +1,9 @@
+{
+  "attempt": 1,
+  "detail": "Treino e avaliação concluídos",
+  "error": null,
+  "run_id": "cifar100_coarse__unit_interval__all_raw__seed-42",
+  "status": "completed",
+  "status_updated_at": "2026-09-03T09:55:32.010+00:00",
+  "updated_at": "2026-09-03T09:55:32.010+00:00"
+}

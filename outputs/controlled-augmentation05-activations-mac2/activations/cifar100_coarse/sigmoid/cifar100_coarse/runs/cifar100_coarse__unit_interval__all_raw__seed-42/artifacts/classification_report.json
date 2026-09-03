@@ -1,0 +1,237 @@
+{
+  "class_names": [
+    "aquatic_mammals",
+    "fish",
+    "flowers",
+    "food_containers",
+    "fruit_and_vegetables",
+    "household_electrical_devices",
+    "household_furniture",
+    "insects",
+    "large_carnivores",
+    "large_man-made_outdoor_things",
+    "large_natural_outdoor_scenes",
+    "large_omnivores_and_herbivores",
+    "medium_mammals",
+    "non-insect_invertebrates",
+    "people",
+    "reptiles",
+    "small_mammals",
+    "trees",
+    "vehicles_1",
+    "vehicles_2"
+  ],
+  "labels": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ],
+  "per_class": [
+    {
+      "class_index": 0,
+      "class_name": "aquatic_mammals",
+      "f1": 0.32664756446991405,
+      "label": 0,
+      "precision": 0.4596774193548387,
+      "recall": 0.25333333333333335,
+      "support": 450
+    },
+    {
+      "class_index": 1,
+      "class_name": "fish",
+      "f1": 0.3047619047619048,
+      "label": 1,
+      "precision": 0.3929824561403509,
+      "recall": 0.24888888888888888,
+      "support": 450
+    },
+    {
+      "class_index": 2,
+      "class_name": "flowers",
+      "f1": 0.6571155682903533,
+      "label": 2,
+      "precision": 0.576214405360134,
+      "recall": 0.7644444444444445,
+      "support": 450
+    },
+    {
+      "class_index": 3,
+      "class_name": "food_containers",
+      "f1": 0.31906614785992216,
+      "label": 3,
+      "precision": 0.38317757009345793,
+      "recall": 0.2733333333333333,
+      "support": 450
+    },
+    {
+      "class_index": 4,
+      "class_name": "fruit_and_vegetables",
+      "f1": 0.41975308641975306,
+      "label": 4,
+      "precision": 0.42403628117913833,
+      "recall": 0.41555555555555557,
+      "support": 450
+    },
+    {
+      "class_index": 5,
+      "class_name": "household_electrical_devices",
+      "f1": 0.2652519893899204,
+      "label": 5,
+      "precision": 0.32894736842105265,
+      "recall": 0.2222222222222222,
+      "support": 450
+    },
+    {
+      "class_index": 6,
+      "class_name": "household_furniture",
+      "f1": 0.3010752688172043,
+      "label": 6,
+      "precision": 0.23978919631093545,
+      "recall": 0.40444444444444444,
+      "support": 450
+    },
+    {
+      "class_index": 7,
+      "class_name": "insects",
+      "f1": 0.41379310344827586,
+      "label": 7,
+      "precision": 0.3563402889245586,
+      "recall": 0.49333333333333335,
+      "support": 450
+    },
+    {
+      "class_index": 8,
+      "class_name": "large_carnivores",
+      "f1": 0.28405797101449276,
+      "label": 8,
+      "precision": 0.210752688172043,
+      "recall": 0.43555555555555553,
+      "support": 450
+    },
+    {
+      "class_index": 9,
+      "class_name": "large_man-made_outdoor_things",
+      "f1": 0.5167464114832535,
+      "label": 9,
+      "precision": 0.453781512605042,
+      "recall": 0.6,
+      "support": 450
+    },
+    {
+      "class_index": 10,
+      "class_name": "large_natural_outdoor_scenes",
+      "f1": 0.6401925391095066,
+      "label": 10,
+      "precision": 0.6981627296587927,
+      "recall": 0.5911111111111111,
+      "support": 450
+    },
+    {
+      "class_index": 11,
+      "class_name": "large_omnivores_and_herbivores",
+      "f1": 0.30820399113082037,
+      "label": 11,
+      "precision": 0.3075221238938053,
+      "recall": 0.3088888888888889,
+      "support": 450
+    },
+    {
+      "class_index": 12,
+      "class_name": "medium_mammals",
+      "f1": 0.21839080459770116,
+      "label": 12,
+      "precision": 0.1919191919191919,
+      "recall": 0.25333333333333335,
+      "support": 450
+    },
+    {
+      "class_index": 13,
+      "class_name": "non-insect_invertebrates",
+      "f1": 0.0604982206405694,
+      "label": 13,
+      "precision": 0.15178571428571427,
+      "recall": 0.03777777777777778,
+      "support": 450
+    },
+    {
+      "class_index": 14,
+      "class_name": "people",
+      "f1": 0.43183609141055945,
+      "label": 14,
+      "precision": 0.33455433455433453,
+      "recall": 0.6088888888888889,
+      "support": 450
+    },
+    {
+      "class_index": 15,
+      "class_name": "reptiles",
+      "f1": 0.04316546762589928,
+      "label": 15,
+      "precision": 0.11320754716981132,
+      "recall": 0.02666666666666667,
+      "support": 450
+    },
+    {
+      "class_index": 16,
+      "class_name": "small_mammals",
+      "f1": 0.08683853459972864,
+      "label": 16,
+      "precision": 0.11149825783972125,
+      "recall": 0.07111111111111111,
+      "support": 450
+    },
+    {
+      "class_index": 17,
+      "class_name": "trees",
+      "f1": 0.6975666280417149,
+      "label": 17,
+      "precision": 0.7288135593220338,
+      "recall": 0.6688888888888889,
+      "support": 450
+    },
+    {
+      "class_index": 18,
+      "class_name": "vehicles_1",
+      "f1": 0.38117647058823534,
+      "label": 18,
+      "precision": 0.405,
+      "recall": 0.36,
+      "support": 450
+    },
+    {
+      "class_index": 19,
+      "class_name": "vehicles_2",
+      "f1": 0.32694763729246484,
+      "label": 19,
+      "precision": 0.3843843843843844,
+      "recall": 0.28444444444444444,
+      "support": 450
+    }
+  ],
+  "test": {
+    "accuracy": 0.3661111111111111,
+    "balanced_accuracy": 0.3661111111111111,
+    "generated_at": "2026-09-03T06:35:49.344+00:00",
+    "loss": 2.0521531105041504,
+    "macro_f1": 0.3501542700496097,
+    "n_samples": 9000,
+    "run_id": "cifar100_coarse__unit_interval__all_raw__seed-42"
+  }
+}

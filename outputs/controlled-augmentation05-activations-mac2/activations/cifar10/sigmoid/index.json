@@ -1,0 +1,14 @@
+{
+  "datasets": [
+    {
+      "dataset": "cifar10",
+      "report_path": "cifar10/report.html",
+      "run_count": 1,
+      "status_counts": {
+        "completed": 1
+      }
+    }
+  ],
+  "generated_at": "2026-09-02T19:48:51.303+00:00",
+  "schema_version": 1
+}
