@@ -7,6 +7,8 @@ artifacts/
 outputs/
 tmp-telemetry/
 data/
+!docs/augmentation05_final/data/
+!docs/augmentation05_final/data/**
 datasets/
 datasets.local.yaml
 *.egg-info/
