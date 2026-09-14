@@ -342,9 +342,15 @@ def convert_litert_model(
         raise RuntimeError("TensorFlow é necessário para exportar LiteRT.")
     target = Path(destination)
     target.parent.mkdir(parents=True, exist_ok=True)
-    payload: dict[str, Any] = {"mode": str(mode), "path": str(target), "status": "failed"}
-    try:
-        converter = _tf.lite.TFLiteConverter.from_keras_model(model)
+    payload: dict[str, Any] = {
+        "mode": str(mode),
+        "path": str(target),
+        "status": "failed",
+        "requires_flex_delegate": False,
+    }
+
+    def build_converter(conversion_model: Any) -> Any:
+        converter = _tf.lite.TFLiteConverter.from_keras_model(conversion_model)
         if mode == "fp16":
             converter.optimizations = [_tf.lite.Optimize.DEFAULT]
             converter.target_spec.supported_types = [_tf.float16]
@@ -358,12 +364,49 @@ def convert_litert_model(
             converter.inference_output_type = _tf.int8
         elif mode != "fp32":
             raise ValueError(f"Modo LiteRT desconhecido: {mode}")
+        return converter
+
+    def float32_export_clone() -> Any:
+        """Keep trained weights while rebuilding mixed-FP16 layers for native LiteRT."""
+
+        def clone_layer(layer: Any) -> Any:
+            config = layer.get_config()
+            if "dtype" in config:
+                config["dtype"] = "float32"
+            return layer.__class__.from_config(config)
+
+        cloned_model = _tf.keras.models.clone_model(model, clone_function=clone_layer)
+        cloned_model.set_weights(model.get_weights())
+        return cloned_model
+
+    try:
+        converter = build_converter(model)
         model_bytes = converter.convert()
         atomic_write_bytes(target, model_bytes)
         payload.update(inspect_litert_model(target))
         payload["status"] = "completed"
     except Exception as exc:  # A non-convertible graph is a recorded benchmark result.
-        payload["error"] = repr(exc)
+        if mode != "fp16" or "ERROR_NEEDS_FLEX_OPS" not in str(exc):
+            payload["error"] = repr(exc)
+        else:
+            try:
+                converter = build_converter(float32_export_clone())
+                model_bytes = converter.convert()
+                atomic_write_bytes(target, model_bytes)
+                payload.update(inspect_litert_model(target))
+                payload.update(
+                    {
+                        "status": "completed",
+                        "converter_fallback": "float32_clone_for_fp16_export",
+                    }
+                )
+            except Exception as fallback_exc:
+                payload.update(
+                    {
+                        "error": repr(fallback_exc),
+                        "standard_conversion_error": repr(exc),
+                    }
+                )
     atomic_write_json(target.with_suffix(target.suffix + ".metadata.json"), payload)
     return payload
 
@@ -452,9 +495,9 @@ def benchmark_litert(
     interpreter = _tf.lite.Interpreter(model_path=str(source), num_threads=max(1, (os.cpu_count() or 2) // 2))
     process = psutil.Process() if psutil is not None else None
     rss_before = int(process.memory_info().rss) if process is not None else None
+    interpreter.allocate_tensors()
     input_detail = interpreter.get_input_details()[0]
     output_detail = interpreter.get_output_details()[0]
-    interpreter.allocate_tensors()
 
     batches: list[tuple[np.ndarray, np.ndarray]] = []
     for value in test_dataset:

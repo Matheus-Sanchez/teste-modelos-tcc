@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import argparse
 import copy
+import csv
 import json
+import math
 import os
 import subprocess
 import sys
@@ -112,17 +114,33 @@ def execute_training(dataset: str, suite_path: Path, registry_path: Path, *, res
     return subprocess.run(command, cwd=PROJECT_ROOT, env=environment, check=False).returncode
 
 
+def logged_mean_epoch_seconds(run_root_path: Path) -> float | None:
+    """Return the durable epoch mean, including epochs completed before a resume."""
+    path = run_root_path / "logs" / "epoch_metrics.csv"
+    try:
+        with path.open("r", encoding="utf-8", newline="") as handle:
+            values = [
+                float(row["epoch_seconds"])
+                for row in csv.DictReader(handle)
+                if row.get("epoch_seconds") and math.isfinite(float(row["epoch_seconds"]))
+            ]
+    except (OSError, ValueError, KeyError):
+        return None
+    return sum(values) / len(values) if values else None
+
+
 def training_row(dataset: str, candidate: str, root: Path, *, kind: str, extra: dict[str, Any] | None = None) -> dict[str, Any]:
     current = run_root(root, dataset)
     test = read_json(current / "artifacts" / "test_metrics.json", {}) or {}
     summary = read_json(current / "logs" / "training_summary.json", {}) or {}
     classification = test.get("classification", {}) if isinstance(test, dict) else {}
+    mean_epoch_seconds = logged_mean_epoch_seconds(current)
     row: dict[str, Any] = {
         "dataset": dataset,
         "status": status_of(current),
         "macro_f1": classification.get("macro_f1"),
         "accuracy": classification.get("accuracy"),
-        "mean_epoch_seconds": summary.get("mean_epoch_seconds"),
+        "mean_epoch_seconds": mean_epoch_seconds if mean_epoch_seconds is not None else summary.get("mean_epoch_seconds"),
         "run_root": str(current),
     }
     row[{"batch": "batch_size", "quant": "variant", "activation": "hidden_activation"}[kind]] = candidate
@@ -236,10 +254,18 @@ def quant_row(dataset: str, variant: str, root: Path, suite_path: Path, registry
     return source
 
 
-def run_stage_batch(base: dict[str, Any], root: Path, registry: Path, *, resume: bool, dry_run: bool) -> dict[str, Any]:
+def run_stage_batch(
+    base: dict[str, Any],
+    root: Path,
+    registry: Path,
+    *,
+    batch_sizes: tuple[int, ...] = BATCH_SIZES,
+    resume: bool,
+    dry_run: bool,
+) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for dataset in DATASETS:
-        for batch in BATCH_SIZES:
+        for batch in batch_sizes:
             output = root / "batch" / f"batch-{batch:03d}"
             suite = root / "generated-suites" / "batch" / f"{dataset}-batch-{batch:03d}.yaml"
             write_variant_suite(base, suite, output, batch_size=batch, dtype_policy="mixed_float16", hidden_activation="swish")
@@ -315,6 +341,18 @@ def main() -> int:
     parser.add_argument("--suite", type=Path, default=Path("configs/controlled-augmentation2.yaml"))
     parser.add_argument("--registry", type=Path, default=Path("configs/datasets.yaml"))
     parser.add_argument("--output-root", type=Path, default=Path("outputs/controlled-augmentation2"))
+    parser.add_argument(
+        "--batch-sizes",
+        type=int,
+        nargs="+",
+        default=list(BATCH_SIZES),
+        help="Batches da primeira etapa; use '256' para executar apenas o batch 256.",
+    )
+    parser.add_argument(
+        "--skip-quantization",
+        action="store_true",
+        help="Executa ativacoes em mixed_float16, sem a etapa de quantizacao.",
+    )
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -323,6 +361,9 @@ def main() -> int:
     root = (PROJECT_ROOT / args.output_root).resolve() if not args.output_root.is_absolute() else args.output_root.resolve()
     if not suite.is_file() or not registry.is_file():
         parser.error("Suite ou registro de datasets não encontrado.")
+    if any(batch <= 0 for batch in args.batch_sizes):
+        parser.error("Todos os batch sizes devem ser positivos.")
+    batch_sizes = tuple(dict.fromkeys(int(batch) for batch in args.batch_sizes))
     base = read_suite(suite)
     root.mkdir(parents=True, exist_ok=True)
     state_path = root / "pipeline-status.json"
@@ -330,7 +371,14 @@ def main() -> int:
     status.setdefault("stages", {})
     started = time.perf_counter()
     try:
-        batch = run_stage_batch(base, root, registry, resume=args.resume, dry_run=args.dry_run)
+        batch = run_stage_batch(
+            base,
+            root,
+            registry,
+            batch_sizes=batch_sizes,
+            resume=args.resume,
+            dry_run=args.dry_run,
+        )
         if args.dry_run:
             status.update({"status": "dry_run_completed", "finished_at": timestamp(), "duration_seconds": round(time.perf_counter() - started, 3)})
             status["stages"]["batch"] = {"status": "planned"}
@@ -338,8 +386,24 @@ def main() -> int:
             return 0
         status["stages"]["batch"] = {"status": "completed", "winners": batch["winners"]}
         atomic_write_json(state_path, status)
-        quant = run_stage_quant(base, root, registry, batch["winners"], resume=args.resume, dry_run=args.dry_run)
-        status["stages"]["quantization"] = {"status": "completed", "winners": quant["winners"]}
+        if args.skip_quantization:
+            quant = {
+                "winners": {
+                    dataset: {
+                        "variant": "fp16",
+                        "selection_reason": "Quantization stage intentionally skipped; activation uses mixed_float16.",
+                    }
+                    for dataset in DATASETS
+                }
+            }
+            status["stages"]["quantization"] = {
+                "status": "skipped",
+                "reason": "Requested with --skip-quantization; activations use mixed_float16.",
+                "winners": quant["winners"],
+            }
+        else:
+            quant = run_stage_quant(base, root, registry, batch["winners"], resume=args.resume, dry_run=args.dry_run)
+            status["stages"]["quantization"] = {"status": "completed", "winners": quant["winners"]}
         atomic_write_json(state_path, status)
         activation = run_stage_activation(base, root, registry, batch["winners"], quant["winners"], resume=args.resume, dry_run=args.dry_run)
         status["stages"]["activation"] = {"status": "completed", "winners": activation["winners"]}
