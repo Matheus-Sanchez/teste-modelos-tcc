@@ -1,0 +1,660 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Relatório técnico — diagnóstico e plano de aceleração do treinamento",
+    "description": "Pesquisa baseada em documentação oficial e inspeção do pipeline atual, sem implementação de mudanças e sem interrupção do treinamento ativo.",
+    "generatedAt": "2026-08-28T14:44:50-03:00",
+    "sources": [
+      {
+        "id": "live_snapshot",
+        "label": "Snapshot local do treinamento",
+        "path": "analysis_reports/training_snapshot_2026-08-28.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura somente de processos, status individuais, checkpoint, métricas de época, manifest, telemetria e log do supervisor.",
+          "executed_at": "2026-08-28T14:44:50-03:00",
+          "metric_definitions": {
+            "telemetry_samples": "Linhas persistidas em telemetry/samples.csv.",
+            "gpu_utilization": "Utilização informada pelo backend apple-metal-ioreg; não é percentual de memória GPU.",
+            "wall_hours": "Tempo total de parede do run concluído, incluindo preparação e avaliação final."
+          }
+        }
+      },
+      {
+        "id": "repository_inspection",
+        "label": "Inspeção do pipeline e configuração",
+        "path": "analysis_reports/pipeline_inspection_2026-08-28.sql",
+        "query": {
+          "language": "code",
+          "description": "Leitura de scripts, runner, callbacks, modelo, configuração YAML e orquestrador para localizar custo de dados, validação, checkpoints, precisão e paralelismo.",
+          "executed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "completed_results",
+        "label": "Resultados de MNIST e Fashion-MNIST",
+        "path": "analysis_reports/completed_results_2026-08-28.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura dos oito runs concluídos, todos com 100 épocas, métricas de teste, tempo de parede e média de tempo por época.",
+          "executed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "forecast_model",
+        "label": "Previsão atual por volume e resolução",
+        "path": "analysis_reports/forecast_model_2026-08-28.sql",
+        "query": {
+          "language": "calculation",
+          "description": "Modelo local de previsão usado como base: extrapolação dos tempos observados, volume efetivo com extra_fraction=2.0, fatores de resolução e custo estimado de quantização.",
+          "executed_at": "2026-08-28T14:44:50-03:00",
+          "metric_definitions": {
+            "effective_train_volume": "Amostras brutas de treino × (1 + extra_fraction); com extra_fraction=2.0, o volume é 3× o split de treino.",
+            "central_estimate": "Estimativa de planejamento, não uma medição nem prazo garantido.",
+            "target_window": "Janela até 2026-09-01 00:00 BRT; restavam aproximadamente 81,4 horas no snapshot."
+          }
+        }
+      },
+      {
+        "id": "apple_metal",
+        "label": "Apple — TensorFlow para Metal",
+        "path": "https://developer.apple.com/metal/tensorflow-plugin/",
+        "query": {
+          "language": "web",
+          "url": "https://developer.apple.com/metal/tensorflow-plugin/",
+          "description": "Documentação oficial sobre requisitos, aceleração no GPU do Mac, custo de dispatch em redes pequenas e limitações de múltiplos GPUs.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "tf_mixed_precision",
+        "label": "TensorFlow — mixed precision",
+        "path": "https://www.tensorflow.org/guide/mixed_precision",
+        "query": {
+          "language": "web",
+          "url": "https://www.tensorflow.org/guide/mixed_precision",
+          "description": "Guia oficial sobre políticas mixed_float16, operações críticas em float32, memória e tamanho de batch.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "tf_data_performance",
+        "label": "TensorFlow — desempenho de tf.data",
+        "path": "analysis_reports/tf_data_performance_2026-08-28.sql",
+        "query": {
+          "language": "web",
+          "url": "https://www.tensorflow.org/guide/data_performance",
+          "description": "Guia oficial sobre parallel map, cache, prefetch, interleave e vetorização do pipeline de entrada.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "tf_gpu_performance",
+        "label": "TensorFlow — análise de desempenho em GPU",
+        "path": "https://www.tensorflow.org/guide/gpu_performance_analysis",
+        "query": {
+          "language": "web",
+          "url": "https://www.tensorflow.org/guide/gpu_performance_analysis",
+          "description": "Guia oficial para separar gargalo de input pipeline, device execution, mixed precision, callbacks e XLA.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "tf_profiler",
+        "label": "TensorFlow — Profiler",
+        "path": "analysis_reports/tf_profiler_2026-08-28.sql",
+        "query": {
+          "language": "web",
+          "url": "https://www.tensorflow.org/guide/profiler",
+          "description": "Documentação oficial do Profiler e do Input Pipeline Analyzer para uma janela curta de execução.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "keras_training_api",
+        "label": "Keras — APIs de treinamento",
+        "path": "https://keras.io/api/models/model_training_apis/",
+        "query": {
+          "language": "web",
+          "url": "https://keras.io/api/models/model_training_apis/",
+          "description": "Documentação oficial de steps_per_execution, jit_compile, auto_scale_loss e verbose do model.fit.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "keras_callbacks",
+        "label": "Keras — EarlyStopping e ReduceLROnPlateau",
+        "path": "https://keras.io/api/callbacks/early_stopping/",
+        "query": {
+          "language": "web",
+          "url": "https://keras.io/api/callbacks/early_stopping/",
+          "description": "Documentação oficial das callbacks para interromper após plateau, reduzir learning rate e preservar o melhor peso.",
+          "related_urls": ["https://keras.io/api/callbacks/reduce_lr_on_plateau/"],
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "keras_backup",
+        "label": "Keras — BackupAndRestore",
+        "path": "https://keras.io/api/callbacks/backup_and_restore/",
+        "query": {
+          "language": "web",
+          "url": "https://keras.io/api/callbacks/backup_and_restore/",
+          "description": "Documentação oficial da recuperação de estado após interrupção.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "tf_distributed",
+        "label": "TensorFlow — treinamento distribuído",
+        "path": "https://www.tensorflow.org/guide/distributed_training",
+        "query": {
+          "language": "web",
+          "url": "https://www.tensorflow.org/guide/distributed_training",
+          "description": "Documentação oficial de estratégias distribuídas e requisitos de configuração multi-worker.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      },
+      {
+        "id": "keras_transfer_learning",
+        "label": "Keras — transfer learning",
+        "path": "https://keras.io/guides/transfer_learning/",
+        "query": {
+          "language": "web",
+          "url": "https://keras.io/guides/transfer_learning/",
+          "description": "Referência oficial para feature extraction e fine-tuning; considerada apenas como alternativa que muda o protocolo científico.",
+          "accessed_at": "2026-08-28T14:44:50-03:00"
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "layout": "full",
+        "body": "# Relatório técnico — diagnóstico e plano de aceleração do treinamento"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Resumo técnico\n\nO treinamento **não foi interrompido**. No snapshot de 28/08/2026 às 14:44:50 BRT, o supervisor, o `caffeinate` e o processo TensorFlow estavam ativos. A matriz de batches tinha **8 de 36 jobs concluídos, 1 em execução e 27 pendentes**, sem falhas. O KMNIST batch 32 havia persistido a época 98, com F1 macro de validação de 98,90%; a média das últimas cinco épocas era 979,0 s.\n\nA captura de hardware está funcionando e sendo salva no run ativo: `telemetry/samples.csv` continha **20.843 amostras**, com backend `apple-metal-ioreg`, GPU média de 68,5%, processo consumindo cerca de 95% de CPU em média, RAM do sistema em 79,0% em média e pressão térmica sempre `nominal`. A ausência de percentual de memória da GPU é uma limitação de exposição do backend de memória unificada, não evidência de que a telemetria deixou de ser gravada.\n\nO diagnóstico principal é de **volume de trabalho e custo de protocolo**, não de erro de treinamento: `extra_fraction=2.0` triplica os exemplos efetivos de treino; são quatro batches por dataset em série; validação é percorrida novamente pelo callback de Macro-F1 a cada época; e a configuração atual ainda segue para quantização depois dos 36 batches. Com a fila completa, a previsão local anterior era aproximadamente 1.441,9 h restantes. Isso é incompatível com a janela até 01/09; uma estratégia acelerada precisa reduzir a matriz, executar fases independentes em paralelo e validar cuidadosamente o impacto metodológico."
+      },
+      {
+        "id": "headline_metrics",
+        "type": "metric-strip",
+        "layout": "full",
+        "cardIds": ["progress", "active_run", "telemetry", "current_forecast", "target_window"]
+      },
+      {
+        "id": "state",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "repository_inspection",
+        "body": "## O que aconteceu e o que ainda falta\n\nAs auditorias, preflight e smoke tests já passaram. Os oito runs concluídos são MNIST e Fashion-MNIST em batches 32, 64, 128 e 256; cada um chegou a 100 épocas, produziu checkpoint selecionado, métricas de teste e resumo de telemetria. O KMNIST batch 32 foi retomado por checkpoint e continua sendo o job crítico atual.\n\nO comando ativo contém `--skip-activation`, mas **não** contém `--skip-quantization`. Portanto, se permanecer sem alteração, ele ainda executará 36 batches e depois a matriz de quantização: 18 treinos FP32/FP16 e 9 conversões PTQ. As ativações ficam fora deste Mac por causa do `--skip-activation`, mas a matriz do outro Mac não é observável neste workspace.\n\nO que falta para o protocolo completo é: concluir os 28 jobs de batch que incluem o job ativo; selecionar vencedores por dataset; executar os 18 treinos de quantização e 9 PTQ previstos pelo orquestrador; e executar/receber os 27 testes de ativação no outro Mac. O que falta para uma decisão de aceleração é medir, em uma janela curta, se o gargalo dominante de cada família é input pipeline, callbacks/validação, execução do modelo ou volume de exemplos."
+      },
+      {
+        "id": "state_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "state_table"
+      },
+      {
+        "id": "capture",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Captura e salvamento dos dados\n\nA evidência disponível é suficiente para afirmar que os dados de uso do hardware estão sendo capturados e persistidos durante o run ativo. O arquivo contém timestamp, tempo decorrido, CPU total e do processo, RAM, RSS, leitura/escrita em disco, backend e utilização da GPU, memória do driver e pressão térmica. Nos oito runs completos, os resumos de telemetria também foram salvos.\n\nHá duas ressalvas: o backend Metal não preenche percentual de memória GPU, temperatura ou potência em todas as amostras; e a observabilidade de hardware não deve ser confundida com um profiler de operações. Para decidir qual otimização aplicar, será necessário um perfil curto com o TensorFlow Profiler e o Input Pipeline Analyzer, sem tocar no processo longo atual."
+      },
+      {
+        "id": "capture_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "capture_table"
+      },
+      {
+        "id": "results",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "completed_results",
+        "body": "## Resultados já observados\n\nBatch 256 é o melhor ponto de partida para um **screening rápido**, mas não é automaticamente o vencedor de qualidade. Em MNIST, batch 64 obteve o melhor F1 macro de teste (99,05%), enquanto batch 256 terminou em 7,57 h e ficou apenas 0,13 ponto percentual abaixo. Em Fashion-MNIST, batch 32 teve o melhor F1 (92,92%); batch 256 terminou em 7,72 h, cerca de 3,8 vezes mais rápido que batch 32, com queda de 0,58 ponto percentual.\n\nA leitura correta é: batches maiores aumentam muito a velocidade por run, mas podem alterar a qualidade final. A recomendação é usar batch 256 para selecionar rapidamente candidatos e reexecutar batches menores somente quando a diferença de F1 ultrapassar uma margem definida. Não há dados suficientes para afirmar que essa relação se manterá em RGB, GTSRB, SVHN, EMNIST ou FER2013; esses datasets precisam de uma medição curta antes de extrapolar."
+      },
+      {
+        "id": "speed_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "speed_chart"
+      },
+      {
+        "id": "results_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "results_table"
+      },
+      {
+        "id": "bottlenecks",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "repository_inspection",
+        "body": "## Gargalos prováveis no pipeline atual\n\n1. **Volume efetivo por época.** Com 49.000 exemplos de treino KMNIST, `extra_fraction=2.0` cria 98.000 exemplos aumentados adicionais, totalizando 147.000 exemplos e 4.594 steps por época em batch 32. Esse é o maior multiplicador de trabalho e também o que mais muda o protocolo se for reduzido.\n\n2. **Validação duplicada.** `model.fit` percorre a validação para loss/acurácia e, no fim de cada época, `EpochMetricsCallback` percorre novamente para calcular Macro-F1 e métricas por classe. Em 100 épocas, esse custo é repetido 100 vezes.\n\n3. **Decodificação e resize em tempo de execução.** O `tf.data` usa paralelismo e prefetch, mas imagens são abertas/decodificadas durante o treino. GTSRB passa por `tf.numpy_function` com Pillow. Para RGB e 128 px, o cache atual provavelmente não cabe no limite de 1 GiB e pode ser desativado; isso precisa ser confirmado no primeiro run RGB.\n\n4. **Sobrecarga Python/log.** `keras_verbose=1` gera barra de progresso em um log de aproximadamente 512 MB no run ativo. O compilador usa `steps_per_execution=1` por padrão e o modelo desabilita `jit_compile`. Ambos podem ser hipóteses válidas para benchmark curto, não mudanças para aplicar às cegas.\n\n5. **Matriz sequencial e fases posteriores.** O orquestrador executa nove datasets × quatro batches em série e, depois, quantização. A execução em dois Macs pode dividir datasets independentes, mas sincronização multi-worker seria uma arquitetura nova e não é o caminho de menor risco."
+      },
+      {
+        "id": "bottleneck_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "bottleneck_table"
+      },
+      {
+        "id": "research",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "tf_data_performance",
+        "body": "## O que a pesquisa oficial recomenda\n\nA documentação do TensorFlow recomenda medir primeiro o input pipeline, depois o tempo de execução no device, e só então testar mixed precision ou XLA. O pipeline atual já aplica `num_parallel_calls=AUTOTUNE`, `prefetch(AUTOTUNE)` e cache para casos que cabem no limite. O próximo ganho provável é tornar a entrada mais barata: pré-processar imagens para tamanho fixo, cachear em SSD local/TFRecord e testar vetorização da transformação após o batch.\n\nA Apple documenta que o plugin tensorflow-metal acelera o treino no GPU do Mac, mas que redes pequenas e batches pequenos podem perder para CPU por custo de dispatch. Isso dá suporte à priorização de batch 256 e ao benchmark de `steps_per_execution`, mas não justifica assumir que o maior batch sempre preserva a qualidade. A mesma documentação informa que múltiplos GPUs não são suportados no plugin; dois Macs devem ser usados como execução de fases/datasets independentes, não como um único worker síncrono.\n\nO guia de mixed precision confirma que `mixed_float16` é a política apropriada para explorar aceleradores quando há ganho e memória suficiente. Essa otimização **já está ativa** no pipeline atual. O próximo passo não é trocar precisão às cegas, e sim confirmar ganho por dataset e preservar saídas críticas em float32."
+      },
+      {
+        "id": "research_training",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "keras_training_api",
+        "body": "A API oficial do Keras descreve `steps_per_execution` como uma forma de agrupar batches em uma função compilada, reduzindo overhead Python em modelos pequenos; callbacks de batch passam a ocorrer a cada N batches, então a telemetria e qualquer lógica de checkpoint por batch precisam ser validadas. O mesmo material documenta `verbose=2` para uma linha por época, mais adequado que barra interativa em logs longos. `jit_compile=\"auto\"`/XLA deve ser testado em um smoke curto, porque ganhos e compatibilidade dependem do grafo e de operações suportadas no backend Metal.\n\nEarlyStopping e ReduceLROnPlateau são extensões já previstas no código, mas estão desativadas na configuração atual. Elas podem reduzir épocas desperdiçadas em um perfil de screening, monitorando Macro-F1 e preservando os melhores pesos. Não devem ser ativadas sem registrar que o protocolo mudou: um run que para antes de 100 épocas não é comparável, sem ressalva, ao benchmark completo. BackupAndRestore deve permanecer, pois a documentação oficial o destina à recuperação de pesos e época após interrupções."
+      },
+      {
+        "id": "research_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "research_table"
+      },
+      {
+        "id": "scenarios",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Previsões e cenários para terminar mais cedo\n\nA previsão do comando atual continua longa: aproximadamente 665,5 h para os batches restantes e 776,4 h para a quantização prevista, totalizando 1.441,9 h; a ativação está fora desse comando. Essa estimativa não é falha de execução: é consequência do protocolo completo, quatro batches por dataset, três vezes o volume de treino e fases de quantização adicionais.\n\nA janela até 01/09 tinha cerca de 81,4 h no snapshot. Assim, o protocolo completo não cabe nela. Um cenário de **batch 256 em dois Macs**, mantendo 100 épocas e o volume aumentado, é estimado em aproximadamente 45–60 h de parede para a matriz de nove datasets; é uma extrapolação de planejamento baseada nos oito runs concluídos, não medição. Um cenário de screening com batch 256, menos épocas e `extra_fraction` reduzido pode caber em cerca de 20–40 h em dois Macs, mas muda a força da comparação e precisa de validação.\n\nPara cumprir prazo, a decisão científica precisa ser explícita: ou o TCC mantém o protocolo completo e aceita uma data posterior, ou declara um protocolo de screening/finalistas. A quantização também deve ser restrita aos finalistas se o objetivo for entrega rápida; executar os 18 treinos e 9 PTQ é incompatível com o calendário atual. PTQ não deve ser apresentado como equivalente a treinamento quantizado sem uma justificativa metodológica."
+      },
+      {
+        "id": "scenario_chart",
+        "type": "chart",
+        "layout": "full",
+        "chartId": "scenario_chart"
+      },
+      {
+        "id": "scenario_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "scenario_table"
+      },
+      {
+        "id": "implementation_plan",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "tf_profiler",
+        "body": "## Plano de implementação recomendado, sem aplicar agora\n\n**Fase 0 — congelar evidência.** Deixar o run atual terminar sem mudança. Preservar manifest, métricas, checkpoints, `telemetry/samples.csv` e o log. Registrar o protocolo atual como baseline.\n\n**Fase 1 — benchmark curto isolado.** Em um dataset cinza, um RGB e GTSRB, executar apenas 3–5 épocas em cópias de configuração: baseline; `verbose=2`; `steps_per_execution=16` e 32; `jit_compile=\"auto\"`; e entrada pré-processada/cacheada. Medir tempo por época, exemplos/s, espera do device, uso da GPU, RAM, tamanho de log e F1. O TensorFlow Profiler deve ser aplicado nessa janela curta, com o Input Pipeline Analyzer, nunca como justificativa baseada em uma execução de dezenas de horas.\n\n**Fase 2 — ganhos operacionais de baixo risco.** Usar `verbose=2`, manter `BackupAndRestore`, separar output roots por Mac e dividir datasets entre os dois Macs. Não compartilhar o mesmo diretório de run nem iniciar dois processos escrevendo o mesmo checkpoint.\n\n**Fase 3 — entrada e custo por época.** Se o perfil mostrar espera de input, pré-converter RGB/GTSRB para formato fixo e cache local, testar vetorização da augmentation após batch e medir se o cache cabe sem pressão de memória. Só considerar `deterministic=False` em um perfil separado, pois reduz reprodutibilidade.\n\n**Fase 4 — orçamento de treino.** Usar batch 256 para triagem; rodar b64/b32 apenas nos datasets em que a qualidade ou estabilidade justificar. Definir `extra_fraction` do screening, `max_epochs`, warm-up e paciência de EarlyStopping antes de iniciar; registrar que não é o mesmo protocolo de 100 épocas com extra_fraction=2.0.\n\n**Fase 5 — finalistas e pós-processamento.** Aplicar quantização e ativação somente aos vencedores definidos, salvo se o TCC exigir a matriz completa. Reexecutar teste final uma vez, com o checkpoint selecionado, e publicar a diferença de protocolo.\n\n**Fase 6 — auditoria final.** Conferir que cada run tem status, manifest, `epoch_metrics.csv`, checkpoint, test metrics e telemetria; comparar seeds; registrar horas de parede, qualidade, temperatura/pressão e eventuais gaps de telemetria."
+      },
+      {
+        "id": "plan_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "plan_table"
+      },
+      {
+        "id": "risks",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Riscos, critérios de aceite e o que não fazer\n\nO risco mais importante é transformar aceleração em um resultado não comparável: reduzir augmentation, épocas, validações ou batches altera a pergunta experimental. Por isso, o plano separa screening rápido de finalistas e exige uma tabela de protocolo junto com os resultados.\n\nCritérios mínimos para adotar uma otimização: nenhum erro ou fallback silencioso no Metal; recuperação por `--resume` preservada; todos os artefatos e telemetria presentes; ganho de throughput medido em pelo menos três famílias de dataset; queda de F1 dentro da margem pré-definida; e memória/pressão térmica sem deterioração relevante. Não recomendo, para o prazo imediato, reescrever a arquitetura, ativar treinamento distribuído síncrono entre Macs ou adotar transfer learning: são mudanças maiores e alteram o estudo."
+      },
+      {
+        "id": "risk_table",
+        "type": "table",
+        "layout": "full",
+        "tableId": "risk_table"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Limitações e perguntas abertas\n\nAs projeções rápidas ainda não têm medição real de RGB/GTSRB neste Mac; podem variar por resolução, decodificação e comportamento do Metal. O tempo de quantização depende do batch vencedor e não foi recalibrado com a matriz adicional. A telemetria informa bem utilização, memória de processo, disco e pressão térmica, mas não fornece de modo consistente temperatura, potência ou percentual da memória unificada. A análise de qualidade de dados anterior encontrou duplicatas exatas e grupos com rótulos conflitantes em CIFAR100 coarse, FER2013 e SVHN; isso é relevante para interpretação de qualidade, embora não seja o gargalo primário de velocidade.\n\nAntes de implementar, ainda é necessário decidir: qual margem de queda de Macro-F1 é aceitável no screening; se o TCC exige os quatro batches em todos os datasets; se quantização deve ser treinada ou apenas aplicada aos finalistas; e qual divisão de datasets será executada no segundo Mac. O relatório foi validado estruturalmente como artefato; a validação visual em navegador não foi executada porque o renderer/browser de relatório não está disponível neste ambiente."
+      },
+      {
+        "id": "conclusion",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Conclusão executiva\n\nO treinamento está funcionando, os checkpoints estão sendo retomados e os dados de hardware estão sendo salvos. Não há sinal atual de falha térmica, OOM ou corrupção de métricas. O que impede a conclusão rápida é o desenho do experimento e o custo acumulado, não uma interrupção.\n\nA rota mais segura para reduzir prazo é: manter o run atual intacto; fazer benchmark curto em paralelo; adotar batch 256 para triagem; dividir datasets entre dois Macs com diretórios separados; reduzir validação/épocas/augmentation apenas em um perfil explicitamente chamado screening; e quantizar/avaliar ativações somente nos finalistas, se isso for aceitável para o TCC. A rota de protocolo integral continua válida, mas não termina antes de setembro com o hardware e a fila atuais."
+      }
+    ],
+    "cards": [
+      {
+        "id": "progress",
+        "dataset": "headline_metrics",
+        "description": "Matriz batch: jobs concluídos, em execução e pendentes.",
+        "metrics": [
+          {"label": "Concluídos", "field": "completed", "format": "number"},
+          {"label": "de", "field": "total", "format": "number"},
+          {"label": "Pendentes", "field": "pending", "format": "number"}
+        ],
+        "sourceId": "live_snapshot"
+      },
+      {
+        "id": "active_run",
+        "dataset": "headline_metrics",
+        "description": "Última época persistida no KMNIST batch 32.",
+        "metrics": [
+          {"label": "Época persistida", "field": "active_epoch", "format": "number"},
+          {"label": "F1 val", "field": "active_f1", "format": "percent"}
+        ],
+        "sourceId": "live_snapshot"
+      },
+      {
+        "id": "telemetry",
+        "dataset": "headline_metrics",
+        "description": "Observabilidade persistida no run ativo.",
+        "metrics": [
+          {"label": "Amostras", "field": "telemetry_samples", "format": "number"},
+          {"label": "GPU média", "field": "gpu_mean", "format": "percent"},
+          {"label": "Thermal", "field": "thermal", "format": "text"}
+        ],
+        "sourceId": "live_snapshot"
+      },
+      {
+        "id": "current_forecast",
+        "dataset": "headline_metrics",
+        "description": "Horas restantes estimadas no protocolo completo do comando atual.",
+        "metrics": [
+          {"label": "Horas restantes", "field": "current_remaining_hours", "format": "number"},
+          {"label": "Término central", "field": "current_eta", "format": "text"}
+        ],
+        "sourceId": "forecast_model"
+      },
+      {
+        "id": "target_window",
+        "dataset": "headline_metrics",
+        "description": "Tempo disponível até 01/09/2026 00:00 BRT no snapshot.",
+        "metrics": [
+          {"label": "Janela", "field": "target_hours", "format": "number"},
+          {"label": "Diagnóstico", "field": "target_status", "format": "text"}
+        ],
+        "sourceId": "forecast_model"
+      }
+    ],
+    "charts": [
+      {
+        "id": "speed_chart",
+        "dataset": "completed_results",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Tempo de parede observado por batch",
+        "subtitle": "100 épocas; MNIST e Fashion-MNIST são os únicos datasets com matriz completa neste snapshot.",
+        "showDescription": true,
+        "encodings": {
+          "x": {"field": "run", "type": "nominal"},
+          "y": {"field": "wall_hours", "type": "quantitative"}
+        },
+        "sourceId": "completed_results"
+      },
+      {
+        "id": "scenario_chart",
+        "dataset": "scenario_estimates",
+        "type": "bar",
+        "intent": "comparison",
+        "title": "Horas centrais por cenário de execução",
+        "subtitle": "Cenários acelerados são extrapolações de planejamento; não substituem benchmark curto.",
+        "showDescription": true,
+        "encodings": {
+          "x": {"field": "scenario", "type": "nominal"},
+          "y": {"field": "central_hours", "type": "quantitative"}
+        },
+        "sourceId": "forecast_model"
+      }
+    ],
+    "tables": [
+      {
+        "id": "state_table",
+        "dataset": "state_table",
+        "title": "Estado das fases",
+        "subtitle": "Status individual e artefatos observados no workspace.",
+        "showDescription": true,
+        "columns": [
+          {"field": "order", "label": "Ordem"},
+          {"field": "phase", "label": "Fase"},
+          {"field": "done", "label": "Concluído"},
+          {"field": "running", "label": "Executando"},
+          {"field": "remaining", "label": "Falta"},
+          {"field": "assessment", "label": "Avaliação"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "sourceId": "live_snapshot"
+      },
+      {
+        "id": "capture_table",
+        "dataset": "capture_table",
+        "title": "Auditoria da captura e salvamento",
+        "subtitle": "O que foi observado no run ativo e nos runs completos.",
+        "showDescription": true,
+        "columns": [
+          {"field": "item", "label": "Item"},
+          {"field": "evidence", "label": "Evidência"},
+          {"field": "status", "label": "Status"},
+          {"field": "limitation", "label": "Limitação"}
+        ],
+        "defaultSort": {"field": "item", "direction": "asc"},
+        "sourceId": "live_snapshot"
+      },
+      {
+        "id": "results_table",
+        "dataset": "completed_results",
+        "title": "Resultados finais já disponíveis",
+        "subtitle": "F1 macro e tempo de parede no teste; todos os runs listados completaram 100 épocas.",
+        "showDescription": true,
+        "columns": [
+          {"field": "dataset", "label": "Dataset"},
+          {"field": "batch", "label": "Batch"},
+          {"field": "test_macro_f1", "label": "F1 teste"},
+          {"field": "wall_hours", "label": "Horas"},
+          {"field": "mean_epoch_seconds", "label": "s/época"}
+        ],
+        "defaultSort": {"field": "dataset", "direction": "asc"},
+        "sourceId": "completed_results"
+      },
+      {
+        "id": "bottleneck_table",
+        "dataset": "bottleneck_table",
+        "title": "Gargalos e ação recomendada",
+        "subtitle": "Prioridade baseada na evidência local e no risco de mudança metodológica.",
+        "showDescription": true,
+        "columns": [
+          {"field": "priority", "label": "Prioridade"},
+          {"field": "bottleneck", "label": "Gargalo"},
+          {"field": "evidence", "label": "Evidência"},
+          {"field": "action", "label": "Ação para benchmark"},
+          {"field": "risk", "label": "Risco"}
+        ],
+        "defaultSort": {"field": "priority", "direction": "asc"},
+        "sourceId": "repository_inspection"
+      },
+      {
+        "id": "research_table",
+        "dataset": "research_table",
+        "title": "Matriz de pesquisa e aplicabilidade",
+        "subtitle": "Fontes oficiais utilizadas e decisão para este pipeline.",
+        "showDescription": true,
+        "columns": [
+          {"field": "order", "label": "Ordem"},
+          {"field": "topic", "label": "Tema"},
+          {"field": "official_guidance", "label": "Orientação oficial"},
+          {"field": "current_status", "label": "Status atual"},
+          {"field": "recommendation", "label": "Recomendação"},
+          {"field": "risk", "label": "Risco"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "sourceId": "tf_data_performance"
+      },
+      {
+        "id": "scenario_table",
+        "dataset": "scenario_estimates",
+        "title": "Cenários de prazo",
+        "subtitle": "A partir do snapshot de 28/08; intervalos acelerados são planejamento.",
+        "showDescription": true,
+        "columns": [
+          {"field": "order", "label": "Ordem"},
+          {"field": "scenario", "label": "Cenário"},
+          {"field": "scope", "label": "Escopo"},
+          {"field": "central_hours", "label": "Horas centrais"},
+          {"field": "range", "label": "Faixa"},
+          {"field": "finish_estimate", "label": "Término aproximado"},
+          {"field": "confidence", "label": "Confiança"},
+          {"field": "methodology", "label": "Efeito metodológico"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "sourceId": "forecast_model"
+      },
+      {
+        "id": "plan_table",
+        "dataset": "plan_table",
+        "title": "Plano de implementação em fases",
+        "subtitle": "Sequência proposta para aplicar depois da decisão de escopo.",
+        "showDescription": true,
+        "columns": [
+          {"field": "order", "label": "Fase"},
+          {"field": "step", "label": "Ação"},
+          {"field": "duration", "label": "Duração esperada"},
+          {"field": "deliverable", "label": "Saída"},
+          {"field": "go_no_go", "label": "Critério go/no-go"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "sourceId": "tf_profiler"
+      },
+      {
+        "id": "risk_table",
+        "dataset": "risk_table",
+        "title": "Registro de riscos e critérios de aceite",
+        "subtitle": "Guardrails para acelerar sem perder validade do experimento.",
+        "showDescription": true,
+        "columns": [
+          {"field": "risk", "label": "Risco"},
+          {"field": "impact", "label": "Impacto"},
+          {"field": "mitigation", "label": "Mitigação"},
+          {"field": "acceptance", "label": "Aceite"}
+        ],
+        "defaultSort": {"field": "impact", "direction": "desc"},
+        "sourceId": "forecast_model"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "partial",
+    "generatedAt": "2026-08-28T14:44:50-03:00",
+    "datasets": {
+      "headline_metrics": [
+        {
+          "completed": 8,
+          "total": 36,
+          "pending": 27,
+          "active_epoch": 98,
+          "active_f1": 0.9890497054272591,
+          "telemetry_samples": 20843,
+          "gpu_mean": 0.68487,
+          "thermal": "nominal",
+          "current_remaining_hours": 1441.9,
+          "current_eta": "27/10/2026 ~16:30 BRT",
+          "target_hours": 81.4,
+          "target_status": "protocolo completo não cabe"
+        }
+      ],
+      "state_table": [
+        {"order": 1, "phase": "Auditorias, preflight e smoke", "done": "3 de 3", "running": "não", "remaining": "0", "assessment": "concluída"},
+        {"order": 2, "phase": "Matriz de batches", "done": "8 de 36", "running": "KMNIST b32, época 98 persistida", "remaining": "27 jobs", "assessment": "ativa e saudável"},
+        {"order": 3, "phase": "Quantização", "done": "0 de 18 treinos / 0 de 9 PTQ", "running": "não", "remaining": "18 + 9", "assessment": "ainda será chamada pelo comando ativo"},
+        {"order": 4, "phase": "Ativações", "done": "0 observado neste workspace", "running": "não observado", "remaining": "27 testes", "assessment": "pulada neste Mac; segundo Mac sem evidência local"}
+      ],
+      "capture_table": [
+        {"item": "Processo", "evidence": "supervisor e filho TensorFlow ativos; filho ~97,8% CPU no snapshot", "status": "capturando", "limitation": "status global antigo não é fonte de verdade"},
+        {"item": "Checkpoint", "evidence": "best.keras, last.keras e BackupAndRestore presentes; época 98 persistida", "status": "salvo", "limitation": "métrica só fecha ao fim da época"},
+        {"item": "Métricas", "evidence": "epoch_metrics.csv com 98 épocas e F1 val da última época", "status": "salvo", "limitation": "teste final só existe em runs concluídos"},
+        {"item": "Telemetria", "evidence": "20.843 linhas em telemetry/samples.csv; 99.490 amostras nos oito runs completos no snapshot anterior", "status": "salvo", "limitation": "alguns campos Metal ficam vazios"},
+        {"item": "GPU/CPU/RAM", "evidence": "GPU Metal média 68,5%; processo CPU média ~95%; RAM média 79,0%", "status": "salvo", "limitation": "GPU é memória unificada; percentual de memória não reportado"},
+        {"item": "Termal/disco", "evidence": "pressão térmica nominal em 20.844 amostras; 265 GiB livres no volume", "status": "sem alerta", "limitation": "temperatura e potência não disponíveis nas amostras"},
+        {"item": "Log", "evidence": "pipeline.log com aproximadamente 512 MB", "status": "salvo", "limitation": "verbose=1 gera I/O e baixa legibilidade operacional"}
+      ],
+      "completed_results": [
+        {"dataset": "Fashion-MNIST", "batch": 32, "run": "Fashion b32", "test_macro_f1": 0.9291633449710837, "wall_hours": 29.35, "mean_epoch_seconds": 1022.43},
+        {"dataset": "Fashion-MNIST", "batch": 64, "run": "Fashion b64", "test_macro_f1": 0.9276972711378091, "wall_hours": 19.16, "mean_epoch_seconds": 664.04},
+        {"dataset": "Fashion-MNIST", "batch": 128, "run": "Fashion b128", "test_macro_f1": 0.9222095466805189, "wall_hours": 13.96, "mean_epoch_seconds": 486.71},
+        {"dataset": "Fashion-MNIST", "batch": 256, "run": "Fashion b256", "test_macro_f1": 0.9234042407841256, "wall_hours": 7.72, "mean_epoch_seconds": 267.01},
+        {"dataset": "MNIST", "batch": 32, "run": "MNIST b32", "test_macro_f1": 0.9897878260718647, "wall_hours": 29.99, "mean_epoch_seconds": 1044.59},
+        {"dataset": "MNIST", "batch": 64, "run": "MNIST b64", "test_macro_f1": 0.9905256296537901, "wall_hours": 19.02, "mean_epoch_seconds": 658.31},
+        {"dataset": "MNIST", "batch": 128, "run": "MNIST b128", "test_macro_f1": 0.9904790015498719, "wall_hours": 14.30, "mean_epoch_seconds": 498.48},
+        {"dataset": "MNIST", "batch": 256, "run": "MNIST b256", "test_macro_f1": 0.9892281711464769, "wall_hours": 7.57, "mean_epoch_seconds": 261.76}
+      ],
+      "bottleneck_table": [
+        {"priority": 1, "bottleneck": "Extra augmentation", "evidence": "extra_fraction=2.0; 147.000 exemplos efetivos/época no KMNIST", "action": "benchmark 0.0, 0.5 e 2.0 em perfil separado", "risk": "alto: muda exposição de treino"},
+        {"priority": 2, "bottleneck": "Quatro batches em série", "evidence": "8/36 concluídos; cada dataset repete 4 treinos", "action": "batch 256 para triagem e dois Macs por partição", "risk": "médio: pode reduzir F1"},
+        {"priority": 3, "bottleneck": "Validação duplicada", "evidence": "fit valida e callback recalcula Macro-F1 a cada época", "action": "Macro-F1 a cada 5 épocas no screening; teste final completo", "risk": "médio: muda seleção de checkpoint"},
+        {"priority": 4, "bottleneck": "Decode/resize online", "evidence": "tf.io.read_file/decode e Pillow para GTSRB", "action": "profiler; pré-processar/cachear RGB e GTSRB", "risk": "baixo/médio se fingerprints forem preservados"},
+        {"priority": 5, "bottleneck": "steps_per_execution=1", "evidence": "compile_legacy_cnn não define agrupamento", "action": "smoke com 16 e 32", "risk": "médio: callbacks de batch mudam frequência"},
+        {"priority": 6, "bottleneck": "Log e XLA", "evidence": "verbose=1; jit_compile=False", "action": "verbose=2; jit auto em smoke", "risk": "baixo para log; médio para XLA"}
+      ],
+      "research_table": [
+        {"order": 1, "topic": "tf.data", "official_guidance": "parallel map, cache após operação cara, prefetch e vetorização", "current_status": "AUTOTUNE/prefetch/cache parcial já usados", "recommendation": "perfil de input; pré-processamento para RGB/GTSRB", "risk": "baixo se split/seed forem preservados"},
+        {"order": 2, "topic": "Apple Metal", "official_guidance": "batches maiores amortizam dispatch; multi-GPU não suportado", "current_status": "GPU Metal ativo; b256 já é muito mais rápido", "recommendation": "usar dois Macs por fases independentes", "risk": "baixo; não sincronizar workers"},
+        {"order": 3, "topic": "Mixed precision", "official_guidance": "mixed_float16 usa acelerador e mantém operações críticas em FP32", "current_status": "já ativo na configuração", "recommendation": "manter e medir; não trocar para FP32 salvo controle", "risk": "baixo"},
+        {"order": 4, "topic": "steps_per_execution", "official_guidance": "agrupa batches e reduz overhead Python em modelos pequenos", "current_status": "padrão 1", "recommendation": "testar 16/32 com validação de callbacks", "risk": "médio"},
+        {"order": 5, "topic": "Profiler", "official_guidance": "separar espera do input de execução no device", "current_status": "telemetria existe, mas não é profiler de ops", "recommendation": "perfil de 3–5 épocas", "risk": "baixo"},
+        {"order": 6, "topic": "EarlyStopping/LR", "official_guidance": "parar após plateau e reduzir LR", "current_status": "suportados, mas desativados; patience atual 100", "recommendation": "usar somente no screening, com warm-up/patience declarado", "risk": "alto para comparabilidade"},
+        {"order": 7, "topic": "BackupAndRestore", "official_guidance": "recuperar estado depois de interrupção", "current_status": "ativo e checkpoint presente", "recommendation": "preservar", "risk": "baixo"},
+        {"order": 8, "topic": "XLA/jit", "official_guidance": "pode fundir ops, mas depende do grafo e suporte", "current_status": "desligado", "recommendation": "somente smoke com fallback explícito", "risk": "médio"},
+        {"order": 9, "topic": "Transfer learning", "official_guidance": "feature extraction evita treinar a base em todas as épocas", "current_status": "não usado; modelo é treinado do zero", "recommendation": "não usar sem aprovação, pois muda a pergunta", "risk": "alto"}
+      ],
+      "scenario_estimates": [
+        {"order": 1, "scenario": "Protocolo atual completo", "scope": "36 batches + quantização prevista; sem ativações", "central_hours": 1441.9, "range": "13/10–22/11", "finish_estimate": "27/10 ~16:30", "confidence": "média-baixa", "methodology": "comparável ao protocolo atual; não cabe na janela"},
+        {"order": 2, "scenario": "Somente matriz batch atual", "scope": "27 jobs restantes; 4 batches/dataset", "central_hours": 665.5, "range": "sem faixa recalibrada", "finish_estimate": "25/09 ~08:00", "confidence": "média", "methodology": "mantém o protocolo de batch; quantização fica para depois"},
+        {"order": 3, "scenario": "Batch 256, 2 Macs", "scope": "9 datasets × b256 × 100 épocas; extra_fraction=2.0", "central_hours": 50.0, "range": "45–60", "finish_estimate": "30/08 aproximadamente", "confidence": "baixa-média", "methodology": "triagem rápida; extrapolação de 8 runs e partições independentes"},
+        {"order": 4, "scenario": "Screening agressivo, 2 Macs", "scope": "b256; 30–50 épocas; extra_fraction 0–0.5; early stop", "central_hours": 24.0, "range": "20–40", "finish_estimate": "30–31/08 aproximadamente", "confidence": "baixa", "methodology": "muda volume, épocas e comparabilidade; exige finalistas"}
+      ],
+      "plan_table": [
+        {"order": 0, "step": "Congelar baseline e não interromper o run ativo", "duration": "imediata", "deliverable": "snapshot e protocolo atual", "go_no_go": "todos os artefatos legíveis"},
+        {"order": 1, "step": "Profiler curto: cinza, RGB e GTSRB", "duration": "30–60 min", "deliverable": "tempo/época, input wait, GPU, RAM, F1", "go_no_go": "gargalo identificado e sem erro Metal"},
+        {"order": 2, "step": "Aplicar ganhos operacionais", "duration": "1–2 h", "deliverable": "verbose=2, roots separados, resume testado", "go_no_go": "checkpoint/telemetria preservados"},
+        {"order": 3, "step": "Otimizar entrada e testar steps_per_execution", "duration": "2–6 h", "deliverable": "configuração benchmarkada", "go_no_go": "ganho real e F1 dentro da margem"},
+        {"order": 4, "step": "Rodar screening em b256 nos dois Macs", "duration": "20–60 h", "deliverable": "ranking preliminar por dataset", "go_no_go": "candidatos e protocolo registrados"},
+        {"order": 5, "step": "Finalistas, quantização e ativações", "duration": "a medir após seleção", "deliverable": "artefatos finais e comparação", "go_no_go": "escopo aprovado para TCC"},
+        {"order": 6, "step": "Auditoria e relatório final", "duration": "2–4 h", "deliverable": "tabela reproduzível e limitações", "go_no_go": "sem run sem manifest/métricas/telemetria"}
+      ],
+      "risk_table": [
+        {"risk": "Screening não comparável ao protocolo completo", "impact": "alto", "mitigation": "nomear perfil, guardar config/fingerprint e rodar finalistas com protocolo declarado", "acceptance": "diferenças explicitadas no TCC"},
+        {"risk": "Batch 256 reduzir Macro-F1", "impact": "alto", "mitigation": "reexecutar b64/b32 só onde a queda superar a margem", "acceptance": "margem de F1 definida antes"},
+        {"risk": "Cache pressionar memória unificada", "impact": "médio", "mitigation": "pré-processar em SSD/TFRecord e monitorar RAM/pressure", "acceptance": "sem OOM e pressure nominal"},
+        {"risk": "steps_per_execution ocultar callbacks", "impact": "médio", "mitigation": "validar checkpoint, telemetria e resume em smoke", "acceptance": "todos os artefatos equivalentes"},
+        {"risk": "Dois Macs sobrescreverem saída", "impact": "alto", "mitigation": "um output-root e uma partição por Mac; merge somente depois", "acceptance": "nenhum arquivo compartilhado durante run"},
+        {"risk": "Quantização dominar prazo", "impact": "alto", "mitigation": "quantizar somente finalistas se aprovado", "acceptance": "escopo científico registrado"}
+      ]
+    },
+    "accessIssues": [
+      {"id": "rgb_unmeasured", "scope": "Previsão", "message": "RGB, GTSRB e a maior parte da matriz ainda não possuem tempos completos medidos neste Mac; cenários rápidos são extrapolações."},
+      {"id": "remote_mac_unobserved", "scope": "Ativações", "message": "Não há status, telemetria ou artefatos do segundo Mac neste workspace; a duração das ativações não pode ser confirmada."},
+      {"id": "metal_memory_fields", "scope": "Hardware", "message": "O backend de memória unificada não preenche percentual de memória GPU, temperatura e potência de modo consistente."},
+      {"id": "browser_qa", "scope": "Entrega", "message": "O artefato foi validado estruturalmente; a validação visual em navegador não foi executada porque o renderer/browser de relatório não está disponível neste ambiente."}
+    ]
+  },
+  "sources": [
+    {"id": "live_snapshot", "label": "Snapshot local do treinamento", "path": "analysis_reports/training_snapshot_2026-08-28.sql", "query": {"language": "python", "description": "Leitura somente de processo, status, checkpoint, métricas e telemetria.", "executed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "repository_inspection", "label": "Inspeção do pipeline e configuração", "path": "analysis_reports/pipeline_inspection_2026-08-28.sql", "query": {"language": "code", "description": "Leitura do pipeline, runner, callbacks, modelo e configuração.", "executed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "completed_results", "label": "Resultados de MNIST e Fashion-MNIST", "path": "analysis_reports/completed_results_2026-08-28.sql", "query": {"language": "python", "description": "Leitura dos oito runs de 100 épocas.", "executed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "forecast_model", "label": "Previsão atual por volume e resolução", "path": "analysis_reports/forecast_model_2026-08-28.sql", "query": {"language": "calculation", "description": "Extrapolação local com premissas declaradas.", "executed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "apple_metal", "label": "Apple — TensorFlow para Metal", "path": "https://developer.apple.com/metal/tensorflow-plugin/", "query": {"language": "web", "url": "https://developer.apple.com/metal/tensorflow-plugin/", "description": "Documentação oficial Apple sobre Metal.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "tf_mixed_precision", "label": "TensorFlow — mixed precision", "path": "https://www.tensorflow.org/guide/mixed_precision", "query": {"language": "web", "url": "https://www.tensorflow.org/guide/mixed_precision", "description": "Guia oficial de mixed precision.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "tf_data_performance", "label": "TensorFlow — desempenho de tf.data", "path": "analysis_reports/tf_data_performance_2026-08-28.sql", "query": {"language": "web", "url": "https://www.tensorflow.org/guide/data_performance", "description": "Guia oficial de performance do input pipeline.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "tf_gpu_performance", "label": "TensorFlow — análise de desempenho em GPU", "path": "https://www.tensorflow.org/guide/gpu_performance_analysis", "query": {"language": "web", "url": "https://www.tensorflow.org/guide/gpu_performance_analysis", "description": "Guia oficial de análise de performance em GPU.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "tf_profiler", "label": "TensorFlow — Profiler", "path": "analysis_reports/tf_profiler_2026-08-28.sql", "query": {"language": "web", "url": "https://www.tensorflow.org/guide/profiler", "description": "Documentação oficial do Profiler.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "keras_training_api", "label": "Keras — APIs de treinamento", "path": "https://keras.io/api/models/model_training_apis/", "query": {"language": "web", "url": "https://keras.io/api/models/model_training_apis/", "description": "Documentação oficial de fit, steps_per_execution e jit_compile.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "keras_callbacks", "label": "Keras — EarlyStopping e ReduceLROnPlateau", "path": "https://keras.io/api/callbacks/early_stopping/", "query": {"language": "web", "url": "https://keras.io/api/callbacks/early_stopping/", "description": "Documentação oficial de callbacks de parada e learning rate.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "keras_backup", "label": "Keras — BackupAndRestore", "path": "https://keras.io/api/callbacks/backup_and_restore/", "query": {"language": "web", "url": "https://keras.io/api/callbacks/backup_and_restore/", "description": "Documentação oficial de recuperação de estado.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "tf_distributed", "label": "TensorFlow — treinamento distribuído", "path": "https://www.tensorflow.org/guide/distributed_training", "query": {"language": "web", "url": "https://www.tensorflow.org/guide/distributed_training", "description": "Documentação oficial de estratégias distribuídas.", "accessed_at": "2026-08-28T14:44:50-03:00"}},
+    {"id": "keras_transfer_learning", "label": "Keras — transfer learning", "path": "https://keras.io/guides/transfer_learning/", "query": {"language": "web", "url": "https://keras.io/guides/transfer_learning/", "description": "Referência oficial considerada apenas como alternativa de protocolo.", "accessed_at": "2026-08-28T14:44:50-03:00"}}
+  ]
+}

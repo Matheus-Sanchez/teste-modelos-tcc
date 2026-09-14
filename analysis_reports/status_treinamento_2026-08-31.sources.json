@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "execution-status",
+      "title": "Qual é o estado real da execução?",
+      "queries": [
+        {
+          "id": "live-process-and-status",
+          "source": {
+            "label": "Status, processos e eventos locais",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/pipeline-status.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/status.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/logs/state_events.jsonl"}
+            ],
+            "metricDefinitions": [
+              {"label": "Execução ativa", "definition": "Uma execução é considerada ativa quando há um processo supervisor e um filho tcc_benchmark run no sistema no momento da captura."},
+              {"label": "Job stale", "definition": "Um status running é considerado stale quando não existe processo correspondente e seu último evento não acompanha o processo supervisor atual."}
+            ],
+            "filters": ["Suite: controlled-augmentation2-mac-m4-aug05", "Leitura somente", "Snapshot: 2026-08-31 21:06 BRT"],
+            "caveats": ["O pipeline-status.json ainda contém somente os gates e não registra a fase batch enquanto ela não termina.", "Dois status running antigos não possuem processo correspondente; não devem ser contados como treinos simultâneos."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Processo confirmado", "detail": "Há um supervisor ativo e um filho TensorFlow ativo no batch 064 de Fashion-MNIST."},
+              {"kind": "validation", "title": "Estados reconciliados", "detail": "Foram separados três estados completed, um running ativo e dois running stale."}
+            ]
+          },
+          "columns": ["state", "cell", "epochs", "process_match"],
+          "rows": [
+            {"state": "completed", "cell": "MNIST b32", "epochs": 100, "process_match": "não aplicável"},
+            {"state": "completed", "cell": "MNIST b64", "epochs": 100, "process_match": "não aplicável"},
+            {"state": "completed", "cell": "MNIST b256", "epochs": 100, "process_match": "não aplicável"},
+            {"state": "running ativo", "cell": "Fashion-MNIST b64", "epochs": 5, "process_match": "sim"},
+            {"state": "running stale", "cell": "Fashion-MNIST b32", "epochs": 2, "process_match": "não"},
+            {"state": "running stale", "cell": "MNIST b128", "epochs": 37, "process_match": "não"}
+          ],
+          "preview": {"kind": "partial", "note": "Apenas seis células já materializaram diretórios; as outras 30 ainda não chegaram a criar status.json.", "totalRows": 36},
+          "capturedAt": "2026-08-31T21:12:15-03:00"
+        }
+      ]
+    },
+    {
+      "id": "training-results",
+      "title": "O que já foi treinado com augmentation 0.5?",
+      "queries": [
+        {
+          "id": "completed-and-active-runs",
+          "source": {
+            "label": "Manifests, checkpoints e métricas locais",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/manifest.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/checkpoints/epoch_metrics.csv"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/logs/training_summary.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/artifacts/test_metrics.json"}
+            ],
+            "metricDefinitions": [
+              {"label": "Macro-F1 de teste", "definition": "Média não ponderada do F1 por classe no conjunto de teste do checkpoint selecionado."},
+              {"label": "extra_fraction", "definition": "Fração de exemplos adicionais aumentados em relação ao split de treino; 0.5 gera 50% de exemplos aumentados adicionais."}
+            ],
+            "filters": ["extra_fraction: 0.5", "dtype_policy: mixed_float16", "seed: 42", "max_epochs: 100"],
+            "caveats": ["A pasta aug05 já continha artefatos de tentativas anteriores; o comando sem --resume não força a recriação de células completed e não retoma células running.", "Os resultados completos observados são apenas de MNIST; Fashion-MNIST ainda não terminou."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Resultados completos", "detail": "MNIST b32, b64 e b256 terminaram 100 épocas com manifests declarando extra_fraction=0.5."},
+              {"kind": "result", "title": "Execução atual", "detail": "Fashion-MNIST b64 estava na época 5; seu log registra 73.500 exemplos de treino por época e 1.149 steps."},
+              {"kind": "validation", "title": "Comparabilidade", "detail": "A comparação com a execução anterior é útil para velocidade, mas a matriz aug05 não é uma rerun limpa até que os artefatos antigos sejam isolados."}
+            ]
+          },
+          "columns": ["dataset", "batch", "status", "epochs", "test_macro_f1", "wall_hours", "extra_fraction"],
+          "rows": [
+            {"dataset": "MNIST", "batch": 32, "status": "completed", "epochs": 100, "test_macro_f1": 0.9882149732899779, "wall_hours": 15.219, "extra_fraction": 0.5},
+            {"dataset": "MNIST", "batch": 64, "status": "completed", "epochs": 100, "test_macro_f1": 0.9907848733450182, "wall_hours": 8.941, "extra_fraction": 0.5},
+            {"dataset": "MNIST", "batch": 128, "status": "stale running", "epochs": 37, "test_macro_f1": null, "wall_hours": null, "extra_fraction": 0.5},
+            {"dataset": "MNIST", "batch": 256, "status": "completed", "epochs": 100, "test_macro_f1": 0.9900691561638976, "wall_hours": 4.195, "extra_fraction": 0.5},
+            {"dataset": "Fashion-MNIST", "batch": 32, "status": "stale running", "epochs": 2, "test_macro_f1": null, "wall_hours": null, "extra_fraction": 0.5},
+            {"dataset": "Fashion-MNIST", "batch": 64, "status": "running ativo", "epochs": 5, "test_macro_f1": null, "wall_hours": null, "extra_fraction": 0.5}
+          ],
+          "preview": {"kind": "partial", "note": "A tabela mostra todas as seis células materializadas, mas somente três têm métricas finais de teste.", "totalRows": 36},
+          "capturedAt": "2026-08-31T21:12:15-03:00"
+        }
+      ]
+    },
+    {
+      "id": "hardware-capture",
+      "title": "Os dados de hardware continuam sendo capturados?",
+      "queries": [
+        {
+          "id": "telemetry-snapshot",
+          "source": {
+            "label": "Telemetria persistida do treinamento",
+            "files": [
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/telemetry/samples.csv"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/telemetry/environment.json"},
+              {"label": "outputs/controlled-augmentation2-mac-m4-aug05/batch/*/telemetry/summary.json"}
+            ],
+            "metricDefinitions": [
+              {"label": "Amostras de telemetria", "definition": "Linhas persistidas em telemetry/samples.csv, uma observação por intervalo do sampler ou evento registrado."},
+              {"label": "GPU utilization", "definition": "Percentual de utilização informado pelo backend apple-metal-ioreg; não representa percentual de memória GPU."}
+            ],
+            "filters": ["Backend: apple-metal-ioreg", "Leitura somente", "Run ativo: Fashion-MNIST b64"],
+            "caveats": ["Memória unificada não fornece percentual de memória GPU em todas as amostras.", "Temperatura e potência permanecem sem valores consistentes no backend atual."],
+            "evidenceFlow": [
+              {"kind": "result", "title": "Persistência confirmada", "detail": "O run ativo possui 471 amostras no CSV de telemetria; os três runs completos também possuem arquivos de resumo."},
+              {"kind": "result", "title": "Condição térmica", "detail": "As 407 amostras do run ativo registram pressão térmica nominal."}
+            ]
+          },
+          "columns": ["run", "samples", "gpu_mean_percent", "ram_mean_percent", "thermal_pressure", "process_cpu_mean_percent"],
+          "rows": [
+            {"run": "Fashion-MNIST b64 ativo", "samples": 471, "gpu_mean_percent": 84.83, "ram_mean_percent": 88.7, "thermal_pressure": "nominal", "process_cpu_mean_percent": 73.88},
+            {"run": "MNIST b32 completo", "samples": 10763, "gpu_mean_percent": 67.64, "ram_mean_percent": null, "thermal_pressure": "nominal", "process_cpu_mean_percent": null},
+            {"run": "MNIST b64 completo", "samples": 6362, "gpu_mean_percent": 73.25, "ram_mean_percent": null, "thermal_pressure": "nominal", "process_cpu_mean_percent": null},
+            {"run": "MNIST b256 completo", "samples": 3027, "gpu_mean_percent": 83.11, "ram_mean_percent": null, "thermal_pressure": "nominal", "process_cpu_mean_percent": null}
+          ],
+          "preview": {"kind": "partial", "note": "Amostras completas resumidas por run; não são todos os registros brutos do CSV.", "totalRows": 20933},
+          "capturedAt": "2026-08-31T21:12:15-03:00"
+        }
+      ]
+    }
+  ]
+}

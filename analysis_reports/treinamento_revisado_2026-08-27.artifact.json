@@ -1,0 +1,219 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Relatório técnico — treinamento, resultados e previsão atualizada",
+    "description": "Snapshot técnico do benchmark controlado em execução no Apple M4, com qualidade de dados, resultados concluídos e previsão do comando atualmente ativo.",
+    "generatedAt": "2026-08-28T14:33:01-03:00",
+    "sources": [
+      {
+        "id": "live_snapshot",
+        "label": "Snapshot local do treinamento",
+        "path": "training_snapshot_2026-08-27.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura somente de status por run, checkpoints, métricas de época, métricas de teste, resumos de treino, telemetria, processo ativo e log do supervisor.",
+          "executed_at": "2026-08-28T14:33:01-03:00",
+          "metric_definitions": {
+            "test_macro_f1": "Média não ponderada do F1 por classe no conjunto de teste do checkpoint selecionado.",
+            "wall_hours": "Tempo total de parede do run concluído, incluindo preparação e avaliação final.",
+            "telemetry_samples": "Amostras persistidas pelo monitor de hardware e processo, nominalmente a cada cinco segundos."
+          }
+        }
+      },
+      {
+        "id": "quality_audit",
+        "label": "Auditorias de integridade dos datasets",
+        "path": "dataset_audit_2026-08-19.sql",
+        "query": {
+          "language": "python",
+          "description": "Leitura das nove auditorias de dataset: cobertura, imagens ilegíveis, shapes, rótulos e duplicatas por hash de pixels decodificados.",
+          "executed_at": "2026-08-28T14:33:01-03:00",
+          "metric_definitions": {
+            "duplicate_excess": "Número de exemplos além do primeiro em grupos de pixels idênticos.",
+            "cross_label_groups": "Grupos de duplicatas idênticas que possuem mais de um rótulo."
+          }
+        }
+      },
+      {
+        "id": "forecast_model",
+        "label": "Modelo de previsão por volume e resolução",
+        "path": "forecast_model_2026-08-27.sql",
+        "query": {
+          "language": "calculation",
+          "description": "Escalonamento dos tempos de parede medidos em MNIST e Fashion-MNIST pelo volume efetivo e fator de imagem; FP32 estimado em 1,25 vez o tempo FP16.",
+          "executed_at": "2026-08-28T14:33:01-03:00",
+          "metric_definitions": {
+            "effective_train_volume": "Amostras brutas multiplicadas por 0,70 de treino e por 3,0 devido à fração extra de 2,0.",
+            "image_factor": "Fator 1,0 para cinza 64px, 1,35 para RGB 64px e 4,0 para GTSRB RGB 128px.",
+            "central_eta": "Estimativa de calendário, não prazo garantido; exclui falhas, OOM, quedas de energia e novas interrupções."
+          }
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "layout": "full", "body": "# Relatório técnico — treinamento, resultados e previsão atualizada"},
+      {
+        "id": "summary_observed",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## O treinamento continua saudável e avançou até a época 97\n\nÀs 14:33 BRT de 28 de agosto, o supervisor, o `caffeinate` e o processo TensorFlow estavam ativos. O KMNIST batch 32 tinha a época 97 gravada de forma segura e a época 98 estava em execução. A telemetria havia registrado 20.700 amostras neste run ativo.\n\nHá 8 batches concluídos, 1 em execução e 27 pendentes; não há batch com status `failed`. Os oito concluídos têm 100 épocas, métricas de teste e resumo de telemetria. A retomada preservou o progresso gravado, mas a matriz de resultados finais ainda está restrita a MNIST e Fashion-MNIST." 
+      },
+      {
+        "id": "summary_forecast",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "O comando atualmente em memória usa todos os batches e **não** tem `--skip-quantization`; ele pula apenas as ativações. Mantido esse comando, a previsão central é concluir a fase batch perto de **25 de setembro** e a quantização com PTQ perto de **27 de outubro**. A faixa prudente para o término é **13 de outubro a 22 de novembro**, pois sete datasets ainda não têm medição de tempo neste Mac e GTSRB tem resolução maior." 
+      },
+      {"id": "headline_metrics", "type": "metric-strip", "layout": "full", "cardIds": ["batch_progress", "active_checkpoint", "best_mnist", "best_fashion", "central_eta"]},
+      {
+        "id": "current_state_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## A fila atual recuperou o checkpoint e ainda inclui quantização\n\nO log confirma que os oito jobs já completos foram reconhecidos como `skip_completed`, sem reexecução. O KMNIST batch 32 restaurou o backup e já materializou as épocas 15 a 97; a época 98 está em execução. O aviso do TensorFlow sobre `use_unbounded_threadpool` aparece no log, mas até o snapshot não produziu NaN, status failed ou interrupção.\n\nA invocação ativa contém `--skip-activation`, mas não `--skip-quantization`. Consequentemente, após os 36 batches, o processo executará FP32, FP16 e PTQ para os vencedores de cada dataset. O outro Mac ainda não possui artefatos de ativação; ativações não fazem parte do prazo central abaixo." 
+      },
+      {"id": "work_state", "type": "table", "layout": "full", "tableId": "work_state"},
+      {
+        "id": "results_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Em MNIST, batch 64 lidera F1; em Fashion-MNIST, batch 32 lidera\n\nNo MNIST, batch 64 obteve F1 macro de teste de 99,05%, apenas 0,13 ponto percentual acima do batch 256, mas exigiu 19,02 h contra 7,57 h. No Fashion-MNIST, batch 32 lidera com 92,92% de F1 macro; batch 256 ficou em 92,34%, 0,58 ponto percentual abaixo, porém encerrou 3,80 vezes mais rápido.\n\nEsses resultados são comparáveis dentro de cada dataset, não entre MNIST e Fashion-MNIST. A queda de cerca de 6,1 pontos percentuais entre os melhores dos dois datasets mostra que Fashion-MNIST é uma tarefa visualmente mais difícil para esta arquitetura e protocolo." 
+      },
+      {"id": "duration_chart", "type": "chart", "layout": "full", "chartId": "duration_chart"},
+      {"id": "results_table", "type": "table", "layout": "full", "tableId": "results_table"},
+      {
+        "id": "capture_quality_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "live_snapshot",
+        "body": "## Métricas, checkpoints e hardware estão sendo capturados corretamente\n\nOs oito runs completos acumularam 99.490 amostras de telemetria. Todos finalizaram com pressão térmica nominal; a utilização média da GPU cresceu de aproximadamente 68–71% nos batches 32 para aproximadamente 84–86% nos batches 128 e 256. O maior RSS de processo observado foi 5,57 GB no Fashion-MNIST batch 32.\n\nO run KMNIST ativo possui 20.700 amostras adicionais, backup na época 97 e métricas persistidas até essa época. A métrica da época 98 só será gravada ao seu término; isso é esperado. Já `pipeline-status.json` continua descrevendo um dry-run antigo; ele é inadequado para progresso ao vivo e não foi usado nas contagens deste relatório." 
+      },
+      {"id": "capture_quality", "type": "table", "layout": "full", "tableId": "capture_quality"},
+      {
+        "id": "audit_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "quality_audit",
+        "body": "## A ingestão estrutural dos nove datasets passou, com ressalvas de duplicatas\n\nA auditoria cobriu 636.046 amostras e não encontrou arquivos ausentes, imagens ilegíveis, shapes inválidos ou rótulos inválidos. Há duplicatas exatas documentadas em quatro datasets. FER2013 é a principal ressalva: 1.853 exemplos excedentes em 1.516 grupos, 21 dos quais possuem rótulos conflitantes. Isso não bloqueia o treinamento, mas pode contaminar comparações futuras desse dataset e deve constar na discussão metodológica." 
+      },
+      {"id": "audit_table", "type": "table", "layout": "full", "tableId": "audit_table"},
+      {
+        "id": "forecast_intro",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## A previsão é longa porque a fila executa quatro batches por dataset\n\nOs tempos medidos de MNIST e Fashion-MNIST dão 70,53 h, em média, para completar os quatro batches de um dataset de 70 mil imagens em escala de cinza. Após as 97 épocas já persistidas, o KMNIST ainda precisa de aproximadamente 40,20 h na combinação dos seus quatro batches; para as três épocas restantes do batch 32 foi usada a média recente de 962,85 s por época. Os demais datasets foram escalonados pelo volume efetivo e pela resolução.\n\nPara a quantização, o cenário central usa os batches que mais provavelmente serão escolhidos por F1: já se sabe que MNIST selecionará batch 64 e Fashion-MNIST, batch 32. A previsão pressupõe 341,1 h para os nove runs FP16, 426,3 h para FP32 e 9 h de PTQ. Ela será recalibrada assim que o primeiro dataset adicional concluir a matriz de batch." 
+      },
+      {"id": "forecast_chart", "type": "chart", "layout": "full", "chartId": "forecast_chart"},
+      {"id": "forecast_table", "type": "table", "layout": "full", "tableId": "forecast_table"},
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "layout": "full",
+        "sourceId": "forecast_model",
+        "body": "## Método, limites e robustez\n\nA previsão é descritiva, não causal. Ela usa os tempos de parede completos dos oito runs concluídos, não apenas exemplos por segundo. Para datasets não medidos, aplica a proporção de volume efetivo: amostras brutas × 0,70 × 3,0. Aos datasets RGB 64px aplica fator 1,35; ao GTSRB RGB 128px, fator 4,0. FP32 é estimado em 1,25× FP16.\n\nO intervalo de 13 de outubro a 22 de novembro cobre incerteza de desempenho RGB, GTSRB, seleção de batch por F1, FP32 e PTQ. Não cobre falhas de hardware, nova interrupção, OOM ou downloads. Se o processo for reiniciado futuramente com `--skip-quantization --skip-activation`, a linha crítica de quantização deixa de fazer parte do prazo." 
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Próximos passos recomendados\n\n1. Não interromper o KMNIST ativo; conferir o próximo registro de época, que deve materializar a época 98.\n2. Monitorar por status individuais, `epoch_metrics.csv`, telemetria e `pipeline.log`; não usar o status global antigo para decidir se há falha.\n3. Quando o primeiro dataset RGB terminar, recalibrar a previsão de batch e quantização.\n4. Antes de interpretar FER2013, manter as duplicatas e conflitos de rótulo explicitamente descritos.\n5. Se a intenção for eliminar quantização, isso exigirá uma reinicialização futura com a flag própria; o comando atual seguirá para essa fase."
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "layout": "full",
+        "body": "## Questões em aberto\n\n- A escolha por maior F1 continuará favorecendo batches pequenos nos demais datasets, ou o custo do batch 256 será preferível para a decisão final?\n- Qual será a penalidade real de FP32 no Apple Metal para cada tipo de imagem?\n- As duplicatas com rótulos conflitantes em FER2013 alteram materialmente os resultados de teste?\n- O segundo Mac tem desempenho comparável para iniciar a matriz de ativações em paralelo?"
+      }
+    ],
+    "cards": [
+      {"id": "batch_progress", "dataset": "headline_metrics", "description": "Jobs concluídos na matriz de 36 combinações dataset × batch.", "metrics": [{"label": "Batches concluídos", "field": "completed_batches", "format": "number"}, {"label": "de", "field": "total_batches", "format": "number"}], "sourceId": "live_snapshot"},
+      {"id": "active_checkpoint", "dataset": "headline_metrics", "description": "Último checkpoint completo e época em execução no KMNIST batch 32.", "metrics": [{"label": "Checkpoint completo", "field": "persisted_epoch", "format": "number"}, {"label": "Época em execução", "field": "running_epoch", "format": "number"}], "sourceId": "live_snapshot"},
+      {"id": "best_mnist", "dataset": "headline_metrics", "description": "Melhor F1 macro de teste entre os quatro batches MNIST concluídos.", "metrics": [{"label": "Melhor F1 MNIST", "field": "best_mnist_f1", "format": "percent"}, {"label": "Batch", "field": "best_mnist_batch", "format": "number"}], "sourceId": "live_snapshot"},
+      {"id": "best_fashion", "dataset": "headline_metrics", "description": "Melhor F1 macro de teste entre os quatro batches Fashion-MNIST concluídos.", "metrics": [{"label": "Melhor F1 Fashion", "field": "best_fashion_f1", "format": "percent"}, {"label": "Batch", "field": "best_fashion_batch", "format": "number"}], "sourceId": "live_snapshot"},
+      {"id": "central_eta", "dataset": "headline_metrics", "description": "Término central da fila atual, que executa batches e quantização, mas não ativações.", "metrics": [{"label": "Término central", "field": "central_eta", "format": "text"}, {"label": "Faixa prudente", "field": "prudent_range", "format": "text"}], "sourceId": "forecast_model"}
+    ],
+    "charts": [
+      {"id": "duration_chart", "dataset": "completed_results", "type": "bar", "intent": "comparison", "title": "Tempo de parede dos batches concluídos", "subtitle": "100 épocas por run; comparação de custo entre batches dentro de MNIST e Fashion-MNIST.", "showDescription": true, "encodings": {"x": {"field": "run", "type": "nominal"}, "y": {"field": "wall_hours", "type": "quantitative"}}, "sourceId": "live_snapshot"},
+      {"id": "forecast_chart", "dataset": "remaining_batch_forecast", "type": "bar", "intent": "comparison", "title": "Horas estimadas restantes na fase batch", "subtitle": "Previsão central por dataset ainda pendente; KMNIST considera 45 épocas já persistidas no batch 32.", "showDescription": true, "encodings": {"x": {"field": "dataset", "type": "nominal"}, "y": {"field": "remaining_hours", "type": "quantitative"}}, "sourceId": "forecast_model"}
+    ],
+    "tables": [
+      {"id": "work_state", "dataset": "work_state", "title": "Estado da fila", "subtitle": "Fonte de verdade: status individuais, processo ativo e log do supervisor.", "showDescription": true, "columns": [{"field": "order", "label": "Ordem"}, {"field": "phase", "label": "Fase"}, {"field": "completed", "label": "Concluído"}, {"field": "running", "label": "Executando"}, {"field": "remaining", "label": "Pendente"}, {"field": "status", "label": "Situação"}], "defaultSort": {"field": "order", "direction": "asc"}, "sourceId": "live_snapshot"},
+      {"id": "results_table", "dataset": "completed_results", "title": "Resultados finais já disponíveis", "subtitle": "F1 macro e acurácia no teste do checkpoint selecionado; 100 épocas em todos os runs listados.", "showDescription": true, "columns": [{"field": "dataset", "label": "Dataset"}, {"field": "batch", "label": "Batch"}, {"field": "test_macro_f1", "label": "F1 macro teste"}, {"field": "test_accuracy", "label": "Acurácia teste"}, {"field": "wall_hours", "label": "Tempo de parede (h)"}, {"field": "mean_epoch_seconds", "label": "Média por época (s)"}], "defaultSort": {"field": "dataset", "direction": "asc"}, "sourceId": "live_snapshot"},
+      {"id": "capture_quality", "dataset": "capture_quality", "title": "Qualidade da captura e observabilidade", "subtitle": "Checks de completude, frescor e consistência usados neste snapshot.", "showDescription": true, "columns": [{"field": "item", "label": "Check"}, {"field": "evidence", "label": "Evidência"}, {"field": "risk", "label": "Risco"}, {"field": "assessment", "label": "Avaliação"}], "defaultSort": {"field": "item", "direction": "asc"}, "sourceId": "live_snapshot"},
+      {"id": "audit_table", "dataset": "audit_table", "title": "Auditoria dos dados de entrada", "subtitle": "Amostras verificadas por dataset; duplicatas são pixels idênticos após decodificação.", "showDescription": true, "columns": [{"field": "dataset", "label": "Dataset"}, {"field": "samples", "label": "Amostras"}, {"field": "structural_errors", "label": "Erros estruturais"}, {"field": "duplicate_excess", "label": "Duplicatas excedentes"}, {"field": "cross_label_groups", "label": "Grupos com rótulos conflitantes"}], "defaultSort": {"field": "duplicate_excess", "direction": "desc"}, "sourceId": "quality_audit"},
+      {"id": "forecast_table", "dataset": "forecast_table", "title": "Calendário projetado para o comando em execução", "subtitle": "BRT; ativações estão fora do comando atual e não entram no término central.", "showDescription": true, "columns": [{"field": "order", "label": "Ordem"}, {"field": "phase", "label": "Fase"}, {"field": "remaining_work", "label": "Trabalho restante"}, {"field": "central_duration", "label": "Duração central"}, {"field": "central_finish", "label": "Término central"}, {"field": "uncertainty", "label": "Incerteza"}], "defaultSort": {"field": "order", "direction": "asc"}, "sourceId": "forecast_model"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "partial",
+    "generatedAt": "2026-08-28T14:33:01-03:00",
+    "datasets": {
+      "headline_metrics": [{"completed_batches": 8, "total_batches": 36, "persisted_epoch": 97, "running_epoch": 98, "best_mnist_f1": 0.9905256296537901, "best_mnist_batch": 64, "best_fashion_f1": 0.9291633449710837, "best_fashion_batch": 32, "central_eta": "27 out., ~16:30 BRT", "prudent_range": "13 out. – 22 nov."}],
+      "work_state": [
+        {"order": 1, "phase": "Gates: auditoria, preflight e smoke", "completed": "3 de 3", "running": "não", "remaining": "0", "status": "concluída"},
+        {"order": 2, "phase": "Matriz batch", "completed": "8 de 36", "running": "KMNIST batch 32, época 98", "remaining": "27", "status": "ativa e recuperada"},
+        {"order": 3, "phase": "Quantização", "completed": "0 de 18 treinos", "running": "não", "remaining": "18 FP32 e FP16 + 9 PTQ", "status": "será executada pelo comando atual"},
+        {"order": 4, "phase": "Ativações", "completed": "0 de 27", "running": "não", "remaining": "27 no segundo Mac", "status": "pulada neste Mac; outro Mac sem artefatos"}
+      ],
+      "completed_results": [
+        {"dataset": "Fashion-MNIST", "batch": 32, "run": "Fashion b32", "test_macro_f1": 0.9291633449710837, "test_accuracy": 0.9291428571428572, "wall_hours": 29.35, "mean_epoch_seconds": 1022.43},
+        {"dataset": "Fashion-MNIST", "batch": 64, "run": "Fashion b64", "test_macro_f1": 0.9276972711378091, "test_accuracy": 0.9277142857142857, "wall_hours": 19.16, "mean_epoch_seconds": 664.04},
+        {"dataset": "Fashion-MNIST", "batch": 128, "run": "Fashion b128", "test_macro_f1": 0.9222095466805189, "test_accuracy": 0.9228571428571428, "wall_hours": 13.96, "mean_epoch_seconds": 486.71},
+        {"dataset": "Fashion-MNIST", "batch": 256, "run": "Fashion b256", "test_macro_f1": 0.9234042407841256, "test_accuracy": 0.9236190476190477, "wall_hours": 7.72, "mean_epoch_seconds": 267.01},
+        {"dataset": "MNIST", "batch": 32, "run": "MNIST b32", "test_macro_f1": 0.9897878260718647, "test_accuracy": 0.9899028386359306, "wall_hours": 29.99, "mean_epoch_seconds": 1044.59},
+        {"dataset": "MNIST", "batch": 64, "run": "MNIST b64", "test_macro_f1": 0.9905256296537901, "test_accuracy": 0.9906648885502001, "wall_hours": 19.02, "mean_epoch_seconds": 658.31},
+        {"dataset": "MNIST", "batch": 128, "run": "MNIST b128", "test_macro_f1": 0.9904790015498719, "test_accuracy": 0.9905696323109163, "wall_hours": 14.30, "mean_epoch_seconds": 498.48},
+        {"dataset": "MNIST", "batch": 256, "run": "MNIST b256", "test_macro_f1": 0.9892281711464769, "test_accuracy": 0.9893313012002286, "wall_hours": 7.57, "mean_epoch_seconds": 261.76}
+      ],
+      "capture_quality": [
+        {"item": "Status individuais", "evidence": "36 runs: 8 completed, 1 running, 27 pending, 0 failed", "risk": "baixo para execução", "assessment": "consistente"},
+        {"item": "Runs concluídos", "evidence": "8 de 8 com 100 épocas, test_metrics e telemetry summary", "risk": "baixo", "assessment": "completo"},
+        {"item": "Telemetria concluída", "evidence": "99.490 amostras; pressão térmica nominal nos 8 runs", "risk": "baixo", "assessment": "válida"},
+        {"item": "KMNIST ativo", "evidence": "backup na época 97; época 98 em execução; 20.700 amostras de telemetria", "risk": "baixo", "assessment": "esperado durante a época"},
+        {"item": "pipeline-status global", "evidence": "ainda registra dry-run antigo, divergente dos status individuais", "risk": "alto para monitoramento", "assessment": "não usar como progresso ao vivo"}
+      ],
+      "audit_table": [
+        {"dataset": "cifar10", "samples": 60000, "structural_errors": 0, "duplicate_excess": 0, "cross_label_groups": 0},
+        {"dataset": "cifar100_coarse", "samples": 60000, "structural_errors": 0, "duplicate_excess": 26, "cross_label_groups": 3},
+        {"dataset": "emnist_balanced", "samples": 131600, "structural_errors": 0, "duplicate_excess": 2, "cross_label_groups": 0},
+        {"dataset": "fashion_mnist", "samples": 70000, "structural_errors": 0, "duplicate_excess": 0, "cross_label_groups": 0},
+        {"dataset": "fer2013", "samples": 35887, "structural_errors": 0, "duplicate_excess": 1853, "cross_label_groups": 21},
+        {"dataset": "gtsrb", "samples": 39270, "structural_errors": 0, "duplicate_excess": 0, "cross_label_groups": 0},
+        {"dataset": "kmnist", "samples": 70000, "structural_errors": 0, "duplicate_excess": 0, "cross_label_groups": 0},
+        {"dataset": "mnist", "samples": 70000, "structural_errors": 0, "duplicate_excess": 0, "cross_label_groups": 0},
+        {"dataset": "svhn", "samples": 99289, "structural_errors": 0, "duplicate_excess": 1, "cross_label_groups": 1}
+      ],
+      "remaining_batch_forecast": [
+        {"dataset": "KMNIST", "remaining_hours": 40.20, "effective_train_volume": 147000, "image_factor": 1.0, "basis": "batch 32 com 97 épocas concluídas; 3 estimadas pela média recente"},
+        {"dataset": "EMNIST Balanced", "remaining_hours": 132.60, "effective_train_volume": 276360, "image_factor": 1.0, "basis": "volume escalado"},
+        {"dataset": "CIFAR-10", "remaining_hours": 81.59, "effective_train_volume": 126000, "image_factor": 1.35, "basis": "RGB 64px estimado"},
+        {"dataset": "CIFAR-100 coarse", "remaining_hours": 81.59, "effective_train_volume": 126000, "image_factor": 1.35, "basis": "RGB 64px estimado"},
+        {"dataset": "SVHN", "remaining_hours": 135.02, "effective_train_volume": 208507, "image_factor": 1.35, "basis": "RGB 64px estimado"},
+        {"dataset": "GTSRB", "remaining_hours": 158.30, "effective_train_volume": 82467, "image_factor": 4.0, "basis": "RGB 128px estimado"},
+        {"dataset": "FER2013", "remaining_hours": 36.16, "effective_train_volume": 75363, "image_factor": 1.0, "basis": "cinza 64px estimado"}
+      ],
+      "forecast_table": [
+        {"order": 1, "phase": "KMNIST batch 32 e demais batches", "remaining_work": "27 jobs; KMNIST segue da época 98", "central_duration": "665,5 h; 27 d 17 h 28 min", "central_finish": "25 set., ~08:00", "uncertainty": "RGB e GTSRB ainda não medidos"},
+        {"order": 2, "phase": "Quantização e PTQ", "remaining_work": "18 treinos + 9 conversões", "central_duration": "776,4 h; 32 d 8 h", "central_finish": "27 out., ~17:00", "uncertainty": "seleção de batch e FP32 estimados"},
+        {"order": 3, "phase": "Ativações", "remaining_work": "fora do comando atual; 27 no segundo Mac", "central_duration": "não incluída", "central_finish": "sem ETA observável", "uncertainty": "nenhum artefato do segundo Mac"},
+        {"order": 4, "phase": "Término do comando em execução", "remaining_work": "batches + quantização, sem ativações", "central_duration": "1.441,9 h; 60 d 1 h 52 min", "central_finish": "27 out., ~16:30", "uncertainty": "faixa: 13 out. – 22 nov."}
+      ]
+    },
+    "accessIssues": [
+      {"id": "stale_global_pipeline_status", "scope": "Progresso global", "message": "O status global registra um dry-run anterior e diverge da execução ao vivo; o relatório usa status individuais, processos, checkpoints e log."},
+      {"id": "remote_activation_unobserved", "scope": "Segundo Mac", "message": "Não há status nem telemetria da matriz de ativações; sua duração não pode ser medida neste snapshot."}
+    ]
+  },
+  "sources": [
+    {"id": "live_snapshot", "label": "Snapshot local do treinamento", "path": "training_snapshot_2026-08-28.sql", "query": {"language": "python", "description": "Leitura somente de status, métricas, telemetria e processo ativo.", "executed_at": "2026-08-28T14:33:01-03:00"}},
+    {"id": "quality_audit", "label": "Auditorias de integridade dos datasets", "path": "dataset_audit_2026-08-19.sql", "query": {"language": "python", "description": "Leitura das auditorias dos nove datasets.", "executed_at": "2026-08-28T14:33:01-03:00"}},
+    {"id": "forecast_model", "label": "Modelo de previsão por volume e resolução", "path": "forecast_model_2026-08-28.sql", "query": {"language": "calculation", "description": "Escalonamento de tempos observados com premissas declaradas.", "executed_at": "2026-08-28T14:33:01-03:00"}}
+  ]
+}
