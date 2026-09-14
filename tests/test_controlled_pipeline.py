@@ -91,6 +91,72 @@ def test_activation_only_plan_forces_batch_256_and_fp16(tmp_path: Path) -> None:
     assert suite["suite"]["training"]["hidden_activation"] == "relu"
 
 
+def test_quantization_only_plan_forces_batch_256_without_batch_sweep(tmp_path: Path) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    base = yaml.safe_load((project_root / "configs" / "controlled-augmentation2-mac-m4.yaml").read_text(encoding="utf-8"))
+    registry = project_root / "configs" / "datasets.yaml"
+
+    batches = pipeline.forced_quantization_inputs(batch_size=256)
+    quantization = pipeline.run_stage_quant(
+        copy.deepcopy(base),
+        tmp_path,
+        registry,
+        batches,
+        resume=False,
+        dry_run=True,
+    )
+
+    assert len(quantization["rows"]) == 27  # 18 float training plans + 9 PTQ plans
+    assert {row.get("batch_size", 256) for row in quantization["rows"]} == {256}
+    assert {row["variant"] for row in quantization["rows"]} == {"fp32", "fp16", "int8_ptq"}
+    assert {row["variant"] for row in quantization["winners"].values()} == {"fp32"}
+
+
+def test_quantization_stage_skips_litert_and_ptq_after_completed_training(tmp_path: Path, monkeypatch) -> None:
+    project_root = Path(__file__).resolve().parents[1]
+    base = yaml.safe_load((project_root / "configs" / "controlled-augmentation2-mac-m4.yaml").read_text(encoding="utf-8"))
+    registry = project_root / "configs" / "datasets.yaml"
+    batches = pipeline.forced_quantization_inputs(batch_size=256)
+    export_calls: list[tuple[object, ...]] = []
+
+    def fake_execute(dataset, suite_path, registry_path, *, resume, dry_run):
+        suite = pipeline.read_suite(suite_path)
+        output = Path(suite["suite"]["output_root"])
+        current = pipeline.run_root(output, dataset)
+        pipeline.atomic_write_json(current / "status.json", {"status": "completed"})
+        pipeline.atomic_write_json(current / "artifacts" / "test_metrics.json", {"classification": {"macro_f1": 0.5, "accuracy": 0.6}})
+        pipeline.atomic_write_json(current / "logs" / "training_summary.json", {"mean_epoch_seconds": 1.0})
+        (current / "checkpoints").mkdir(parents=True, exist_ok=True)
+        (current / "checkpoints" / "best.keras").write_bytes(b"checkpoint")
+        return 0
+
+    def fail_litert(*args, **kwargs):
+        export_calls.append(args)
+        raise AssertionError("LiteRT não deve ser chamado quando --skip-litert está ativo.")
+
+    monkeypatch.setattr(pipeline, "execute_training", fake_execute)
+    monkeypatch.setattr(pipeline, "export_litert", fail_litert)
+    monkeypatch.setattr(pipeline, "ptq_row", fail_litert)
+    quantization = pipeline.run_stage_quant(
+        copy.deepcopy(base),
+        tmp_path,
+        registry,
+        batches,
+        resume=True,
+        dry_run=False,
+        skip_litert=True,
+    )
+
+    assert len(quantization["rows"]) == len(pipeline.DATASETS) * 2
+    assert not export_calls
+    assert {row["status"] for row in quantization["rows"]} == {"completed"}
+    assert {row["variant"] for row in quantization["rows"]} == {"fp32", "fp16"}
+    assert {row["litert_status"] for row in quantization["rows"]} == {"skipped"}
+    assert quantization["winners"] == {}
+    report = pipeline.read_json(tmp_path / "reports" / "quantization_comparison.json")
+    assert {row["litert_status"] for row in report["rows"]} == {"skipped"}
+
+
 def test_activation_stage_skips_litert_after_completed_training(tmp_path: Path, monkeypatch) -> None:
     project_root = Path(__file__).resolve().parents[1]
     base = yaml.safe_load((project_root / "configs" / "controlled-augmentation2-mac-m4.yaml").read_text(encoding="utf-8"))

@@ -188,6 +188,30 @@ Em outro terminal do VS Code, acompanhe a fila e o hardware:
   --output-root outputs/controlled-augmentation2-mac-m4 --poll-seconds 5
 ```
 
+### Rodar somente a quantização no Mac
+
+Para uma rodada somente de quantização, sem a varredura de batch e sem a fase
+de ativações:
+
+```bash
+mkdir -p outputs/controlled-quantization-fast-mac-m4/logs
+set -o pipefail
+PYTHONUNBUFFERED=1 caffeinate -dimsu \
+  .venv-mac/bin/python scripts/run_controlled_pipeline.py \
+  --suite configs/controlled-quantization-fast-mac-m4.yaml \
+  --registry configs/datasets.yaml \
+  --output-root outputs/controlled-quantization-fast-mac-m4 \
+  --quantization-only --quantization-batch-size 256 --skip-litert \
+  2>&1 | tee -a outputs/controlled-quantization-fast-mac-m4/logs/pipeline.log
+```
+
+Com `--skip-litert`, essa execução gera 18 linhas de comparação: os treinos
+FP32 e FP16 de cada dataset. Ela não cria conversões nem benchmarks INT8-PTQ,
+pois ambos dependem de LiteRT. O perfil usa 100 épocas completas,
+`extra_fraction: 0.5` e as mesmas transformações da rodada de ativações com
+augmentation 0,5, portanto os resultados de treino podem ser comparados entre
+fases. Para continuar após uma interrupção, repita o comando com `--resume`.
+
 Use `--suite configs/suite.yaml` para trocar somente a configuração declarada.
 Não há redução automática de batch, resolução ou épocas quando ocorre OOM: a
 execução é marcada como falha e os parâmetros permanecem comparáveis.

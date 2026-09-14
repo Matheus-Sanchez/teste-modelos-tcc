@@ -17,6 +17,7 @@ import io
 import json
 import math
 import os
+import platform
 import time
 from pathlib import Path
 from typing import Any, Iterable, Iterator, Mapping, Sequence
@@ -374,7 +375,7 @@ def inspect_litert_model(path: str | Path) -> dict[str, Any]:
     if _tf is None:  # pragma: no cover - environment dependent
         raise RuntimeError("TensorFlow é necessário para inspecionar LiteRT.")
     source = Path(path)
-    interpreter = _tf.lite.Interpreter(model_path=str(source))
+    interpreter = _make_litert_interpreter(model_path=str(source))
     interpreter.allocate_tensors()
     tensor_details = interpreter.get_tensor_details()
     dtype_counts: dict[str, int] = {}
@@ -422,6 +423,25 @@ def _dequantize_output(values: np.ndarray, detail: Mapping[str, Any]) -> np.ndar
     return (np.asarray(values, dtype=np.float32) - int(zero_point)) * float(scale)
 
 
+def _make_litert_interpreter(*, model_path: str, num_threads: int | None = None) -> Any:
+    """Create a LiteRT interpreter with the Mac ARM crash workaround.
+
+    TensorFlow 2.18.1 on Apple Silicon can crash with SIGSEGV/SIGBUS inside
+    the default XNNPACK delegate when a dynamic batch is invoked.  The
+    built-in kernels keep the benchmark functional and leave other platforms
+    on their existing default delegate path.
+    """
+
+    if _tf is None:  # pragma: no cover - environment dependent
+        raise RuntimeError("TensorFlow é necessário para executar LiteRT.")
+    kwargs: dict[str, Any] = {"model_path": str(model_path)}
+    if num_threads is not None:
+        kwargs["num_threads"] = int(num_threads)
+    if platform.system() == "Darwin" and platform.machine() in {"arm64", "aarch64"}:
+        kwargs["experimental_op_resolver_type"] = _tf.lite.experimental.OpResolverType.BUILTIN_WITHOUT_DEFAULT_DELEGATES
+    return _tf.lite.Interpreter(**kwargs)
+
+
 def _metric_payload(labels: np.ndarray, logits: np.ndarray, *, num_classes: int) -> dict[str, Any]:
     from .metrics import classification_metrics
 
@@ -449,7 +469,9 @@ def benchmark_litert(
     except ImportError:  # pragma: no cover - project dependency
         psutil = None
     source = Path(model_path)
-    interpreter = _tf.lite.Interpreter(model_path=str(source), num_threads=max(1, (os.cpu_count() or 2) // 2))
+    interpreter = _make_litert_interpreter(
+        model_path=str(source), num_threads=max(1, (os.cpu_count() or 2) // 2)
+    )
     process = psutil.Process() if psutil is not None else None
     rss_before = int(process.memory_info().rss) if process is not None else None
     input_detail = interpreter.get_input_details()[0]

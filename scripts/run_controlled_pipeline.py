@@ -128,6 +128,17 @@ def forced_activation_inputs(*, batch_size: int, dtype_policy: str) -> tuple[dic
     return batches, quant
 
 
+def forced_quantization_inputs(*, batch_size: int) -> dict[str, dict[str, Any]]:
+    """Create explicit upstream batch selections for quantization-only work."""
+
+    if int(batch_size) < 1:
+        raise ValueError("--quantization-batch-size deve ser positivo.")
+    return {
+        dataset: {"dataset": dataset, "batch_size": int(batch_size), "status": "forced"}
+        for dataset in DATASETS
+    }
+
+
 def _is_wsl() -> bool:
     if platform.system() != "Linux":
         return False
@@ -349,13 +360,37 @@ def ptq_row(dataset: str, fp32_root: Path, ptq_root: Path, suite_path: Path, reg
     }
 
 
-def quant_row(dataset: str, variant: str, root: Path, suite_path: Path, registry_path: Path, *, resume: bool) -> dict[str, Any]:
+def quant_row(
+    dataset: str,
+    variant: str,
+    root: Path,
+    suite_path: Path,
+    registry_path: Path,
+    *,
+    resume: bool,
+    skip_litert: bool = False,
+) -> dict[str, Any]:
+    source = training_row(dataset, variant, root, kind="quant")
+    if skip_litert:
+        current = run_root(root, dataset)
+        checkpoint = current / "checkpoints" / "best.keras"
+        if not checkpoint.exists():
+            checkpoint = current / "checkpoints" / "last.keras"
+        source.update(
+            {
+                "litert_status": "skipped",
+                "litert_reason": "Exportação e benchmark LiteRT desativados para esta execução.",
+                "serialized_model_bytes": checkpoint.stat().st_size if checkpoint.exists() else None,
+            }
+        )
+        return source
+
     post = export_litert(dataset, root, suite_path, registry_path, "fp32" if variant == "fp32" else "fp16", resume=resume)
     benchmark = post.get("benchmark", {}) if isinstance(post, dict) else {}
     classification = benchmark.get("classification", {}) if isinstance(benchmark, dict) else {}
-    source = training_row(dataset, variant, root, kind="quant")
     source.update(
         {
+            "litert_status": post.get("status", "missing"),
             "status": post.get("status", source["status"]),
             "macro_f1": classification.get("macro_f1"),
             "accuracy": classification.get("accuracy"),
@@ -395,40 +430,63 @@ def run_stage_batch(
     return {"rows": rows, "winners": winners}
 
 
-def run_stage_quant(base: dict[str, Any], root: Path, registry: Path, batches: dict[str, Any], *, resume: bool, dry_run: bool) -> dict[str, Any]:
+def run_stage_quant(
+    base: dict[str, Any],
+    root: Path,
+    registry: Path,
+    batches: dict[str, Any],
+    *,
+    resume: bool,
+    dry_run: bool,
+    skip_litert: bool = False,
+) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     if dry_run:
-        # A dry-run must materialize the complete 18-run quantization plan,
-        # including the PTQ conversion that follows each FP32 candidate.
+        # A dry-run includes the PTQ conversion only when LiteRT is enabled.
         for dataset in DATASETS:
             batch = int(batches.get(dataset, {}).get("batch_size", BATCH_SIZES[0]))
             for variant, policy in (("fp32", "float32"), ("fp16", "mixed_float16")):
                 output = root / "quantization" / dataset / variant
                 suite = root / "generated-suites" / "quantization" / f"{dataset}-{variant}.yaml"
                 write_variant_suite(base, suite, output, batch_size=batch, dtype_policy=policy, hidden_activation="swish")
-                row = training_row(dataset, variant, output, kind="quant", extra={"return_code": 0})
+                row = training_row(
+                    dataset,
+                    variant,
+                    output,
+                    kind="quant",
+                    extra={
+                        "return_code": 0,
+                        "litert_status": "skipped" if skip_litert else "planned",
+                    },
+                )
                 row["status"] = "planned"
                 rows.append(row)
-            ptq_output = root / "quantization" / dataset / "int8_ptq"
-            rows.append(
-                {
+            if not skip_litert:
+                ptq_output = root / "quantization" / dataset / "int8_ptq"
+                rows.append(
+                    {
+                        "dataset": dataset,
+                        "variant": "int8_ptq",
+                        "status": "planned",
+                        "batch_size": batch,
+                        "run_root": str(run_root(ptq_output, dataset)),
+                        "return_code": 0,
+                        "litert_status": "planned",
+                    }
+                )
+        winners = (
+            {}
+            if skip_litert
+            else {
+                dataset: {
                     "dataset": dataset,
-                    "variant": "int8_ptq",
+                    "variant": "fp32",
+                    "batch_size": int(batches.get(dataset, {}).get("batch_size", BATCH_SIZES[0])),
                     "status": "planned",
-                    "batch_size": batch,
-                    "run_root": str(run_root(ptq_output, dataset)),
-                    "return_code": 0,
                 }
-            )
-        winners = {
-            dataset: {
-                "dataset": dataset,
-                "variant": "fp32",
-                "batch_size": int(batches.get(dataset, {}).get("batch_size", BATCH_SIZES[0])),
-                "status": "planned",
+                for dataset in DATASETS
             }
-            for dataset in DATASETS
-        }
+        )
         write_phase_report(root / "reports", phase="quantization", rows=rows, winners=winners)
         return {"rows": rows, "winners": winners}
     for dataset in DATASETS:
@@ -440,23 +498,41 @@ def run_stage_quant(base: dict[str, Any], root: Path, registry: Path, batches: d
             suite = root / "generated-suites" / "quantization" / f"{dataset}-{variant}.yaml"
             write_variant_suite(base, suite, output, batch_size=batch, dtype_policy=policy, hidden_activation="swish")
             rc = execute_training(dataset, suite, registry, resume=resume, dry_run=False)
-            if rc or status_of(run_root(output, dataset)) == "failed":
-                raise RuntimeError(f"Quantização {variant} falhou em {dataset}.")
-            rows.append(quant_row(dataset, variant, output, suite, registry, resume=resume))
-        ptq_output = root / "quantization" / dataset / "int8_ptq"
-        rows.append(
-            ptq_row(
-                dataset,
-                fp_roots["fp32"],
-                ptq_output,
-                root / "generated-suites" / "quantization" / f"{dataset}-fp32.yaml",
-                registry,
-                resume=resume,
+            training_status = status_of(run_root(output, dataset))
+            if rc or training_status != "completed":
+                raise RuntimeError(
+                    f"Quantização {variant} falhou em {dataset} (rc={rc}, status={training_status})."
+                )
+            rows.append(
+                quant_row(
+                    dataset,
+                    variant,
+                    output,
+                    suite,
+                    registry,
+                    resume=resume,
+                    skip_litert=skip_litert,
+                )
             )
-        )
-        if rows[-1]["status"] != "completed":
-            raise RuntimeError(f"INT8-PTQ falhou em {dataset}.")
-    winners = {dataset: select_quantization([row for row in rows if row["dataset"] == dataset]) for dataset in DATASETS}
+        if not skip_litert:
+            ptq_output = root / "quantization" / dataset / "int8_ptq"
+            rows.append(
+                ptq_row(
+                    dataset,
+                    fp_roots["fp32"],
+                    ptq_output,
+                    root / "generated-suites" / "quantization" / f"{dataset}-fp32.yaml",
+                    registry,
+                    resume=resume,
+                )
+            )
+            if rows[-1]["status"] != "completed":
+                raise RuntimeError(f"INT8-PTQ falhou em {dataset}.")
+    winners = (
+        {}
+        if skip_litert
+        else {dataset: select_quantization([row for row in rows if row["dataset"] == dataset]) for dataset in DATASETS}
+    )
     write_phase_report(root / "reports", phase="quantization", rows=rows, winners=winners)
     return {"rows": rows, "winners": winners}
 
@@ -650,6 +726,11 @@ def main() -> int:
         action="store_true",
         help="Executa somente a fase de ativações com batch e precisão declarados explicitamente.",
     )
+    mode.add_argument(
+        "--quantization-only",
+        action="store_true",
+        help="Executa somente a fase de quantização com batch declarado explicitamente.",
+    )
     parser.add_argument(
         "--skip-quantization",
         action="store_true",
@@ -659,6 +740,11 @@ def main() -> int:
         "--activation-batch-size",
         type=int,
         help="Batch obrigatório para --activation-only; não depende de pipeline-status remoto.",
+    )
+    parser.add_argument(
+        "--quantization-batch-size",
+        type=int,
+        help="Batch obrigatório para --quantization-only; não executa a varredura de batch.",
     )
     parser.add_argument(
         "--activation-dtype-policy",
@@ -675,26 +761,30 @@ def main() -> int:
     parser.add_argument(
         "--skip-gates",
         action="store_true",
-        help="Não executa preflight, auditoria nem smoke; permitido apenas com --activation-only.",
+        help="Não executa preflight, auditoria nem smoke; permitido apenas com modo isolado.",
     )
     parser.add_argument(
         "--skip-litert",
         action="store_true",
-        help="Não exporta nem mede LiteRT na fase de ativações; permitido apenas com --activation-only.",
+        help="Não exporta nem mede LiteRT; permitido com --activation-only ou --quantization-only.",
     )
     args = parser.parse_args()
-    if args.skip_gates and not args.activation_only:
-        parser.error("--skip-gates só pode ser usado com --activation-only.")
-    if args.skip_quantization and args.activation_only:
-        parser.error("--skip-quantization não pode ser usado com --activation-only.")
+    if args.skip_gates and not (args.activation_only or args.quantization_only):
+        parser.error("--skip-gates só pode ser usado com --activation-only ou --quantization-only.")
+    if args.skip_quantization and (args.activation_only or args.quantization_only):
+        parser.error("--skip-quantization não pode ser usado com um modo isolado.")
     if args.skip_quantization and not args.skip_activation:
         parser.error("--skip-quantization exige --skip-activation, pois ativações dependem da quantização.")
-    if args.skip_litert and not args.activation_only:
-        parser.error("--skip-litert só pode ser usado com --activation-only.")
+    if args.skip_litert and not (args.activation_only or args.quantization_only):
+        parser.error("--skip-litert só pode ser usado com --activation-only ou --quantization-only.")
     if args.activation_batch_size is not None and not args.activation_only:
         parser.error("--activation-batch-size exige --activation-only.")
     if args.activation_only and args.activation_batch_size is None:
         parser.error("--activation-only exige --activation-batch-size.")
+    if args.quantization_batch_size is not None and not args.quantization_only:
+        parser.error("--quantization-batch-size exige --quantization-only.")
+    if args.quantization_only and args.quantization_batch_size is None:
+        parser.error("--quantization-only exige --quantization-batch-size.")
     suite = (PROJECT_ROOT / args.suite).resolve() if not args.suite.is_absolute() else args.suite.resolve()
     registry = (PROJECT_ROOT / args.registry).resolve() if not args.registry.is_absolute() else args.registry.resolve()
     root = (PROJECT_ROOT / args.output_root).resolve() if not args.output_root.is_absolute() else args.output_root.resolve()
@@ -754,6 +844,40 @@ def main() -> int:
                 "quantization_training_runs": 0,
                 "activation_training_runs": len(activation["rows"]),
                 "total_training_runs": len(activation["rows"]),
+            }
+        elif args.quantization_only:
+            batches = forced_quantization_inputs(batch_size=args.quantization_batch_size)
+            quantization = run_stage_quant(
+                base,
+                root,
+                registry,
+                batches,
+                resume=args.resume,
+                dry_run=args.dry_run,
+                skip_litert=args.skip_litert,
+            )
+            state["stages"]["batch"] = {
+                "status": "skipped",
+                "reason": "Execução de quantização iniciada com batch fixado.",
+                "forced_batch_size": int(args.quantization_batch_size),
+            }
+            state["stages"]["quantization"] = {
+                "status": stage_status,
+                "winners": quantization["winners"],
+                "run_count": len(quantization["rows"]),
+                "mode": "quantization_only",
+                "forced_batch_size": int(args.quantization_batch_size),
+                "litert_status": "skipped" if args.skip_litert else "enabled",
+                "selection_status": "not_selected_without_litert" if args.skip_litert else "selected",
+            }
+            phase_rows["quantization"] = quantization["rows"]
+            winners["quantization"] = quantization["winners"]
+            final_status = "quantization_only_planned" if args.dry_run else "quantization_only_completed"
+            counts = {
+                "batch_training_runs": 0,
+                "quantization_training_runs": len(DATASETS) * 2,
+                "activation_training_runs": 0,
+                "total_training_runs": len(DATASETS) * 2,
             }
         else:
             batch = run_stage_batch(
