@@ -1,4 +1,4 @@
-# Progresso da quantização, previsão e uso de hardware — 11/09/2026 (atualizado)
+# Progresso da quantização, previsão e uso de hardware — 14/09/2026 (atualizado)
 
 ## Escopo
 
@@ -9,9 +9,10 @@ Este relatório considera **somente** a execução solicitada de quantização e
 - A matriz de quantização tem **18 jobs planejados**: FP32 e FP16 para cada um dos 9 datasets.
 - **7 jobs foram concluídos**: MNIST FP32/FP16, Fashion-MNIST FP32/FP16, KMNIST FP32/FP16 e EMNIST Balanced FP32.
 - O erro anterior da MNIST FP16 (`Broken pipe`) foi recuperado com sucesso na retomada.
-- **1 job está em execução**: EMNIST Balanced FP16, na época 24/100.
+- **1 job está marcado como `running`, mas está stale**: EMNIST Balanced FP16 parou na época 66/100; não há artefatos novos desde 12/09.
 - **10 jobs ainda não foram iniciados**.
-- A rodada está ativa nos artefatos individuais, embora o `pipeline-status.json` global ainda conserve o estado histórico `failed` da tentativa anterior.
+- Não há evidência atual de processo ativo; a rodada precisa ser retomada.
+- O `pipeline-status.json` global ainda conserva o estado histórico `failed` da tentativa anterior e não deve ser usado sozinho para classificar a retomada.
 
 ## O que já foi feito
 
@@ -57,9 +58,9 @@ Também foram concluídos:
 
 Os sete jobs concluídos têm status `completed`, métricas finais e telemetria.
 
-### Job atualmente em execução
+### Último job parcial e estado atual
 
-EMNIST Balanced FP16 está em execução, com **24 de 100 épocas** registradas. O tempo observado por época está em torno de **297 segundos**, o que indica aproximadamente **6,3 horas restantes** para este job se o ritmo permanecer estável.
+EMNIST Balanced FP16 está marcado como `running`, mas a última época persistida é a **66/100**, com o arquivo de métricas modificado em **12/09**. O status não foi finalizado nem atualizado desde então; por isso o job é tratado como parcial/stale, não como execução ativa confirmada. O ritmo observado foi de aproximadamente **297 segundos por época**, indicando cerca de **2,8 horas de treino restantes** quando for retomado, além da avaliação final.
 
 ## Estado atual da matriz
 
@@ -67,7 +68,7 @@ EMNIST Balanced FP16 está em execução, com **24 de 100 épocas** registradas.
 |---|---:|
 | FP32 concluída | 4 |
 | FP16 concluída | 3 |
-| Em execução | 1 |
+| Parcial/stale a retomar | 1 |
 | Falha ativa | 0 |
 | Jobs ainda não iniciados | 10 |
 | **Jobs planejados** | **18** |
@@ -78,19 +79,19 @@ Os 10 jobs ainda não iniciados correspondem às variantes FP32/FP16 dos cinco d
 
 ### Base observada
 
-Os sete jobs concluídos levaram entre aproximadamente 1,7 e 4,2 horas. O EMNIST Balanced FP16 atual tem cerca de 6,3 horas restantes pela velocidade observada. Como ainda não há tempos observados para os cinco datasets restantes, a previsão continua incerta.
+Os sete jobs concluídos levaram entre aproximadamente 1,7 e 4,2 horas. O EMNIST Balanced FP16 parcial tem cerca de 2,8 horas de treino restantes pela velocidade observada. Como ainda não há tempos observados para os cinco datasets restantes, a previsão continua incerta.
 
 | Trabalho restante | Estimativa |
 |---|---:|
-| EMNIST Balanced FP16 em execução | ~6,3 h |
+| Retomar e finalizar EMNIST Balanced FP16 | ~2,8 h |
 | 10 jobs ainda não iniciados | 25–50 h |
 | **Total restante estimado** | **31–56 h** |
 
-Em execução serial contínua, isso representa aproximadamente **1,3–2,3 dias**. A janela é indicativa: pode aumentar se algum dataset exigir mais tempo de preparação ou se ocorrer nova falha de execução.
+Em execução serial contínua, isso representa aproximadamente **1,2–2,2 dias**, sem contar o tempo parado até a retomada. A janela é indicativa: pode aumentar se algum dataset exigir mais tempo de preparação ou se ocorrer nova falha de execução.
 
 ### Cenário central
 
-Usando aproximadamente 6 horas para o job atual e 3,5 horas por job restante, o cenário central é de **41–43 horas**, ou cerca de **1,8 dia de execução contínua**.
+Usando aproximadamente 3 horas para finalizar EMNIST Balanced FP16 e 3,5 horas por job restante, o cenário central é de **38–40 horas**, ou cerca de **1,6 dia de execução contínua após a retomada**.
 
 ## Uso do hardware
 
@@ -114,7 +115,7 @@ Outros pontos observados:
 
 ## Próximas ações necessárias
 
-1. Deixar EMNIST Balanced FP16 concluir sem interromper o processo.
+1. Retomar EMNIST Balanced FP16 com `--resume` e confirmar novas épocas no arquivo de métricas.
 2. Continuar os 10 jobs restantes com `--resume`.
 3. Validar os 18 `status.json`, métricas finais, artefatos e telemetria.
 
@@ -126,4 +127,4 @@ Outros pontos observados:
 - [Saída dos jobs de quantização](../outputs/controlled-quantization-fast-mac-m4/quantization/)
 - [Comando documentado para quantização isolada](../README.md)
 
-*Relatório atualizado em 11/09/2026 por leitura somente dos artefatos da rodada de quantização. Nenhum processo ou arquivo de resultado foi alterado.*
+*Relatório atualizado em 14/09/2026 por leitura somente dos artefatos da rodada de quantização. Nenhum processo ou arquivo de resultado foi alterado.*
