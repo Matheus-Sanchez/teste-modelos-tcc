@@ -7,10 +7,8 @@ import sys
 from pathlib import Path
 from typing import Sequence
 
+from .bootstrap import DEFAULT_DATASET_REGISTRY, DEFAULT_OUTPUT_ROOT, DEFAULT_SUITE_CONFIG
 from .config import DATASET_ORDER
-
-
-DEFAULT_DATASET_REGISTRY = Path("configs/datasets.yaml")
 
 
 def _add_common_config_arguments(parser: argparse.ArgumentParser, *, registry_required: bool = False) -> None:
@@ -24,7 +22,7 @@ def _add_common_config_arguments(parser: argparse.ArgumentParser, *, registry_re
     parser.add_argument(
         "--suite",
         type=Path,
-        default=Path("configs/suite.yaml"),
+        default=DEFAULT_SUITE_CONFIG,
         help="Arquivo YAML com parâmetros fixos da suíte.",
     )
     parser.add_argument(
@@ -49,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     preflight = subparsers.add_parser("preflight", help="Exibe diagnóstico de ambiente sem treinar.")
-    preflight.add_argument("--output-root", type=Path, default=Path("artifacts"))
+
     preflight.add_argument("--require-tensorflow", action="store_true")
     preflight.add_argument("--data-path", type=Path, action="append", default=[])
 
@@ -88,7 +86,7 @@ def build_parser() -> argparse.ArgumentParser:
     resume.add_argument("--fail-fast", action="store_true")
 
     report = subparsers.add_parser("report", help="Reconstrói relatório de um dataset já executado.")
-    report.add_argument("--output-root", type=Path, default=Path("artifacts"))
+    report.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     report.add_argument("--dataset", choices=DATASET_ORDER, required=True)
 
     smoke = subparsers.add_parser("smoke", help="Executa validação curta em um subconjunto local.")

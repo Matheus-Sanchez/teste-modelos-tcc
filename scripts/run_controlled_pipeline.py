@@ -353,6 +353,11 @@ def main() -> int:
         action="store_true",
         help="Executa ativacoes em mixed_float16, sem a etapa de quantizacao.",
     )
+    parser.add_argument(
+        "--only-quantization",
+        action="store_true",
+        help="Executa somente a quantizacao usando os vencedores de batch ja registrados.",
+    )
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
@@ -371,6 +376,29 @@ def main() -> int:
     status.setdefault("stages", {})
     started = time.perf_counter()
     try:
+        if args.only_quantization:
+            batch_status = status["stages"].get("batch", {})
+            batch_winners = batch_status.get("winners") if isinstance(batch_status, dict) else None
+            if not isinstance(batch_status, dict) or batch_status.get("status") != "completed" or not isinstance(batch_winners, dict):
+                raise RuntimeError(
+                    "A quantizacao isolada exige uma etapa de batch concluida no mesmo output-root. "
+                    "Use o output-root que contem pipeline-status.json com stages.batch.winners."
+                )
+            quant = run_stage_quant(
+                base,
+                root,
+                registry,
+                batch_winners,
+                resume=args.resume,
+                dry_run=args.dry_run,
+            )
+            status["stages"]["quantization"] = {"status": "completed", "winners": quant["winners"]}
+            status.pop("error", None)
+            status.pop("failed_at", None)
+            status.update({"status": "completed", "finished_at": timestamp(), "duration_seconds": round(time.perf_counter() - started, 3)})
+            atomic_write_json(state_path, status)
+            return 0
+
         batch = run_stage_batch(
             base,
             root,

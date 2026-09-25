@@ -22,6 +22,7 @@ import numpy as np
 
 from .adapters import LoadedDataset, load_image_file, load_local_dataset
 from .audit import audit_dataset, write_audit_report
+from .bootstrap import configure_training_runtime, load_global_configuration, resolve_project_path
 from .config import (
     DATASET_ORDER,
     ConfigurationError,
@@ -29,8 +30,6 @@ from .config import (
     SuiteSettings,
     TrainingSettings,
     fingerprint,
-    load_dataset_registry,
-    load_suite_settings,
     run_config_payload,
 )
 from .data import (
@@ -89,19 +88,13 @@ class RunOutcome:
         return self.status == "failed"
 
 
-def _resolve_path(path: str | Path) -> Path:
-    return Path(path).expanduser().resolve()
-
-
 def _load_settings_and_registry(args: Any) -> tuple[SuiteSettings, dict[str, DatasetEntry]]:
-    settings = load_suite_settings(args.suite)
-    if getattr(args, "output_root", None) is not None:
-        settings = dataclasses.replace(settings, output_root=_resolve_path(args.output_root))
-    else:
-        settings = dataclasses.replace(settings, output_root=_resolve_path(settings.output_root))
-    settings.validate()
-    registry = load_dataset_registry(args.registry)
-    return settings, registry
+    configuration = load_global_configuration(
+        suite_path=args.suite,
+        registry_path=args.registry,
+        output_root=getattr(args, "output_root", None),
+    )
+    return configuration.suite, configuration.datasets
 
 
 def _select_entries(registry: Mapping[str, DatasetEntry], args: Any) -> list[DatasetEntry]:
@@ -281,7 +274,7 @@ def _configure_tensorflow_runtime(training: TrainingSettings) -> dict[str, Any]:
     # This must be set before the first TensorFlow device initialization. The
     # command entrypoints set it before preflight as well; keeping it here makes
     # direct/private callers deterministic.
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    configure_training_runtime()
     tensorflow = require_tensorflow()
     set_dtype_policy(training.dtype_policy)
     physical_gpus = list(tensorflow.config.list_physical_devices("GPU"))
@@ -757,7 +750,7 @@ def command_audit(args: Any) -> int:
 def command_run(args: Any) -> int:
     # Set before preflight imports TensorFlow, otherwise its first device query
     # can reserve all VRAM and make memory growth unavailable to the runner.
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    configure_training_runtime()
     settings, registry = _load_settings_and_registry(args)
     entries = _select_entries(registry, args)
     if not args.dry_run:
@@ -790,7 +783,7 @@ def command_run(args: Any) -> int:
 
 
 def command_report(args: Any) -> int:
-    output_root = _resolve_path(args.output_root)
+    output_root = resolve_project_path(args.output_root)
     dataset_dir = output_root / args.dataset
     artifacts = build_dataset_report(dataset_dir, dataset_name=args.dataset)
     build_global_index(output_root)
@@ -830,7 +823,7 @@ def _subset_for_smoke(materials: DatasetMaterials, *, examples_per_class: int, s
 def command_smoke(args: Any) -> int:
     if int(args.epochs) < 1 or int(args.examples_per_class) < 3:
         raise RunExecutionError("--epochs deve ser positivo e --examples-per-class deve ser pelo menos 3.")
-    os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
+    configure_training_runtime()
     settings, registry = _load_settings_and_registry(args)
     if args.dataset not in registry:
         raise ConfigurationError(f"'{args.dataset}' não está configurado no registro local.")
