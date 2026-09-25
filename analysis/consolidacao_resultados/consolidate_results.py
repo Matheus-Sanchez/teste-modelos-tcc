@@ -315,6 +315,15 @@ def infer_context(campaign: str, run_root: str, manifest: dict[str, Any]) -> dic
         campaign_index = parts.index(campaign) if campaign in parts else 1
         quant_variant = parts[campaign_index + 1] if campaign_index + 1 < len(parts) else "unknown"
         variant = quant_variant
+    elif campaign == "quantization_all":
+        phase = "quantization"
+        campaign_index = parts.index(campaign) if campaign in parts else 1
+        if campaign_index + 2 < len(parts):
+            dataset = dataset or parts[campaign_index + 1]
+            quant_variant = parts[campaign_index + 2]
+        else:
+            quant_variant = "unknown"
+        variant = quant_variant
     elif campaign == "remaining-ram-capped":
         phase = "balance"
         variant = first(identity.get("balance_mode"), cfg.get("balance_mode"), "unknown")
