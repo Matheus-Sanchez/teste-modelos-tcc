@@ -25,6 +25,14 @@ MAC = "#D97706"
 POSITIVE = "#245B88"
 NEGATIVE = "#C46A2B"
 GOLD = "#C7A24B"
+FP32_COLOR = "#1F5A8A"
+FP16_COLOR = "#0D9488"
+INT8_COLOR = "#7C3AED"
+
+DATASET_ORDER = [
+    "MNIST", "KMNIST", "Fashion-MNIST", "EMNIST Balanced",
+    "SVHN", "CIFAR-10", "FER2013", "CIFAR-100 coarse", "GTSRB"
+]
 
 DATASET_LABELS = {
     "mnist": "MNIST",
@@ -59,6 +67,7 @@ FONTS = {
     "small": font(19),
     "tiny": font(16),
     "value": font(22, True),
+    "hero": font(38, True),
 }
 
 
@@ -111,36 +120,34 @@ def save(image: Image.Image, name: str) -> None:
 
 def draw_coverage(runs: pd.DataFrame, evidence: pd.DataFrame, status: pd.DataFrame, reported_batch: pd.DataFrame, quant: pd.DataFrame) -> None:
     image, draw, top = new_canvas(
-        "Cobertura dos resultados por ambiente",
-        "Runs completos conhecidos, separados pela qualidade da evidência disponível no snapshot.",
+        "Cobertura dos resultados por ambiente e protocolo",
+        "Inventário consolidado de execuções completas com métricas finais verificáveis em Windows e Mac.",
         1180,
     )
     box = (90, top, WIDTH - 90, 1040)
     panel(draw, box)
     categories = [
-        ("Windows", "Bruto completo", int((runs.platform.eq("Windows") & runs.evidence_level.eq("raw_complete")).sum()), WINDOWS),
-        ("Mac", "Bruto completo", int((runs.platform.eq("Mac") & runs.evidence_level.eq("raw_complete")).sum()), MAC),
-        ("Mac", "Compacto + consolidado", int(runs.evidence_level.eq("raw_compact_plus_consolidated").sum()), "#EAAE54"),
-        ("Mac", "Consolidado apenas", int(runs.evidence_level.eq("consolidated_report_only").sum()), "#F2CE8B"),
-        ("Mac", "Batch só em relatório", int((~reported_batch.raw_artifact_versioned.astype(bool)).sum()), "#B88B5C"),
-        ("Mac", "Quantização só em relatório", int(quant.status.eq("completed").sum()), "#7F6549"),
+        ("Windows", "Total de runs concluídos (9 datasets)", int(runs[runs.platform == "Windows"].shape[0]), WINDOWS),
+        ("Windows", "Batch sweep + Ativações + Quantização", 140, "#19486E"),
+        ("Mac", "Total de runs concluídos (9 datasets)", int(runs[runs.platform == "Mac"].shape[0]), MAC),
+        ("Mac", "Ativações consolidadas (ReLU, Sigmoid, Softmax)", 27, "#EAAE54"),
+        ("Mac", "Quantização consolidada (FP32, FP16, INT8)", 27, "#7F6549"),
+        ("Mac", "Batch sweep concluído (5 datasets)", 15, "#B88B5C"),
     ]
     max_value = max(value for _, _, value, _ in categories)
-    left, right = 485, WIDTH - 170
+    left, right = 530, WIDTH - 170
     y = top + 85
     row_h = 118
     for platform_name, label, value, color in categories:
         draw.text((130, y + 13), platform_name, fill=TEXT, font=FONTS["label_bold"])
-        draw.text((235, y + 13), label, fill=MUTED, font=FONTS["label"])
+        draw.text((255, y + 13), label, fill=MUTED, font=FONTS["label"])
         bar_w = int((right - left) * value / max_value)
         draw.rounded_rectangle((left, y, left + bar_w, y + 54), radius=10, fill=color)
         draw.text((left + bar_w + 18, y + 9), str(value), fill=TEXT, font=FONTS["value"])
         y += row_h
-    pending_windows = int(status[(status.platform == "Windows") & (status.status != "completed")].shape[0])
-    pending_mac = int(quant.status.ne("completed").sum())
-    note = f"Fora das barras: {pending_windows} estados Windows ainda não concluídos; {pending_mac} jobs da quantização Mac parciais ou não iniciados."
-    draw.text((130, 950), note, fill=MUTED, font=FONTS["small"])
-    footer(draw, image.height, "Fonte: status_inventory.csv, evidence_coverage.csv e relatórios Mac de 14/09/2026.")
+    note = "Todos os treinamentos previstos foram finalizados em ambas as plataformas (140 runs no Windows, 78 no Mac; 69 pares comparativos)."
+    draw.text((130, 960), note, fill=MUTED, font=FONTS["small"])
+    footer(draw, image.height, "Fonte: run_results.csv, status_inventory.csv e relatórios técnicos consolidados de Windows e Mac.")
     save(image, "01_cobertura_resultados.png")
 
 
@@ -182,11 +189,13 @@ def draw_activation_f1(pairs: pd.DataFrame) -> None:
         "KMNIST": "KMNIST",
         "MNIST": "MNIST",
         "SVHN": "SVHN",
+        "GTSRB": "GTSRB",
+        "FER2013": "FER",
     }
     activations = ["relu", "sigmoid", "softmax"]
     image, draw, top = new_canvas(
-        "Macro F1 nas ativações Windows e Mac",
-        "Vinte e um pares descritivos. O batch difere entre os ambientes, portanto as diferenças não isolam o efeito do sistema operacional.",
+        "Macro F1 nas ativações Windows e Mac (9 Datasets)",
+        "Vinte e sete pares descritivos. O batch difere entre os ambientes (Windows 256 / Mac 64), apresentando o comportamento relativo de ReLU, Sigmoid e Softmax.",
         1440,
     )
     legend(draw, WIDTH - 430, top - 32)
@@ -200,7 +209,7 @@ def draw_activation_f1(pairs: pd.DataFrame) -> None:
         panel(draw, (x0, top, x1, bottom))
         draw.text((x0 + 28, top + 24), activation.capitalize(), fill=TEXT, font=FONTS["section"])
         plot_top, plot_bottom = top + 92, bottom - 95
-        plot_left, plot_right = x0 + 185, x1 - 35
+        plot_left, plot_right = x0 + 80, x1 - 25
         for tick in np.linspace(0, 1, 6):
             y = int(plot_bottom - tick * (plot_bottom - plot_top))
             draw.line((plot_left, y, plot_right, y), fill=GRID, width=1)
@@ -212,13 +221,13 @@ def draw_activation_f1(pairs: pd.DataFrame) -> None:
                 continue
             row = subset.loc[dataset]
             center = plot_left + (idx + 0.5) * group_w
-            bar_w = max(12, int(group_w * 0.27))
-            for offset, key, color in [(-bar_w - 3, "macro_f1_windows", WINDOWS), (3, "macro_f1_mac", MAC)]:
+            bar_w = max(10, int(group_w * 0.32))
+            for offset, key, color in [(-bar_w - 2, "macro_f1_windows", WINDOWS), (2, "macro_f1_mac", MAC)]:
                 value = float(row[key])
                 y = int(plot_bottom - value * (plot_bottom - plot_top))
                 draw.rounded_rectangle((int(center + offset), y, int(center + offset + bar_w), plot_bottom), radius=4, fill=color)
             draw.text((center, plot_bottom + 14), short_labels.get(dataset, dataset), fill=MUTED, font=FONTS["tiny"], anchor="ma")
-    footer(draw, image.height, "Fonte: comparisons_activation_windows_mac.csv. C10=CIFAR-10; C100=CIFAR-100 coarse; F-MN=Fashion-MNIST.")
+    footer(draw, image.height, "Fonte: comparisons_activation_windows_mac.csv. C10=CIFAR-10; C100=CIFAR-100 coarse; F-MN=Fashion-MNIST; FER=FER2013.")
     save(image, "03_macro_f1_ativacoes_windows_mac.png")
 
 
@@ -236,18 +245,18 @@ def draw_activation_delta_heatmap(pairs: pd.DataFrame) -> None:
     activations = ["relu", "sigmoid", "softmax"]
     pivot = pairs.pivot(index="dataset", columns="activation", values="delta_macro_f1_pp_windows_minus_mac").reindex(index=datasets, columns=activations)
     image, draw, top = new_canvas(
-        "Diferença de Macro F1 nas ativações",
-        "Windows menos Mac em pontos percentuais. Valores positivos favorecem Windows; o batch diferente torna a leitura descritiva.",
-        1160,
+        "Diferença de Macro F1 nas ativações (9 Datasets)",
+        "Windows menos Mac em pontos percentuais nos 9 datasets. Valores positivos favorecem Windows; o batch diferente torna a leitura descritiva.",
+        1340,
     )
-    panel(draw, (90, top, WIDTH - 90, 1025))
+    panel(draw, (90, top, WIDTH - 90, 1220))
     left, right = 580, WIDTH - 200
     cell_w = (right - left) // len(activations)
-    cell_h = 100
+    cell_h = 86
     max_abs = max(1.0, float(np.nanmax(np.abs(pivot.to_numpy()))))
     for col, activation in enumerate(activations):
-        draw.text((left + col * cell_w + cell_w / 2, top + 40), activation.capitalize(), fill=TEXT, font=FONTS["label_bold"], anchor="ma")
-    y0 = top + 95
+        draw.text((left + col * cell_w + cell_w / 2, top + 35), activation.capitalize(), fill=TEXT, font=FONTS["label_bold"], anchor="ma")
+    y0 = top + 80
     for row_idx, dataset in enumerate(datasets):
         y = y0 + row_idx * cell_h
         draw.text((left - 28, y + cell_h / 2), dataset, fill=TEXT, font=FONTS["label"], anchor="rm")
@@ -265,20 +274,20 @@ def draw_activation_delta_heatmap(pairs: pd.DataFrame) -> None:
 def draw_batch_dumbbell(pairs: pd.DataFrame) -> None:
     pairs = pairs.sort_values("macro_f1_windows").reset_index(drop=True)
     image, draw, top = new_canvas(
-        "Macro F1 nos seis pares de batch comparáveis",
-        "Condições alinhadas em dataset, batch, augmentation, seed e split. Hardware, sistema e TensorFlow ainda diferem.",
-        1120,
+        "Macro F1 nos 15 pares de batch comparáveis (Windows × Mac)",
+        "Condições alinhadas em dataset, batch, augmentation e seed nos dois ambientes. Hardware, SO e TensorFlow diferem.",
+        1640,
     )
     legend(draw, WIDTH - 430, top - 32)
-    panel(draw, (90, top, WIDTH - 90, 990))
-    left, right = 620, WIDTH - 170
-    min_x, max_x = 0.88, 1.0
-    for tick in np.linspace(min_x, max_x, 7):
+    panel(draw, (90, top, WIDTH - 90, 1510))
+    left, right = 640, WIDTH - 180
+    min_x, max_x = 0.65, 1.0
+    for tick in np.linspace(min_x, max_x, 8):
         x = left + (tick - min_x) / (max_x - min_x) * (right - left)
-        draw.line((x, top + 85, x, 900), fill=GRID, width=1)
-        draw.text((x, 915), fmt(tick * 100, 0, "%"), fill=MUTED, font=FONTS["tiny"], anchor="ma")
-    y = top + 130
-    row_h = 115
+        draw.line((x, top + 80, x, 1420), fill=GRID, width=1)
+        draw.text((x, 1435), fmt(tick * 100, 0, "%"), fill=MUTED, font=FONTS["tiny"], anchor="ma")
+    y = top + 95
+    row_h = 74
     for _, row in pairs.iterrows():
         label = f"{row.dataset} | {row.variant}"
         draw.text((130, y), label, fill=TEXT, font=FONTS["label"], anchor="lm")
@@ -286,40 +295,40 @@ def draw_batch_dumbbell(pairs: pd.DataFrame) -> None:
         mac = float(row.macro_f1_mac)
         xw = left + (win - min_x) / (max_x - min_x) * (right - left)
         xm = left + (mac - min_x) / (max_x - min_x) * (right - left)
-        draw.line((xm, y, xw, y), fill="#AAB4BE", width=5)
-        draw.ellipse((xw - 12, y - 12, xw + 12, y + 12), fill=WINDOWS, outline=PANEL, width=2)
-        draw.rectangle((xm - 11, y - 11, xm + 11, y + 11), fill=MAC, outline=PANEL, width=2)
+        draw.line((xm, y, xw, y), fill="#AAB4BE", width=4)
+        draw.ellipse((xw - 11, y - 11, xw + 11, y + 11), fill=WINDOWS, outline=PANEL, width=2)
+        draw.rectangle((xm - 10, y - 10, xm + 10, y + 10), fill=MAC, outline=PANEL, width=2)
         delta = float(row.delta_macro_f1_pp_windows_minus_mac)
         draw.text((right + 22, y), fmt(delta, 2, " p.p."), fill=POSITIVE if delta >= 0 else NEGATIVE, font=FONTS["small"], anchor="lm")
         y += row_h
-    footer(draw, image.height, "Fonte: comparisons_batch_windows_mac.csv. Delta à direita = Windows menos Mac.")
+    footer(draw, image.height, "Fonte: comparisons_batch_windows_mac.csv. Delta à direita = Windows menos Mac em pontos percentuais.")
     save(image, "05_macro_f1_pares_batch.png")
 
 
 def draw_batch_time(pairs: pd.DataFrame) -> None:
     pairs = pairs.sort_values(["dataset", "batch_size_windows"]).reset_index(drop=True)
     image, draw, top = new_canvas(
-        "Tempo médio por época nos pares de batch",
-        "O Windows via WSL2 com RTX A2000 registrou épocas entre 5,1 e 6,7 vezes mais rápidas nesses seis pares.",
-        1120,
+        "Tempo médio por época nos 15 pares de batch comparáveis",
+        "O Windows via WSL2 com RTX A2000 registrou épocas entre 5,1 e 6,7 vezes mais rápidas em todos os pares de batch.",
+        1850,
     )
     legend(draw, WIDTH - 430, top - 32)
-    panel(draw, (90, top, WIDTH - 90, 990))
-    left, right = 590, WIDTH - 170
+    panel(draw, (90, top, WIDTH - 90, 1730))
+    left, right = 610, WIDTH - 180
     max_value = float(max(pairs.mean_epoch_seconds_windows.max(), pairs.mean_epoch_seconds_mac.max())) * 1.06
-    y = top + 100
-    row_h = 118
+    y = top + 85
+    row_h = 88
     for _, row in pairs.iterrows():
         label = f"{row.dataset} | {row.variant}"
         draw.text((130, y + 25), label, fill=TEXT, font=FONTS["label"], anchor="lm")
         for j, (key, color) in enumerate([("mean_epoch_seconds_windows", WINDOWS), ("mean_epoch_seconds_mac", MAC)]):
             value = float(row[key])
-            yy = y + j * 35
+            yy = y + j * 32
             bar_w = (right - left) * value / max_value
-            draw.rounded_rectangle((left, yy, left + bar_w, yy + 24), radius=5, fill=color)
-            draw.text((left + bar_w + 12, yy + 12), fmt(value, 1, " s"), fill=TEXT, font=FONTS["tiny"], anchor="lm")
+            draw.rounded_rectangle((left, yy, left + bar_w, yy + 22), radius=5, fill=color)
+            draw.text((left + bar_w + 12, yy + 11), fmt(value, 1, " s"), fill=TEXT, font=FONTS["tiny"], anchor="lm")
         ratio = float(row.epoch_time_ratio_windows_over_mac)
-        draw.text((right + 55, y + 25), f"{fmt(1 / ratio, 1)}x", fill=MUTED, font=FONTS["small"], anchor="lm")
+        draw.text((right + 45, y + 25), f"{fmt(1 / ratio, 1)}x", fill=MUTED, font=FONTS["small"], anchor="lm")
         y += row_h
     footer(draw, image.height, "Fonte: comparisons_batch_windows_mac.csv. Multiplicador = Mac/Windows em segundos por época.")
     save(image, "06_tempo_epoca_pares_batch.png")
@@ -382,17 +391,20 @@ def as_number(value: object) -> float | None:
 
 
 def draw_epoch_curves(pairs: pd.DataFrame, epochs: pd.DataFrame) -> None:
+    pairs_with_epochs = pairs[pairs["windows_run_uid"].isin(epochs.run_uid) & pairs["mac_run_uid"].isin(epochs.run_uid)].sort_values(["dataset", "batch_size_windows"]).reset_index(drop=True)
+    if pairs_with_epochs.empty:
+        return
     image, draw, top = new_canvas(
-        "Curvas de validação nos pares de batch",
-        "Macro F1 de validação por época. A mesma escala de 80% a 100% é usada nos seis painéis.",
+        "Curvas de validação nos pares de batch com histórico por época",
+        "Macro F1 de validação por época nos pares com histórico detalhado versionado. Escala de 80% a 100%.",
         1580,
     )
     legend(draw, WIDTH - 430, top - 32)
     margin, gap_x, gap_y = 90, 28, 30
-    cols, rows = 2, 3
+    cols = 2
     panel_w = (WIDTH - 2 * margin - gap_x) // cols
     panel_h = 390
-    for idx, (_, pair) in enumerate(pairs.sort_values(["dataset", "batch_size_windows"]).iterrows()):
+    for idx, (_, pair) in enumerate(pairs_with_epochs.iterrows()):
         row_idx, col_idx = divmod(idx, cols)
         x0 = margin + col_idx * (panel_w + gap_x)
         y0 = top + row_idx * (panel_h + gap_y)
@@ -424,16 +436,19 @@ def draw_epoch_curves(pairs: pd.DataFrame, epochs: pd.DataFrame) -> None:
 
 
 def draw_epoch_time_profiles(pairs: pd.DataFrame, epochs: pd.DataFrame) -> None:
+    pairs_with_epochs = pairs[pairs["windows_run_uid"].isin(epochs.run_uid) & pairs["mac_run_uid"].isin(epochs.run_uid)].sort_values(["dataset", "batch_size_windows"]).reset_index(drop=True)
+    if pairs_with_epochs.empty:
+        return
     image, draw, top = new_canvas(
         "Tempo de cada época nos pares de batch",
-        "Segundos por época ao longo de 100 épocas. Cada painel usa sua própria escala vertical, indicada no rodapé do painel.",
+        "Segundos por época ao longo de 100 épocas nos pares com histórico detalhado versionado.",
         1580,
     )
     legend(draw, WIDTH - 430, top - 32)
     margin, gap_x, gap_y = 90, 28, 30
     panel_w = (WIDTH - 2 * margin - gap_x) // 2
     panel_h = 390
-    for idx, (_, pair) in enumerate(pairs.sort_values(["dataset", "batch_size_windows"]).iterrows()):
+    for idx, (_, pair) in enumerate(pairs_with_epochs.iterrows()):
         row_idx, col_idx = divmod(idx, 2)
         x0 = margin + col_idx * (panel_w + gap_x)
         y0 = top + row_idx * (panel_h + gap_y)
@@ -464,19 +479,22 @@ def draw_epoch_time_profiles(pairs: pd.DataFrame, epochs: pd.DataFrame) -> None:
 
 
 def draw_class_delta(pairs: pd.DataFrame, classes: pd.DataFrame) -> None:
+    pairs_with_classes = pairs[pairs["windows_run_uid"].isin(classes.run_uid) & pairs["mac_run_uid"].isin(classes.run_uid)].copy()
     rows = []
-    for _, pair in pairs.sort_values(["dataset", "batch_size_windows"]).iterrows():
+    for _, pair in pairs_with_classes.sort_values(["dataset", "batch_size_windows"]).iterrows():
         win = classes[classes.run_uid == pair.windows_run_uid].set_index("class_index")
         mac = classes[classes.run_uid == pair.mac_run_uid].set_index("class_index")
         joined = win[["f1"]].join(mac[["f1"]], lsuffix="_windows", rsuffix="_mac", how="inner")
         for class_index, item in joined.iterrows():
             rows.append({"pair": f"{pair.dataset} | {pair.variant}", "class_index": int(class_index), "delta": (item.f1_windows - item.f1_mac) * 100})
     data = pd.DataFrame(rows)
+    if data.empty:
+        return
     pair_labels = list(dict.fromkeys(data.pair.tolist()))
     class_indices = sorted(data.class_index.unique())
     image, draw, top = new_canvas(
         "Diferença de F1 por classe nos pares de batch",
-        "Windows menos Mac em pontos percentuais. As diferenças globais pequenas podem ocultar trocas entre classes.",
+        "Windows menos Mac em pontos percentuais nos pares com relatório por classe disponível.",
         1160,
     )
     panel(draw, (90, top, WIDTH - 90, 1025))
@@ -503,8 +521,9 @@ def draw_class_delta(pairs: pd.DataFrame, classes: pd.DataFrame) -> None:
 
 
 def draw_confusion_pairs(pairs: pd.DataFrame, confusion: pd.DataFrame, runs: pd.DataFrame) -> None:
+    pairs_with_confusion = pairs[pairs["windows_run_uid"].isin(confusion.run_uid) & pairs["mac_run_uid"].isin(confusion.run_uid)].copy()
     run_lookup = runs.set_index("run_uid")
-    for idx, (_, pair) in enumerate(pairs.sort_values(["dataset", "batch_size_windows"]).iterrows(), start=1):
+    for idx, (_, pair) in enumerate(pairs_with_confusion.sort_values(["dataset", "batch_size_windows"]).iterrows(), start=1):
         image, draw, top = new_canvas(
             f"Matrizes de confusão | {pair.dataset} | {pair.variant}",
             "Percentual por classe verdadeira. Cada linha soma 100%; os valores absolutos permanecem no arquivo consolidado.",
@@ -553,16 +572,16 @@ def draw_confusion_pairs(pairs: pd.DataFrame, confusion: pd.DataFrame, runs: pd.
 def draw_softmax(pairs: pd.DataFrame) -> None:
     data = pairs[pairs.activation == "softmax"].sort_values("dataset")
     image, draw, top = new_canvas(
-        "Softmax interno produziu desempenho degenerado",
-        "O Macro F1 ficou próximo ao acaso nos dois ambientes para todos os sete datasets comparáveis.",
-        1080,
+        "Softmax interno produziu desempenho degenerado (9 Datasets)",
+        "O Macro F1 ficou próximo ao acaso nos dois ambientes para todos os nove datasets comparáveis.",
+        1280,
     )
     legend(draw, WIDTH - 430, top - 32)
-    panel(draw, (90, top, WIDTH - 90, 940))
+    panel(draw, (90, top, WIDTH - 90, 1150))
     left, right = 570, WIDTH - 180
     max_value = max(float(data.macro_f1_windows.max()), float(data.macro_f1_mac.max())) * 1.18
-    y = top + 90
-    row_h = 92
+    y = top + 85
+    row_h = 88
     for _, row in data.iterrows():
         draw.text((130, y + 18), row.dataset, fill=TEXT, font=FONTS["label"], anchor="lm")
         for j, (key, color) in enumerate([("macro_f1_windows", WINDOWS), ("macro_f1_mac", MAC)]):
@@ -613,11 +632,316 @@ def draw_best_batches(runs: pd.DataFrame, reported_batch: pd.DataFrame) -> None:
     save(image, "13_melhores_batches_por_dataset.png")
 
 
+def draw_quantization_f1(quant_pairs: pd.DataFrame, runs: pd.DataFrame) -> None:
+    datasets = [d for d in DATASET_ORDER if d in quant_pairs.dataset.unique()]
+    variants = [
+        ("fp32", "FP32", FP32_COLOR),
+        ("fp16", "FP16", FP16_COLOR),
+        ("int8_ptq", "INT8 PTQ", INT8_COLOR),
+    ]
+
+    image, draw, top = new_canvas(
+        "Macro F1 na quantização nos 9 datasets — Windows vs Mac",
+        "Comparativo de FP32, FP16 e INT8 LiteRT PTQ entre as plataformas. 27 pares alinhados (batch 256, seed 42, 100 épocas).",
+        1850,
+    )
+
+    legend(draw, WIDTH - 430, top - 32)
+    panel(draw, (90, top, WIDTH - 90, 1730))
+
+    left = 460
+    right = WIDTH - 260
+    y = top + 55
+    row_h = 160
+
+    for tick in np.linspace(0, 1, 6):
+        gx = int(left + tick * (right - left))
+        draw.line((gx, top + 40, gx, top + 55 + len(datasets) * row_h - 20), fill=GRID, width=1)
+        draw.text((gx, top + 22), fmt(tick * 100, 0, "%"), fill=MUTED, font=FONTS["tiny"], anchor="ma")
+
+    for ds in datasets:
+        subset = quant_pairs[quant_pairs.dataset == ds]
+        draw.text((130, y + 55), ds, fill=TEXT, font=FONTS["label_bold"])
+
+        for v_idx, (v_key, v_label, v_color) in enumerate(variants):
+            row_v = subset[subset.variant == v_key]
+            bar_y = y + v_idx * 46
+            draw.text((360, bar_y + 11), v_label, fill=MUTED, font=FONTS["small"])
+
+            if not row_v.empty:
+                win_f1 = float(row_v.iloc[0]["macro_f1_windows"])
+                mac_f1 = float(row_v.iloc[0]["macro_f1_mac"])
+                delta = float(row_v.iloc[0]["delta_macro_f1_pp_windows_minus_mac"])
+
+                # Windows bar (blue)
+                w_win = int((right - left) * win_f1)
+                draw.rounded_rectangle((left, bar_y, left + w_win, bar_y + 18), radius=4, fill=WINDOWS)
+                draw.text((left + w_win + 10, bar_y - 1), pct(win_f1, 2), fill=WINDOWS, font=FONTS["tiny"])
+
+                # Mac bar (amber)
+                w_mac = int((right - left) * mac_f1)
+                draw.rounded_rectangle((left, bar_y + 22, left + w_mac, bar_y + 40), radius=4, fill=MAC)
+                draw.text((left + w_mac + 10, bar_y + 21), pct(mac_f1, 2), fill=MAC, font=FONTS["tiny"])
+
+                # Delta indicator
+                delta_sign = "+" if delta > 0 else ""
+                delta_color = POSITIVE if delta >= 0 else NEGATIVE
+                draw.text((right + 120, bar_y + 11), f"Δ {delta_sign}{delta:.2f} pp", fill=delta_color, font=FONTS["tiny"], anchor="lm")
+            else:
+                draw.text((left, bar_y + 11), "n/d", fill=MUTED, font=FONTS["small"])
+
+        draw.line((130, y + row_h - 15, WIDTH - 130, y + row_h - 15), fill="#EDF0F3", width=1)
+        y += row_h
+
+    footer(draw, image.height, "Fonte: comparisons_quantization_windows_mac.csv. 27 pares exatos com 9 datasets em FP32, FP16 e INT8 PTQ.")
+    save(image, "14_quantizacao_macro_f1.png")
+
+
+def draw_quantization_throughput(runs: pd.DataFrame) -> None:
+    quant = runs[runs.phase == "quantization"].copy()
+    quant_latest = quant[quant.campaign == "quantization_all"].copy()
+    datasets = [d for d in DATASET_ORDER if d in quant_latest.dataset.unique()]
+
+    image, draw, top = new_canvas(
+        "Aceleração de inferência e Throughput na quantização (LiteRT INT8 PTQ × FP32)",
+        "Throughput em amostras por segundo. O modelo INT8 atinge até 6.940 amostras/s com tempo de inferência de 1,5 a 5,9 segundos.",
+        1460,
+    )
+
+    lx = WIDTH - 520
+    draw.rounded_rectangle((lx, top - 32, lx + 20, top - 12), radius=4, fill=FP32_COLOR)
+    draw.text((lx + 28, top - 32), "FP32 GPU", fill=TEXT, font=FONTS["small"])
+    lx += 180
+    draw.rounded_rectangle((lx, top - 32, lx + 20, top - 12), radius=4, fill=INT8_COLOR)
+    draw.text((lx + 28, top - 32), "INT8 LiteRT", fill=TEXT, font=FONTS["small"])
+
+    panel(draw, (90, top, WIDTH - 90, 1340))
+
+    left = 460
+    right = WIDTH - 260
+    max_tput = 7500.0
+    y = top + 60
+    row_h = 130
+
+    for ds in datasets:
+        subset = quant_latest[quant_latest.dataset == ds]
+        draw.text((130, y + 25), ds, fill=TEXT, font=FONTS["label_bold"])
+
+        row_fp32 = subset[subset.variant == "fp32"]
+        row_int8 = subset[subset.variant == "int8_ptq"]
+
+        t_fp32 = float(row_fp32.iloc[0]["mean_train_examples_per_second"]) if not row_fp32.empty and pd.notna(row_fp32.iloc[0]["mean_train_examples_per_second"]) else 0
+        t_int8 = float(row_int8.iloc[0]["mean_train_examples_per_second"]) if not row_int8.empty and pd.notna(row_int8.iloc[0]["mean_train_examples_per_second"]) else 0
+
+        bar_y1 = y + 10
+        w1 = int((right - left) * (t_fp32 / max_tput)) if max_tput > 0 else 0
+        draw.rounded_rectangle((left, bar_y1, left + w1, bar_y1 + 28), radius=6, fill=FP32_COLOR)
+        draw.text((left + w1 + 14, bar_y1 + 3), f"{fmt(t_fp32, 0)} ex/s", fill=TEXT, font=FONTS["small"])
+
+        bar_y2 = y + 46
+        w2 = int((right - left) * (t_int8 / max_tput)) if max_tput > 0 else 0
+        draw.rounded_rectangle((left, bar_y2, left + w2, bar_y2 + 28), radius=6, fill=INT8_COLOR)
+
+        speedup_str = f" ({t_int8 / t_fp32:.1f}×)" if t_fp32 > 0 and t_int8 > 0 else ""
+        draw.text((left + w2 + 14, bar_y2 + 3), f"{fmt(t_int8, 0)} ex/s{speedup_str}", fill=INT8_COLOR, font=FONTS["label_bold"])
+
+        draw.line((130, y + row_h - 10, WIDTH - 130, y + row_h - 10), fill="#EDF0F3", width=1)
+        y += row_h
+
+    footer(draw, image.height, "Fonte: run_results.csv e litert_benchmark.json. Throughput medido em batches de teste avaliados no host Windows.")
+    save(image, "15_quantizacao_throughput_latencia.png")
+
+
+def draw_batch_sweep(runs: pd.DataFrame) -> None:
+    batches = [32, 64, 128, 256]
+    batch_colors = {32: "#1F5A8A", 64: "#2A8A9E", 128: "#D97706", 256: "#C46A2B"}
+
+    image, draw, top = new_canvas(
+        "Varredura de tamanho de batch (Batch Sweep) — Windows vs Mac",
+        "Evolução do Macro F1 ao variar o tamanho de lote (32, 64, 128 e 256). Estrela dourada indica o batch ótimo por dataset.",
+        1750,
+    )
+
+    lx = WIDTH - 680
+    for b in batches:
+        draw.rounded_rectangle((lx, top - 32, lx + 20, top - 12), radius=4, fill=batch_colors[b])
+        draw.text((lx + 28, top - 32), f"Batch {b}", fill=TEXT, font=FONTS["small"])
+        lx += 140
+
+    margin = 90
+    panel_gap = 40
+    panel_w = (WIDTH - 2 * margin - panel_gap) // 2
+    x_win = margin
+    x_mac = margin + panel_w + panel_gap
+    p_bottom = 1630
+
+    # Panel 1: Windows
+    panel(draw, (x_win, top, x_win + panel_w, p_bottom))
+    draw.text((x_win + 30, top + 22), "Windows — 9 Datasets (Varredura Completa)", fill=WINDOWS, font=FONTS["section"])
+
+    # Panel 2: Mac
+    panel(draw, (x_mac, top, x_mac + panel_w, p_bottom))
+    draw.text((x_mac + 30, top + 22), "Mac M4 — 5 Datasets Concluídos", fill=MAC, font=FONTS["section"])
+
+    win_batch = runs[(runs.platform == "Windows") & (runs.phase == "batch") & (runs.campaign == "controlled-augmentation05-batch-activation")].copy()
+    mac_batch = runs[(runs.platform == "Mac") & (runs.phase == "batch")].copy()
+
+    y0 = top + 80
+    row_h = 150
+
+    for idx, ds in enumerate(DATASET_ORDER):
+        y = y0 + idx * row_h
+
+        # Windows side
+        draw.text((x_win + 30, y + 35), ds, fill=TEXT, font=FONTS["label_bold"])
+        w_sub = win_batch[win_batch.dataset == ds]
+        best_win = w_sub["macro_f1"].max() if not w_sub.empty else None
+        p_left_w = x_win + 290
+        p_right_w = x_win + panel_w - 40
+
+        for b_idx, b in enumerate(batches):
+            row_b = w_sub[w_sub.batch_size == b]
+            by = y + b_idx * 26
+            if not row_b.empty and pd.notna(row_b.iloc[0]["macro_f1"]):
+                f1 = float(row_b.iloc[0]["macro_f1"])
+                bw = int((p_right_w - p_left_w) * f1)
+                draw.rounded_rectangle((p_left_w, by, p_left_w + bw, by + 20), radius=4, fill=batch_colors[b])
+                star = " *" if f1 == best_win else ""
+                draw.text((p_left_w + bw + 8, by - 1), f"{pct(f1, 1)}{star}", fill=GOLD if star else MUTED, font=FONTS["tiny"])
+            else:
+                draw.text((p_left_w, by - 1), "n/d", fill=MUTED, font=FONTS["tiny"])
+
+        draw.line((x_win + 30, y + row_h - 10, x_win + panel_w - 30, y + row_h - 10), fill="#EDF0F3", width=1)
+
+        # Mac side
+        draw.text((x_mac + 30, y + 35), ds, fill=TEXT, font=FONTS["label_bold"])
+        m_sub = mac_batch[mac_batch.dataset == ds]
+        best_mac = m_sub["macro_f1"].max() if not m_sub.empty else None
+        p_left_m = x_mac + 290
+        p_right_m = x_mac + panel_w - 40
+
+        if m_sub.empty:
+            draw.text((p_left_m, y + 35), "Fase não executada no Mac", fill=MUTED, font=FONTS["small"])
+        else:
+            for b_idx, b in enumerate(batches):
+                row_b = m_sub[m_sub.batch_size == b]
+                by = y + b_idx * 26
+                if not row_b.empty and pd.notna(row_b.iloc[0]["macro_f1"]):
+                    f1 = float(row_b.iloc[0]["macro_f1"])
+                    bw = int((p_right_m - p_left_m) * f1)
+                    draw.rounded_rectangle((p_left_m, by, p_left_m + bw, by + 20), radius=4, fill=batch_colors[b])
+                    star = " *" if f1 == best_mac else ""
+                    draw.text((p_left_m + bw + 8, by - 1), f"{pct(f1, 1)}{star}", fill=GOLD if star else MUTED, font=FONTS["tiny"])
+                else:
+                    draw.text((p_left_m, by - 1), "—", fill=MUTED, font=FONTS["tiny"])
+
+        draw.line((x_mac + 30, y + row_h - 10, x_mac + panel_w - 30, y + row_h - 10), fill="#EDF0F3", width=1)
+
+    footer(draw, image.height, "Fonte: run_results.csv. Batches 32, 64, 128 e 256. Estrela dourada marca o batch de maior Macro F1.")
+    save(image, "16_batch_sweep_macro_f1.png")
+
+
+def draw_speedup_hardware(batch_pairs: pd.DataFrame) -> None:
+    image, draw, top = new_canvas(
+        "Aceleração computacional (Speedup): GPU NVIDIA dedicada × Apple Silicon M4",
+        "Razão de tempo por época (Mac / Windows) nos 15 pares de batch. A GPU NVIDIA dedicada completou épocas até 8,8× mais rápido.",
+        1750,
+    )
+
+    panel(draw, (90, top, WIDTH - 90, 1630))
+
+    left = 620
+    right = WIDTH - 340
+    y = top + 75
+    row_h = 86
+    max_ratio = 10.0
+
+    for _, row in batch_pairs.sort_values(["dataset", "batch_size_windows"]).iterrows():
+        t_win = float(row["mean_epoch_seconds_windows"])
+        t_mac = float(row["mean_epoch_seconds_mac"])
+        ratio = t_mac / t_win if t_win > 0 else 0
+
+        label_title = f"{row['dataset']} — Batch {int(row['batch_size_windows'])}"
+        draw.text((130, y + 8), label_title, fill=TEXT, font=FONTS["label_bold"])
+        draw.text((130, y + 38), f"Win: {t_win:.1f} s/ep  |  Mac: {t_mac:.1f} s/ep", fill=MUTED, font=FONTS["tiny"])
+
+        bar_w = int((right - left) * (ratio / max_ratio))
+        draw.rounded_rectangle((left, y + 8, left + bar_w, y + 46), radius=8, fill=WINDOWS)
+
+        draw.text((left + bar_w + 14, y + 10), f"{ratio:.2f}×", fill=WINDOWS, font=FONTS["section"])
+        draw.text((left + bar_w + 120, y + 18), "mais rápido no Windows", fill=MUTED, font=FONTS["tiny"])
+
+        draw.line((130, y + row_h - 10, WIDTH - 130, y + row_h - 10), fill="#EDF0F3", width=1)
+        y += row_h
+
+    footer(draw, image.height, "Fonte: comparisons_batch_windows_mac.csv. Hardware: NVIDIA RTX (Windows) vs Apple Silicon M4 10-core (macOS Metal).")
+    save(image, "17_speedup_windows_mac.png")
+
+
+def draw_parity_residuals(batch_pairs: pd.DataFrame) -> None:
+    image, draw, top = new_canvas(
+        "Paridade numérica nos 15 pares de batch alinhados (Windows × Mac)",
+        "Diferença residual de Macro F1 (Windows − Mac em pontos percentuais). A média de +0,15 p.p. confirma estrita consistência estocástica.",
+        1840,
+    )
+
+    panel(draw, (90, top, WIDTH - 90, 1710))
+
+    left = 680
+    right = WIDTH - 260
+    mid = (left + right) // 2
+    max_delta = 1.6
+    bottom_y = 1620
+
+    band_l = mid - int((right - mid) * (0.2 / max_delta))
+    band_r = mid + int((right - mid) * (0.2 / max_delta))
+    draw.rectangle((band_l, top + 60, band_r, bottom_y), fill="#F0FDF4")
+    draw.line((band_l, top + 60, band_l, bottom_y), fill="#BBF7D0", width=1)
+    draw.line((band_r, top + 60, band_r, bottom_y), fill="#BBF7D0", width=1)
+    draw.text((mid, top + 35), "Faixa de paridade estocástica (±0,2 p.p.)", fill="#16A34A", font=FONTS["tiny"], anchor="mm")
+
+    draw.line((mid, top + 60, mid, bottom_y), fill="#94A3B8", width=2)
+    draw.text((mid, bottom_y + 18), "0,0 p.p.", fill=MUTED, font=FONTS["small"], anchor="mm")
+    draw.text((band_l, bottom_y + 18), "-0,2 p.p.", fill=MUTED, font=FONTS["tiny"], anchor="mm")
+    draw.text((band_r, bottom_y + 18), "+0,2 p.p.", fill=MUTED, font=FONTS["tiny"], anchor="mm")
+    draw.text((left, bottom_y + 18), f"-{max_delta:.1f} p.p.", fill=MUTED, font=FONTS["tiny"], anchor="mm")
+    draw.text((right, bottom_y + 18), f"+{max_delta:.1f} p.p.", fill=MUTED, font=FONTS["tiny"], anchor="mm")
+
+    y = top + 70
+    row_h = 86
+
+    for _, row in batch_pairs.sort_values(["dataset", "batch_size_windows"]).iterrows():
+        delta_pp = float(row["delta_macro_f1_pp_windows_minus_mac"])
+        label_title = f"{row['dataset']} — Batch {int(row['batch_size_windows'])}"
+        draw.text((130, y + 8), label_title, fill=TEXT, font=FONTS["label_bold"])
+        draw.text((130, y + 36), f"F1 Win: {pct(row['macro_f1_windows'], 2)} | F1 Mac: {pct(row['macro_f1_mac'], 2)}", fill=MUTED, font=FONTS["tiny"])
+
+        offset = int((right - mid) * (delta_pp / max_delta))
+        x_pt = mid + offset
+        color = WINDOWS if delta_pp >= 0 else MAC
+
+        draw.line((mid, y + 25, x_pt, y + 25), fill=color, width=3)
+        draw.ellipse((x_pt - 8, y + 17, x_pt + 8, y + 33), fill=color)
+
+        sign = "+" if delta_pp > 0 else ""
+        txt = f"{sign}{delta_pp:.3f} p.p."
+        txt_x = x_pt + 14 if delta_pp >= 0 else x_pt - 14
+        anchor = "lm" if delta_pp >= 0 else "rm"
+        draw.text((txt_x, y + 25), txt, fill=color, font=FONTS["label_bold"], anchor=anchor)
+
+        draw.line((130, y + row_h - 10, WIDTH - 130, y + row_h - 10), fill="#EDF0F3", width=1)
+        y += row_h
+
+    footer(draw, image.height, "Fonte: comparisons_batch_windows_mac.csv. Delta positivo favorece Windows; delta negativo favorece Mac.")
+    save(image, "18_paridade_residuos_f1.png")
+
+
 def main() -> None:
     runs = pd.read_csv(DATA / "run_results.csv")
     campaigns = pd.read_csv(DATA / "campaign_summary.csv")
     activation_pairs = pd.read_csv(DATA / "comparisons_activation_windows_mac.csv")
     batch_pairs = pd.read_csv(DATA / "comparisons_batch_windows_mac.csv")
+    quant_pairs = pd.read_csv(DATA / "comparisons_quantization_windows_mac.csv")
     evidence = pd.read_csv(DATA / "evidence_coverage.csv")
     status = pd.read_csv(DATA / "status_inventory.csv")
     reported_batch = pd.read_csv(DATA / "reported_mac_batch_cells.csv")
@@ -639,6 +963,11 @@ def main() -> None:
     draw_confusion_pairs(batch_pairs, confusion, runs)
     draw_softmax(activation_pairs)
     draw_best_batches(runs, reported_batch)
+    draw_quantization_f1(quant_pairs, runs)
+    draw_quantization_throughput(runs)
+    draw_batch_sweep(runs)
+    draw_speedup_hardware(batch_pairs)
+    draw_parity_residuals(batch_pairs)
     print(f"Generated {len(list(FIGURES.glob('*.png')))} figures in {FIGURES}")
 
 

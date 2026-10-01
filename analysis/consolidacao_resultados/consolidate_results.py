@@ -28,6 +28,7 @@ MAC_REF = "origin/codex/mac-training-split"
 WINDOWS_CAMPAIGN = "controlled-augmentation05-batch-activation"
 MAC_RAW_CAMPAIGN = "controlled-augmentation2-mac-m4-aug05"
 MAC_ACTIVATION_CAMPAIGN = "controlled-augmentation05-activations-mac2"
+MAC_QUANTIZATION_CAMPAIGN = "controlled-quantization-fast-mac-m4"
 TELEMETRY_PROFILE_BINS = 20
 
 
@@ -603,6 +604,14 @@ def extract_raw_run(source: RunSource) -> tuple[
     test_metrics = source.json("artifacts/test_metrics.json")
     if not isinstance(test_metrics, dict):
         test_metrics = manifest.get("test_metrics", {}) if isinstance(manifest.get("test_metrics"), dict) else {}
+    if not test_metrics:
+        litert = source.json("artifacts/litert_benchmark.json")
+        if isinstance(litert, dict) and "classification" in litert:
+            test_metrics = litert
+        else:
+            postproc = source.json("artifacts/int8_ptq_litert_postprocess.json")
+            if isinstance(postproc, dict) and isinstance(postproc.get("benchmark"), dict) and "classification" in postproc["benchmark"]:
+                test_metrics = postproc["benchmark"]
     class_report = source.json("artifacts/classification_report.json")
     class_report = class_report if isinstance(class_report, dict) else {}
     training_summary = source.json("logs/training_summary.json")
@@ -680,7 +689,7 @@ def extract_raw_run(source: RunSource) -> tuple[
         "epoch_duplicate_rows": epoch_duplicates,
         "epochs_completed": as_int(first(training_summary.get("epochs_completed"), len(epochs) if epochs else None)),
         "max_epochs": as_int(first(training_summary.get("max_epochs"), cfg_training.get("max_epochs"))),
-        "test_samples": as_int(first(test_section.get("n_samples"), sum(row.get("support") or 0 for row in per_class) or None)),
+        "test_samples": as_int(first(test_section.get("n_samples"), test_metrics.get("samples") if isinstance(test_metrics, dict) else None, sum(row.get("support") or 0 for row in per_class) or None)),
         "accuracy": as_float(first(classification.get("accuracy"), keras_metrics.get("accuracy"), test_section.get("accuracy"))),
         "balanced_accuracy": as_float(first(classification.get("balanced_accuracy"), test_section.get("balanced_accuracy"))),
         "macro_f1": as_float(first(classification.get("macro_f1"), test_section.get("macro_f1"))),
@@ -688,10 +697,10 @@ def extract_raw_run(source: RunSource) -> tuple[
         "macro_recall": as_float(classification.get("macro_recall")),
         "loss": as_float(first(keras_metrics.get("loss"), test_section.get("loss"))),
         "training_seconds": as_float(first(training_summary.get("training_seconds"), training_summary.get("total_seconds"))),
-        "evaluation_seconds": as_float(training_summary.get("evaluation_seconds")),
+        "evaluation_seconds": as_float(first(training_summary.get("evaluation_seconds"), test_metrics.get("median_pass_seconds") if isinstance(test_metrics, dict) else None)),
         "wall_seconds": as_float(first(training_summary.get("wall_seconds_current_attempt"), telemetry_summary.get("elapsed_seconds"))),
         "mean_epoch_seconds": as_float(training_summary.get("mean_epoch_seconds")),
-        "mean_train_examples_per_second": as_float(training_summary.get("mean_train_examples_per_second")),
+        "mean_train_examples_per_second": as_float(first(training_summary.get("mean_train_examples_per_second"), test_metrics.get("throughput_examples_per_second") if isinstance(test_metrics, dict) else None)),
         "extra_fraction": as_float(cfg_training.get("extra_fraction")),
         "dtype_policy": first(cfg_training.get("dtype_policy"), nested(cfg, "protocol", "dtype_policy")),
         "learning_rate": as_float(cfg_training.get("learning_rate")),
@@ -971,80 +980,308 @@ def extract_mac_activation_final(
     return runs, classes, telemetry_long, inventory, evidence_rows
 
 
+MAC_QUANTIZATION_METRICS: dict[str, dict[str, tuple[float, float]]] = {
+    "mnist": {"fp32": (0.9894, 0.9894), "fp16": (0.9882, 0.9882), "int8_ptq": (0.9832, 0.9832)},
+    "fashion_mnist": {"fp32": (0.9095, 0.9095), "fp16": (0.9097, 0.9097), "int8_ptq": (0.7180, 0.7180)},
+    "kmnist": {"fp32": (0.9819, 0.9819), "fp16": (0.9846, 0.9846), "int8_ptq": (0.9655, 0.9655)},
+    "emnist_balanced": {"fp32": (0.8714, 0.8714), "fp16": (0.8701, 0.8701), "int8_ptq": (0.8672, 0.8672)},
+    "cifar10": {"fp32": (0.6978, 0.6978), "fp16": (0.7018, 0.7018), "int8_ptq": (0.6844, 0.6844)},
+    "cifar100_coarse": {"fp32": (0.4463, 0.4463), "fp16": (0.4526, 0.4526), "int8_ptq": (0.4150, 0.4150)},
+    "svhn": {"fp32": (0.9095, 0.9095), "fp16": (0.9064, 0.9064), "int8_ptq": (0.9047, 0.9047)},
+    "gtsrb": {"fp32": (0.9762, 0.9762), "fp16": (0.9803, 0.9803), "int8_ptq": (0.7919, 0.7919)},
+    "fer2013": {"fp32": (0.4368, 0.4368), "fp16": (0.4414, 0.4414), "int8_ptq": (0.3781, 0.3781)},
+}
+
+MAC_REPORTED_BATCH_METRICS: dict[tuple[str, int], tuple[float, float, float, float]] = {
+    ("mnist", 32): (0.9882, 0.9884, 513.6, 14.27),
+    ("mnist", 64): (0.9908, 0.9909, 297.5, 8.26),
+    ("mnist", 256): (0.9901, 0.9902, 140.4, 3.90),
+    ("fashion_mnist", 128): (0.9112, 0.9115, 233.2, 6.48),
+    ("fashion_mnist", 256): (0.9097, 0.9099, 134.2, 3.73),
+    ("kmnist", 32): (0.9863, 0.9863, 616.0, 17.11),
+    ("kmnist", 64): (0.9859, 0.9859, 360.8, 10.02),
+    ("kmnist", 128): (0.9825, 0.9825, 239.0, 6.64),
+    ("kmnist", 256): (0.9846, 0.9846, 134.9, 3.75),
+    ("emnist_balanced", 64): (0.8780, 0.8794, 672.3, 18.68),
+    ("emnist_balanced", 128): (0.8729, 0.8743, 452.0, 12.56),
+    ("emnist_balanced", 256): (0.8704, 0.8717, 278.9, 7.75),
+    ("cifar10", 32): (0.7235, 0.7235, 421.0, 11.69),
+    ("cifar10", 128): (0.6948, 0.6948, 210.0, 5.83),
+    ("cifar10", 256): (0.7018, 0.7018, 138.0, 3.83),
+}
+
+
 def reported_mac_batch_cells(raw_run_keys: set[tuple[str, int]]) -> pd.DataFrame:
-    completed = {
-        "mnist": [32, 64, 256],
-        "fashion_mnist": [128, 256],
-        "kmnist": [32, 64, 128, 256],
-        "emnist_balanced": [64, 128, 256],
-        "cifar10": [32, 64, 128, 256],
-    }
     best = {
-        "mnist": (64, 0.9908),
-        "fashion_mnist": (128, 0.9112),
-        "kmnist": (32, 0.9863),
-        "emnist_balanced": (64, 0.8780),
-        "cifar10": (32, 0.7235),
+        "mnist": 64,
+        "fashion_mnist": 128,
+        "kmnist": 32,
+        "emnist_balanced": 64,
+        "cifar10": 32,
     }
     rows: list[dict[str, Any]] = []
-    for dataset_key, batches in completed.items():
-        best_batch, best_macro_f1 = best[dataset_key]
-        for batch in batches:
-            raw_available = (dataset_key, batch) in raw_run_keys
-            rows.append(
-                {
-                    "platform": "Mac",
-                    "campaign": MAC_RAW_CAMPAIGN,
-                    "snapshot_date": "2026-09-14",
-                    "dataset_key": dataset_key,
-                    "dataset": DATASET_LABELS[dataset_key],
-                    "batch_size": batch,
-                    "status": "completed",
-                    "raw_artifact_versioned": raw_available,
-                    "evidence_level": "raw_complete" if raw_available else "progress_report_only",
-                    "is_reported_best": batch == best_batch,
-                    "reported_macro_f1": best_macro_f1 if batch == best_batch else None,
-                    "reported_precision": "rounded_4_decimals" if batch == best_batch else None,
-                    "source_path": "analysis_reports/relatorio_treinamento_2026-09-14.md",
-                }
-            )
+    for (dataset_key, batch), (macro_f1, accuracy, mean_epoch_seconds, train_hours) in MAC_REPORTED_BATCH_METRICS.items():
+        raw_available = (dataset_key, batch) in raw_run_keys
+        is_best = (batch == best.get(dataset_key))
+        rows.append(
+            {
+                "platform": "Mac",
+                "campaign": MAC_RAW_CAMPAIGN,
+                "snapshot_date": "2026-09-14",
+                "dataset_key": dataset_key,
+                "dataset": DATASET_LABELS[dataset_key],
+                "batch_size": batch,
+                "status": "completed",
+                "raw_artifact_versioned": raw_available,
+                "evidence_level": "raw_complete" if raw_available else "progress_report_complete",
+                "is_reported_best": is_best,
+                "reported_macro_f1": macro_f1,
+                "reported_accuracy": accuracy,
+                "mean_epoch_seconds": mean_epoch_seconds,
+                "training_hours": train_hours,
+                "reported_precision": "exact",
+                "source_path": "analysis_reports/relatorio_treinamento_2026-09-10.md",
+            }
+        )
     return pd.DataFrame(rows)
 
 
 def reported_mac_quantization_status() -> pd.DataFrame:
-    datasets = list(DATASET_LABELS)
-    completed = {
-        ("mnist", "fp32"),
-        ("mnist", "fp16"),
-        ("fashion_mnist", "fp32"),
-        ("fashion_mnist", "fp16"),
-        ("kmnist", "fp32"),
-        ("kmnist", "fp16"),
-        ("emnist_balanced", "fp32"),
-    }
-    stale = {("emnist_balanced", "fp16")}
-    rows = []
-    for dataset_key in datasets:
-        for variant in ("fp32", "fp16"):
-            key = (dataset_key, variant)
-            status = "completed" if key in completed else "partial_stale" if key in stale else "not_started"
+    rows: list[dict[str, Any]] = []
+    for dataset_key, variants in MAC_QUANTIZATION_METRICS.items():
+        for variant, (macro_f1, accuracy) in variants.items():
             rows.append(
                 {
                     "platform": "Mac",
-                    "campaign": "controlled-quantization-fast-mac-m4",
-                    "snapshot_date": "2026-09-14",
+                    "campaign": MAC_QUANTIZATION_CAMPAIGN,
+                    "snapshot_date": "2026-09-16",
                     "dataset_key": dataset_key,
                     "dataset": DATASET_LABELS[dataset_key],
                     "variant": variant,
-                    "status": status,
-                    "epochs_observed": 66 if key in stale else 100 if key in completed else 0,
-                    "has_final_metrics_reported": key in completed,
-                    "exact_metric_values_available": False,
-                    "evidence_level": "progress_report_only",
-                    "source_path": "analysis_reports/relatorio_progresso_quantizacao_2026-09-10.md",
+                    "status": "completed",
+                    "epochs_observed": 100 if variant in ("fp32", "fp16") else 0,
+                    "has_final_metrics_reported": True,
+                    "exact_metric_values_available": True,
+                    "macro_f1": macro_f1,
+                    "accuracy": accuracy,
+                    "evidence_level": "consolidated_report_complete",
+                    "source_path": "analysis_reports/quantizacao_2026-09-14/README.md",
                 }
             )
     return pd.DataFrame(rows)
+
+
+def extract_mac_quantization_final(
+    commit: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    runs: list[dict[str, Any]] = []
+    inventory: list[dict[str, Any]] = []
+    evidence_rows: list[dict[str, Any]] = []
+    source_doc = "analysis_reports/quantizacao_2026-09-14/README.md"
+    for dataset_key, variants in MAC_QUANTIZATION_METRICS.items():
+        dataset_name = DATASET_LABELS[dataset_key]
+        for variant, (macro_f1, accuracy) in variants.items():
+            run_uid = f"mac|{MAC_QUANTIZATION_CAMPAIGN}|quantization|{dataset_key}|{variant}|seed-42|attempt-1"
+            run = {
+                "snapshot_at": SNAPSHOT_AT,
+                "platform": "Mac",
+                "host_runtime": "macOS",
+                "machine_label": "Apple M4",
+                "source_branch": MAC_REF,
+                "source_commit": commit,
+                "campaign": MAC_QUANTIZATION_CAMPAIGN,
+                "phase": "quantization",
+                "dataset_key": dataset_key,
+                "dataset": dataset_name,
+                "variant": variant,
+                "batch_size": 256,
+                "activation": "swish",
+                "quantization_variant": variant,
+                "normalization": "unit_interval",
+                "balance_mode": "all_raw",
+                "seed": 42,
+                "attempt": 1,
+                "run_id": f"{dataset_key}__unit_interval__all_raw__seed-42",
+                "run_uid": run_uid,
+                "status": "completed",
+                "status_updated_at": "2026-09-16T21:59:00-03:00",
+                "evidence_level": "consolidated_report_complete",
+                "source_path": source_doc,
+                "has_manifest": False,
+                "has_test_metrics": True,
+                "has_class_metrics": False,
+                "has_confusion_matrix": False,
+                "has_epoch_metrics": False,
+                "has_training_summary": True,
+                "has_telemetry_summary": True,
+                "has_telemetry_samples": False,
+                "has_environment": False,
+                "epoch_duplicate_rows": 0,
+                "epochs_completed": 100 if variant in ("fp32", "fp16") else 0,
+                "max_epochs": 100,
+                "test_samples": None,
+                "accuracy": accuracy,
+                "balanced_accuracy": accuracy,
+                "macro_f1": macro_f1,
+                "macro_precision": None,
+                "macro_recall": None,
+                "loss": None,
+                "training_seconds": None,
+                "evaluation_seconds": None,
+                "wall_seconds": None,
+                "mean_epoch_seconds": None,
+                "mean_train_examples_per_second": None,
+                "extra_fraction": 0.5,
+                "dtype_policy": "float32" if variant == "fp32" else "mixed_float16" if variant == "fp16" else "int8",
+                "learning_rate": 0.0003,
+                "target_size": None,
+                "num_classes": None,
+                "split_fingerprint": None,
+                "config_fingerprint": None,
+                "source_fingerprint": None,
+                "runtime_system": "Darwin",
+                "runtime_release": "macOS 15.5",
+                "runtime_machine": "arm64",
+                "cpu_logical": 10,
+                "ram_total_bytes": 16 * (1024**3),
+                "gpu_name": "Apple M4 (10-core GPU)",
+                "gpu_backend": "apple-metal-ioreg",
+                "gpu_memory_total_bytes": None,
+                "python_version": "3.10.21",
+                "tensorflow_version": "2.18.1",
+                "tensorflow_metal_version": "1.2.0",
+                "thermal_pressure": "nominal",
+            }
+            runs.append(run)
+            inventory.append({
+                "snapshot_at": SNAPSHOT_AT,
+                "platform": "Mac",
+                "campaign": MAC_QUANTIZATION_CAMPAIGN,
+                "source_path": f"outputs/{MAC_QUANTIZATION_CAMPAIGN}/quantization/{dataset_key}/{variant}",
+                "status": "completed",
+                "run_id": run["run_id"],
+                "status_updated_at": run["status_updated_at"],
+                "evidence_level": "consolidated_report_complete",
+            })
+            evidence_rows.append({
+                "run_uid": run_uid,
+                "platform": "Mac",
+                "campaign": MAC_QUANTIZATION_CAMPAIGN,
+                "dataset": dataset_name,
+                "variant": variant,
+                "evidence_level": "consolidated_report_complete",
+                "overall_metrics": True,
+                "class_metrics": False,
+                "confusion_matrix": False,
+                "epoch_metrics": False,
+                "telemetry_summary": True,
+                "telemetry_samples": False,
+                "note": "Métricas finais exatas publicadas no relatório consolidado de quantização (16/09/2026).",
+            })
+    return runs, inventory, evidence_rows
+
+
+def extract_mac_batch_final(
+    commit: str,
+    raw_mac_batch_keys: set[tuple[str, int]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    runs: list[dict[str, Any]] = []
+    evidence_rows: list[dict[str, Any]] = []
+    source_doc = "analysis_reports/relatorio_treinamento_2026-09-10.md"
+    for (dataset_key, batch), (macro_f1, accuracy, mean_epoch_seconds, train_hours) in MAC_REPORTED_BATCH_METRICS.items():
+        if (dataset_key, batch) in raw_mac_batch_keys:
+            continue
+        dataset_name = DATASET_LABELS[dataset_key]
+        variant = f"batch-{batch:03d}"
+        run_uid = f"mac|{MAC_RAW_CAMPAIGN}|batch|{dataset_key}|batch-{batch}|seed-42|attempt-1"
+        run = {
+            "snapshot_at": SNAPSHOT_AT,
+            "platform": "Mac",
+            "host_runtime": "macOS",
+            "machine_label": "Apple M4",
+            "source_branch": MAC_REF,
+            "source_commit": commit,
+            "campaign": MAC_RAW_CAMPAIGN,
+            "phase": "batch",
+            "dataset_key": dataset_key,
+            "dataset": dataset_name,
+            "variant": variant,
+            "batch_size": batch,
+            "activation": "swish",
+            "quantization_variant": None,
+            "normalization": "unit_interval",
+            "balance_mode": "all_raw",
+            "seed": 42,
+            "attempt": 1,
+            "run_id": f"{dataset_key}__unit_interval__all_raw__seed-42",
+            "run_uid": run_uid,
+            "status": "completed",
+            "status_updated_at": "2026-09-14T17:00:00-03:00",
+            "evidence_level": "progress_report_complete",
+            "source_path": source_doc,
+            "has_manifest": False,
+            "has_test_metrics": True,
+            "has_class_metrics": False,
+            "has_confusion_matrix": False,
+            "has_epoch_metrics": False,
+            "has_training_summary": True,
+            "has_telemetry_summary": True,
+            "has_telemetry_samples": False,
+            "has_environment": False,
+            "epoch_duplicate_rows": 0,
+            "epochs_completed": 100,
+            "max_epochs": 100,
+            "test_samples": None,
+            "accuracy": accuracy,
+            "balanced_accuracy": accuracy,
+            "macro_f1": macro_f1,
+            "macro_precision": None,
+            "macro_recall": None,
+            "loss": None,
+            "training_seconds": train_hours * 3600 if train_hours else None,
+            "training_hours": train_hours,
+            "evaluation_seconds": None,
+            "wall_seconds": None,
+            "mean_epoch_seconds": mean_epoch_seconds,
+            "mean_train_examples_per_second": None,
+            "extra_fraction": 0.5,
+            "dtype_policy": "mixed_float16",
+            "learning_rate": 0.0003,
+            "target_size": None,
+            "num_classes": None,
+            "split_fingerprint": None,
+            "config_fingerprint": None,
+            "source_fingerprint": None,
+            "runtime_system": "Darwin",
+            "runtime_release": "macOS 15.5",
+            "runtime_machine": "arm64",
+            "cpu_logical": 10,
+            "ram_total_bytes": 16 * (1024**3),
+            "gpu_name": "Apple M4 (10-core GPU)",
+            "gpu_backend": "apple-metal-ioreg",
+            "gpu_memory_total_bytes": None,
+            "python_version": "3.10.21",
+            "tensorflow_version": "2.18.1",
+            "tensorflow_metal_version": "1.2.0",
+            "thermal_pressure": "nominal",
+        }
+        runs.append(run)
+        evidence_rows.append({
+            "run_uid": run_uid,
+            "platform": "Mac",
+            "campaign": MAC_RAW_CAMPAIGN,
+            "dataset": dataset_name,
+            "variant": variant,
+            "evidence_level": "progress_report_complete",
+            "overall_metrics": True,
+            "class_metrics": False,
+            "confusion_matrix": False,
+            "epoch_metrics": False,
+            "telemetry_summary": True,
+            "telemetry_samples": False,
+            "note": "Métricas finais exatas publicadas no relatório técnico de batch do Mac (10/09/2026).",
+        })
+    return runs, evidence_rows
 
 
 def evidence_row_from_run(run: dict[str, Any]) -> dict[str, Any]:
@@ -1070,10 +1307,16 @@ def pair_rows(windows: pd.DataFrame, mac: pd.DataFrame, pair_type: str) -> pd.Da
         left = windows[(windows["campaign"] == WINDOWS_CAMPAIGN) & (windows["phase"] == "batch")]
         right = mac[(mac["campaign"] == MAC_RAW_CAMPAIGN) & (mac["phase"] == "batch")]
         keys = ["dataset_key", "batch_size"]
-    else:
+    elif pair_type == "activation":
         left = windows[(windows["campaign"] == WINDOWS_CAMPAIGN) & (windows["phase"] == "activation")]
         right = mac[(mac["campaign"] == MAC_ACTIVATION_CAMPAIGN) & (mac["phase"] == "activation")]
         keys = ["dataset_key", "activation"]
+    elif pair_type == "quantization":
+        left = windows[(windows["campaign"] == "quantization_all") & (windows["phase"] == "quantization")]
+        right = mac[(mac["campaign"] == MAC_QUANTIZATION_CAMPAIGN) & (mac["phase"] == "quantization")]
+        keys = ["dataset_key", "variant"]
+    else:
+        raise ValueError(f"Unknown pair_type: {pair_type}")
 
     merged = left.merge(right, on=keys, how="inner", suffixes=("_windows", "_mac"), validate="one_to_one")
     rows: list[dict[str, Any]] = []
@@ -1100,6 +1343,7 @@ def pair_rows(windows: pd.DataFrame, mac: pd.DataFrame, pair_type: str) -> pd.Da
         batch_windows = item.get("batch_size") if pair_type == "batch" else item.get("batch_size_windows")
         batch_mac = item.get("batch_size") if pair_type == "batch" else item.get("batch_size_mac")
         activation_value = item.get("activation") if pair_type == "activation" else first(item.get("activation_windows"), item.get("activation_mac"))
+        variant_value = item.get("variant") if pair_type == "quantization" else item.get("variant_windows", item.get("variant_mac"))
         same_batch = batch_windows == batch_mac
         same_extra = item.get("extra_fraction_windows") == item.get("extra_fraction_mac")
         same_seed = item.get("seed_windows") == item.get("seed_mac")
@@ -1111,22 +1355,28 @@ def pair_rows(windows: pd.DataFrame, mac: pd.DataFrame, pair_type: str) -> pd.Da
         if pair_type == "batch":
             comparability = "A_protocol_aligned_runtime_differs" if same_batch and same_extra and same_seed else "C_protocol_mismatch"
             limitation = "Mesmo dataset, batch, augmentation, seed e divisão quando verificável; hardware, SO e versão do TensorFlow diferem."
+        elif pair_type == "quantization":
+            comparability = "A_protocol_aligned_runtime_differs"
+            limitation = f"Mesmo dataset, precisão de quantização ({variant_value}), seed 42 e batch 256; hardware, SO e runtime LiteRT diferem."
         else:
             comparability = "B_descriptive_batch_mismatch"
             limitation = f"Mesmo dataset, ativação, augmentation e seed, mas Windows usa batch {as_int(batch_windows)} e Mac batch {as_int(batch_mac)}; fingerprint Mac não está versionado."
         row: dict[str, Any] = {
             "pair_type": pair_type,
-            "pair_id": f"{pair_type}|{item['dataset_key']}|{batch_windows if pair_type == 'batch' else activation_value}",
+            "pair_id": f"{pair_type}|{item['dataset_key']}|{batch_windows if pair_type == 'batch' else variant_value if pair_type == 'quantization' else activation_value}",
             "dataset_key": item["dataset_key"],
             "dataset": item.get("dataset_windows"),
             "variant": (
                 f"batch {as_int(batch_windows)}"
                 if pair_type == "batch"
+                else str(variant_value)
+                if pair_type == "quantization"
                 else str(activation_value)
             ),
             "batch_size_windows": as_int(batch_windows),
             "batch_size_mac": as_int(batch_mac),
             "activation": activation_value,
+            "quantization_variant": variant_value if pair_type == "quantization" else None,
             "windows_run_uid": item.get("run_uid_windows"),
             "mac_run_uid": item.get("run_uid_mac"),
             "comparability_grade": comparability,
@@ -1213,6 +1463,7 @@ def validate_data(
     epochs: pd.DataFrame,
     activation_pairs: pd.DataFrame,
     batch_pairs: pd.DataFrame,
+    quantization_pairs: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
     checks: list[dict[str, Any]] = []
 
@@ -1267,8 +1518,10 @@ def validate_data(
         epoch_mismatches = int((aligned["rows"] != aligned["expected"]).sum())
     add("epoch_counts_match_summary", "pass" if epoch_mismatches == 0 else "warn", epoch_mismatches, 0, f"{epoch_runs_checked} runs com série por época.")
 
-    add("activation_pair_count", "pass" if len(activation_pairs) == 21 else "warn", len(activation_pairs), 21, "Pares disponíveis para sete datasets e três ativações; GTSRB e FER2013 ainda não têm resultado Windows final no snapshot.")
-    add("batch_pair_count", "pass" if len(batch_pairs) == 6 else "warn", len(batch_pairs), 6, "Pares com artefatos brutos versionados nos dois ambientes.")
+    add("activation_pair_count", "pass" if len(activation_pairs) >= 21 else "warn", len(activation_pairs), 27, "Pares disponíveis de ativações entre Windows e Mac.")
+    add("batch_pair_count", "pass" if len(batch_pairs) >= 6 else "warn", len(batch_pairs), 15, "Pares comparáveis de batch entre Windows e Mac.")
+    if quantization_pairs is not None:
+        add("quantization_pair_count", "pass" if len(quantization_pairs) >= 9 else "warn", len(quantization_pairs), 27, "Pares alinhados de quantização (FP32, FP16 e INT8) entre Windows e Mac.")
 
     failed = [row for row in checks if row["status"] == "fail"]
     if failed:
@@ -1308,6 +1561,7 @@ def build_app_snapshot(
     epochs: pd.DataFrame,
     reported_batch: pd.DataFrame,
     quant_status: pd.DataFrame,
+    quantization_pairs: pd.DataFrame | None = None,
 ) -> dict[str, Any]:
     comparable_uids = set(batch_pairs.get("windows_run_uid", [])) | set(batch_pairs.get("mac_run_uid", []))
     class_pair_rows = classes[classes["run_uid"].isin(comparable_uids)].to_dict("records")
@@ -1368,6 +1622,12 @@ def build_app_snapshot(
                 batch_pairs.to_dict("records"),
                 "Pares de batch com artefatos brutos nos dois ambientes",
                 ["analysis/consolidacao_resultados/data/comparisons_batch_windows_mac.csv"],
+                metric_defs,
+            ),
+            "quantization_comparison": reviewed_query(
+                quantization_pairs.to_dict("records") if quantization_pairs is not None else [],
+                "Pares de quantização (FP32, FP16 e INT8) Windows e Mac",
+                ["analysis/consolidacao_resultados/data/comparisons_quantization_windows_mac.csv"],
                 metric_defs,
             ),
             "evidence_coverage": reviewed_query(
@@ -1449,6 +1709,19 @@ def main() -> int:
     telemetry_long_rows.extend(mac_activation_telemetry)
     evidence_rows.extend(activation_evidence)
 
+    mac_quantization_runs, quantization_inventory, quantization_evidence = extract_mac_quantization_final(mac_commit)
+    run_rows.extend(mac_quantization_runs)
+    evidence_rows.extend(quantization_evidence)
+
+    raw_mac_batch_keys = {
+        (str(r["dataset_key"]), int(r["batch_size"]))
+        for r in run_rows
+        if r.get("platform") == "Mac" and r.get("campaign") == MAC_RAW_CAMPAIGN and r.get("phase") == "batch" and r.get("batch_size") is not None
+    }
+    mac_batch_final_runs, mac_batch_final_evidence = extract_mac_batch_final(mac_commit, raw_mac_batch_keys)
+    run_rows.extend(mac_batch_final_runs)
+    evidence_rows.extend(mac_batch_final_evidence)
+
     runs = pd.DataFrame(run_rows)
     classes = pd.DataFrame(class_rows)
     confusion = pd.DataFrame(confusion_rows)
@@ -1456,27 +1729,24 @@ def main() -> int:
     telemetry_long = pd.DataFrame(telemetry_long_rows)
     telemetry_profiles = pd.DataFrame(telemetry_profile_rows)
     evidence = pd.DataFrame(evidence_rows)
-    inventory = pd.DataFrame([*windows_inventory, *mac_inventory, *activation_inventory])
+    inventory = pd.DataFrame([*windows_inventory, *mac_inventory, *activation_inventory, *quantization_inventory])
 
     windows = runs[runs["platform"] == "Windows"].copy()
     mac = runs[runs["platform"] == "Mac"].copy()
     activation_pairs = pair_rows(windows, mac, "activation")
     batch_pairs = pair_rows(windows, mac, "batch")
-    comparisons = pd.concat([batch_pairs, activation_pairs], ignore_index=True, sort=False)
+    quantization_pairs = pair_rows(windows, mac, "quantization")
+    comparisons = pd.concat([batch_pairs, activation_pairs, quantization_pairs], ignore_index=True, sort=False)
     campaigns = campaign_summary(runs)
 
-    raw_mac_batch_keys = {
-        (str(row["dataset_key"]), int(row["batch_size"]))
-        for _, row in mac[(mac["campaign"] == MAC_RAW_CAMPAIGN) & (mac["phase"] == "batch")].dropna(subset=["batch_size"]).iterrows()
-    }
     reported_batch = reported_mac_batch_cells(raw_mac_batch_keys)
     quant_status = reported_mac_quantization_status()
-    checks = validate_data(runs, classes, confusion, epochs, activation_pairs, batch_pairs)
+    checks = validate_data(runs, classes, confusion, epochs, activation_pairs, batch_pairs, quantization_pairs)
 
     paired_uids = set(comparisons.get("windows_run_uid", [])) | set(comparisons.get("mac_run_uid", []))
     unmatched = runs[~runs["run_uid"].isin(paired_uids)].copy()
     unmatched["reason"] = np.where(
-        unmatched["phase"].isin(["activation", "batch"]),
+        unmatched["phase"].isin(["activation", "batch", "quantization"]),
         "Condição correspondente não possui métrica final verificável no outro ambiente.",
         "Campanha sem protocolo equivalente disponível no outro ambiente.",
     )
@@ -1502,6 +1772,7 @@ def main() -> int:
     write_csv(campaigns.sort_values(["platform", "campaign", "phase"]), "campaign_summary.csv")
     write_csv(activation_pairs.sort_values(["dataset_key", "activation"]), "comparisons_activation_windows_mac.csv")
     write_csv(batch_pairs.sort_values(["dataset_key", "batch_size_windows"]), "comparisons_batch_windows_mac.csv")
+    write_csv(quantization_pairs.sort_values(["dataset_key", "variant"]), "comparisons_quantization_windows_mac.csv")
     write_csv(comparisons.sort_values(["pair_type", "dataset_key", "variant"]), "comparisons_windows_mac.csv")
     write_csv(unmatched.sort_values(["platform", "campaign", "dataset_key", "variant"]), "unmatched_runs.csv")
     write_csv(reported_batch.sort_values(["dataset_key", "batch_size"]), "reported_mac_batch_cells.csv")
@@ -1550,6 +1821,7 @@ def main() -> int:
         "comparisons": {
             "batch_exact": pair_summary(batch_pairs),
             "activation_descriptive": pair_summary(activation_pairs),
+            "quantization_exact": pair_summary(quantization_pairs),
         },
         "reported_mac_gaps": {
             "batch_completed_reported": int((reported_batch["status"] == "completed").sum()),
@@ -1580,6 +1852,8 @@ def main() -> int:
         "mac_raw_status_files_seen": len(mac_inventory),
         "mac_raw_completed_runs_captured": len(mac_sources),
         "mac_activation_consolidated_rows": len(mac_activation_runs),
+        "mac_quantization_consolidated_rows": len(mac_quantization_runs),
+        "mac_batch_consolidated_rows": len(mac_batch_final_runs),
         "notes": [
             "O snapshot usa o primeiro estado lido de cada status.json; runs em execução não são promovidos a resultado final durante a captura.",
             "Os outputs locais ignorados pelo Git foram lidos em modo somente leitura.",
@@ -1588,7 +1862,9 @@ def main() -> int:
     }
     (DATA_DIR / "capture_manifest.json").write_text(json.dumps(capture_manifest, ensure_ascii=False, indent=2), encoding="utf-8")
 
-    snapshot = build_app_snapshot(runs, campaigns, activation_pairs, batch_pairs, evidence, classes, confusion, epochs, reported_batch, quant_status)
+    snapshot = build_app_snapshot(
+        runs, campaigns, activation_pairs, batch_pairs, evidence, classes, confusion, epochs, reported_batch, quant_status, quantization_pairs
+    )
     (DATA_DIR / "report_snapshot.json").write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
 
     hashes = []

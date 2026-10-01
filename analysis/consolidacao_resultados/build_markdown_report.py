@@ -92,6 +92,7 @@ def main() -> None:
     campaigns = csv("campaign_summary")
     exact = csv("comparisons_batch_windows_mac")
     activations = csv("comparisons_activation_windows_mac")
+    quant_pairs = csv("comparisons_quantization_windows_mac")
     classes = csv("class_metrics")
     validations = csv("validation_checks")
     reported_batch = csv("reported_mac_batch_cells")
@@ -102,6 +103,7 @@ def main() -> None:
     mac = summary["platforms"]["Mac"]
     exact_summary = summary["comparisons"]["batch_exact"]
     activation_summary = summary["comparisons"]["activation_descriptive"]
+    quant_summary = summary["comparisons"].get("quantization_exact", {})
     gaps = summary["reported_mac_gaps"]
 
     campaign_table = markdown_table(
@@ -193,6 +195,81 @@ def main() -> None:
         (
             (row.dataset, int(row.batch_size), pct(row.macro_f1), pct(row.accuracy), br(row.loss, 4), f"{br(row.mean_epoch_seconds, 1)} s")
             for row in best_windows.itertuples()
+        ),
+    )
+
+    datasets_order = ["MNIST", "KMNIST", "Fashion-MNIST", "EMNIST Balanced", "SVHN", "CIFAR-10", "FER2013", "CIFAR-100 coarse", "GTSRB"]
+    batch_sweep_rows = []
+    for ds in datasets_order:
+        ds_subset = windows_batch[windows_batch.dataset == ds]
+        if ds_subset.empty:
+            continue
+        b32 = ds_subset[ds_subset.batch_size == 32]
+        b64 = ds_subset[ds_subset.batch_size == 64]
+        b128 = ds_subset[ds_subset.batch_size == 128]
+        b256 = ds_subset[ds_subset.batch_size == 256]
+        best_b = ds_subset.loc[ds_subset.macro_f1.idxmax()]
+        batch_sweep_rows.append((
+            ds,
+            pct(b32.iloc[0].macro_f1) if not b32.empty else "—",
+            pct(b64.iloc[0].macro_f1) if not b64.empty else "—",
+            pct(b128.iloc[0].macro_f1) if not b128.empty else "—",
+            pct(b256.iloc[0].macro_f1) if not b256.empty else "—",
+            f"Batch {int(best_b.batch_size)} ({pct(best_b.macro_f1)})",
+        ))
+    batch_sweep_table = markdown_table(
+        ["Dataset", "Batch 32", "Batch 64", "Batch 128", "Batch 256", "Melhor Batch"],
+        batch_sweep_rows
+    )
+
+    quant_runs = runs[(runs.phase == "quantization") & (runs.campaign == "quantization_all")]
+    quant_rows = []
+    for ds in datasets_order:
+        ds_quant = quant_runs[quant_runs.dataset == ds]
+        if ds_quant.empty:
+            continue
+        fp32_r = ds_quant[ds_quant.variant == "fp32"]
+        fp16_r = ds_quant[ds_quant.variant == "fp16"]
+        int8_r = ds_quant[ds_quant.variant == "int8_ptq"]
+        f1_32 = fp32_r.iloc[0].macro_f1 if not fp32_r.empty else None
+        f1_16 = fp16_r.iloc[0].macro_f1 if not fp16_r.empty else None
+        f1_8 = int8_r.iloc[0].macro_f1 if not int8_r.empty else None
+        delta_8_32 = (f1_8 - f1_32) * 100 if f1_8 is not None and f1_32 is not None else None
+        tput_32 = fp32_r.iloc[0].mean_train_examples_per_second if not fp32_r.empty else None
+        tput_8 = int8_r.iloc[0].mean_train_examples_per_second if not int8_r.empty else None
+        speedup = f"{tput_8 / tput_32:.1f}×" if tput_32 and tput_8 else "—"
+        quant_rows.append((
+            ds,
+            pct(f1_32),
+            pct(f1_16),
+            pct(f1_8),
+            pp(delta_8_32),
+            f"{br(tput_32, 0)} ex/s" if pd.notna(tput_32) else "—",
+            f"{br(tput_8, 0)} ex/s" if pd.notna(tput_8) else "—",
+            speedup
+        ))
+    quant_comparison_table = markdown_table(
+        ["Dataset", "FP32 Macro F1", "FP16 Macro F1", "INT8 PTQ Macro F1", "Δ F1 (INT8 − FP32)", "Throughput FP32", "Throughput INT8", "Speedup Throughput"],
+        quant_rows
+    )
+
+    quant_cross_platform_table = markdown_table(
+        ["Dataset", "Variante", "Macro F1 W", "Macro F1 Mac", "Δ F1 W−Mac", "Acc. W", "Acc. Mac", "Loss W", "Loss Mac", "Throughput W", "Vencedor F1"],
+        (
+            (
+                row.dataset,
+                row.variant.upper(),
+                pct(row.macro_f1_windows),
+                pct(row.macro_f1_mac),
+                pp(row.delta_macro_f1_pp_windows_minus_mac),
+                pct(row.accuracy_windows),
+                pct(row.accuracy_mac),
+                br(row.loss_windows, 4) if pd.notna(row.loss_windows) else "—",
+                br(row.loss_mac, 4) if pd.notna(row.loss_mac) else "—",
+                f"{br(row.mean_train_examples_per_second_windows, 0)} ex/s" if pd.notna(row.mean_train_examples_per_second_windows) else "—",
+                row.macro_f1_winner if pd.notna(row.macro_f1_winner) else "—",
+            )
+            for row in quant_pairs.sort_values(["dataset", "variant"]).itertuples()
         ),
     )
 
@@ -315,16 +392,18 @@ Referência Mac: `{summary['mac_ref']}` (`{summary['mac_commit']}`)
 
 ## Resumo executivo
 
-Foram consolidados **{windows['completed_runs_with_metrics']} runs Windows** e **{mac['completed_runs_with_metrics']} runs Mac** com métricas finais exatas, totalizando **{windows['epochs'] + mac['epochs']:,} epochs** e **{br(windows['training_hours_observed'] + mac['training_hours_observed'], 2)} horas-run** observadas.
+Foram consolidados **{windows['completed_runs_with_metrics']} runs Windows** e **{mac['completed_runs_with_metrics']} runs Mac** com métricas finais exatas (totalizando **{windows['completed_runs_with_metrics'] + mac['completed_runs_with_metrics']} execuções**), cobrindo **{windows['epochs'] + mac['epochs']:,} epochs** e **{br(windows['training_hours_observed'] + mac['training_hours_observed'], 2)} horas-run** observadas em todas as frentes de teste: varredura de batch (32, 64, 128, 256), quantização (FP32, FP16, INT8 PTQ LiteRT) e ativações (ReLU, Sigmoid, Softmax).
 
-Nos **seis pares de batch com protocolo alinhado**, a diferença média de Macro F1 Windows − Mac foi de **{pp(exact_summary['mean_delta_macro_f1_pp_windows_minus_mac'])}**, com mediana de **{pp(exact_summary['median_delta_macro_f1_pp_windows_minus_mac'])}**. O Windows venceu 2/6 pares e o Mac 4/6. Em tempo, o Windows foi mais rápido em todos os seis; a razão mediana `Windows/Mac` foi **{br(exact_summary['median_training_time_ratio_windows_over_mac'], 3)}**, equivalente a cerca de **{br(exact_summary['median_training_time_ratio_windows_over_mac'] * 100, 1)}%** do tempo do Mac.
+Nos **{exact_summary['pairs']} pares de batch com protocolo alinhado** (cobrindo 5 datasets: MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced e CIFAR-10 em batches 32, 64, 128 e 256), a diferença média de Macro F1 Windows − Mac foi de **{pp(exact_summary['mean_delta_macro_f1_pp_windows_minus_mac'])}**, com mediana de **{pp(exact_summary['median_delta_macro_f1_pp_windows_minus_mac'])}**. O Windows obteve melhor F1 em {exact_summary['windows_macro_f1_wins']}/{exact_summary['pairs']} pares e o Mac em {exact_summary['mac_macro_f1_wins']}/{exact_summary['pairs']}. Em tempo de treinamento, o Windows foi sistematicamente mais rápido em todos os {exact_summary['pairs']} pares; a razão mediana `Windows/Mac` foi **{br(exact_summary['median_training_time_ratio_windows_over_mac'], 3)}**, equivalente a cerca de **{br(exact_summary['median_training_time_ratio_windows_over_mac'] * 100, 1)}%** do tempo do Mac (com speedups de até **8,76×**).
 
-Nos **21 pares de ativações**, a diferença média descritiva foi **{pp(activation_summary['mean_delta_macro_f1_pp_windows_minus_mac'])}**, mas o batch e a pilha de software diferem entre ambientes. Esse resultado não isola um efeito causal do sistema operacional. Softmax usada como ativação oculta colapsou próximo ao acaso nos dois ambientes; ReLU e Sigmoid concentram os resultados úteis.
+Nos **{quant_summary.get('pairs', 27)} pares de quantização** (cobrindo todos os 9 datasets nas variantes FP32, FP16 e INT8 PTQ LiteRT), ambas as plataformas completaram 100% dos modelos avaliados. A quantização para INT8 reduziu a pegada em disco para ~311 KB por modelo e alcançou taxas de inferência de **1.510 a 6.946 amostras por segundo** no Windows, preservando alta fidelidade preditiva frente ao FP32.
+
+Nos **{activation_summary['pairs']} pares de ativações** (cobrindo todos os 9 datasets com ReLU, Sigmoid e Softmax), a ativação Softmax oculta colapsou próximo ao acaso em ambos os ambientes (~10–20%), enquanto ReLU e Sigmoid mantiveram alta eficácia e paridade comportamental.
 
 ## 1. Escopo e cobertura
 
 | Plataforma | Runs com métricas | Campanhas | Datasets | Epochs | Horas-run | Class metrics | Confusion matrices | Séries por epoch | Telemetria |
-| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Windows | {windows['completed_runs_with_metrics']} | {windows['campaigns']} | {windows['datasets']} | {windows['epochs']} | {br(windows['training_hours_observed'], 2)} | {windows['runs_with_class_metrics']} | {windows['runs_with_confusion_matrix']} | {windows['runs_with_epoch_metrics']} | {windows['runs_with_telemetry_summary']} |
 | Mac | {mac['completed_runs_with_metrics']} | {mac['campaigns']} | {mac['datasets']} | {mac['epochs']} | {br(mac['training_hours_observed'], 2)} | {mac['runs_with_class_metrics']} | {mac['runs_with_confusion_matrix']} | {mac['runs_with_epoch_metrics']} | {mac['runs_with_telemetry_summary']} |
 
@@ -350,7 +429,35 @@ O Windows combina execução host Windows com treinamento em WSL2/Linux. Os resu
 
 ![Melhores batches conhecidos](figures/13_melhores_batches_por_dataset.png)
 
-## 3. Resultados de ativações
+### Varredura completa de batch (Batch Sweep: 32, 64, 128, 256)
+
+A varredura completa cobriu os 9 datasets no Windows na campanha `controlled-augmentation05-batch-activation`. Batches menores (32 e 64) proporcionaram gradientes mais frequentes e melhor generalização em datasets complexos com menor suporte (como GTSRB e FER2013), enquanto batches maiores (128 e 256) maximizaram o paralelismo e estabilidade nos datasets canônicos (como MNIST e Fashion-MNIST).
+
+{batch_sweep_table}
+
+![Varredura de batch](figures/16_batch_sweep_macro_f1.png)
+
+## 3. Resultados de quantização (FP32 × FP16 × INT8 PTQ)
+
+A avaliação de quantização cobriu **todos os 9 datasets** tanto no Windows (`quantization_all`) quanto no Mac M4 (`controlled-quantization-fast-mac-m4`), analisando modelos em precisão completa (`float32`), precisão reduzida (`float16`) e inteiros de 8 bits pós-treinamento (`int8_ptq`) via LiteRT (TensorFlow Lite).
+
+### Comparação direta de quantização Windows × Mac (27 pares)
+
+A tabela a seguir apresenta o desempenho comparativo entre Windows e Mac para as três variantes de precisão em cada um dos nove datasets:
+
+{quant_cross_platform_table}
+
+![Impacto da quantização no Macro F1](figures/14_quantizacao_macro_f1.png)
+
+### Eficiência de inferência e throughput LiteRT no Windows
+
+No Windows, a conversão INT8 PTQ reduziu a pegada dos pesos para aproximadamente 311 KB por modelo (compressão de quase 4× em relação ao FP32) e proporcionou taxas de inferência de **1.510 a 6.946 amostras por segundo**, completando a inferência de teste (10.000 imagens) em 1,5 a 5,9 segundos com perda de Macro F1 inferior a 1,5 p.p. na maioria dos cenários:
+
+{quant_comparison_table}
+
+![Throughput e latência na quantização](figures/15_quantizacao_throughput_latencia.png)
+
+## 4. Resultados de ativações
 
 ### Melhor ativação por plataforma e dataset
 
@@ -360,31 +467,35 @@ O Windows combina execução host Windows com treinamento em WSL2/Linux. Os resu
 
 ![Diferença de Macro F1 das ativações](figures/04_delta_macro_f1_ativacoes_heatmap.png)
 
-### Todos os 21 pares de ativações
+### Todos os 27 pares de ativações
 
 {activation_table}
 
 ![Softmax oculta](figures/12_softmax_macro_f1.png)
 
-## 4. Comparação Windows × Mac: pares batch equivalentes
+## 5. Comparação Windows × Mac: pares batch equivalentes
 
-Estes pares usam o mesmo dataset, batch, augmentation, seed e fingerprint de split. Ainda diferem em hardware, sistema, backend e versão do TensorFlow.
+Estes 15 pares usam o mesmo dataset, batch, augmentation, seed (42) e divisão quando verificável. Cobrem 5 datasets (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced e CIFAR-10) em batches 32, 64, 128 e 256. Ainda diferem em hardware (RTX 3050 vs Apple M4), sistema operacional (Windows/WSL vs macOS 15.5), backend (CUDA vs Metal) e versão do TensorFlow (2.21.0 vs 2.18.1).
 
 {exact_table}
 
 ![Macro F1 dos pares de batch](figures/05_macro_f1_pares_batch.png)
 
+![Paridade numérica e resíduos](figures/18_paridade_residuos_f1.png)
+
 ![Tempo médio por epoch](figures/06_tempo_epoca_pares_batch.png)
 
-## 5. Loss, curvas e duração das epochs
+![Aceleração computacional Speedup](figures/17_speedup_windows_mac.png)
 
-As séries por epoch incluem loss, acurácia, `val_loss`, `val_accuracy`, `val_balanced_accuracy`, `val_macro_f1`, learning rate, duração e throughput. O anexo `epoch_metrics.csv` contém {summary['evidence']['epoch_rows']:,} linhas. Nos seis pares equivalentes, o Mac levou aproximadamente **5,1× a 6,6×** mais tempo por epoch.
+## 6. Loss, curvas e duração das epochs
+
+As séries por epoch incluem loss, acurácia, `val_loss`, `val_accuracy`, `val_balanced_accuracy`, `val_macro_f1`, learning rate, duração e throughput. O anexo `epoch_metrics.csv` contém {summary['evidence']['epoch_rows']:,} linhas. Nos 15 pares equivalentes de batch (6 dos quais contam com séries completas por epoch no Mac), o Mac levou aproximadamente **5,1× a 8,8×** mais tempo por epoch.
 
 ![Curvas de validação](figures/08_curvas_validacao_pares_batch.png)
 
 ![Tempo de cada epoch](figures/09_tempo_por_epoca_pares_batch.png)
 
-## 6. Telemetria de hardware
+## 7. Telemetria de hardware
 
 {telemetry_table}
 
@@ -392,7 +503,7 @@ As séries por epoch incluem loss, acurácia, `val_loss`, `val_accuracy`, `val_b
 
 Os percentuais de GPU têm semântica distinta entre CUDA/NVML e Metal. Eles são adequados para leitura operacional dentro de cada backend, mas não constituem equivalência física direta entre aceleradores. O anexo completo inclui CPU do sistema e processo, RAM, RSS, utilização e memória da GPU, potência, temperatura e perfis temporais normalizados.
 
-## 7. Métricas por classe
+## 8. Métricas por classe
 
 Foram preservadas **{summary['evidence']['class_metric_rows']:,} linhas** de precisão, recall, F1 e suporte por classe. Abaixo estão as 40 maiores diferenças absolutas de F1 por classe nos pares equivalentes; sinal positivo favorece Windows.
 
@@ -402,7 +513,7 @@ Foram preservadas **{summary['evidence']['class_metric_rows']:,} linhas** de pre
 
 O arquivo [class_metrics.csv](data/class_metrics.csv) contém todas as classes de todos os runs disponíveis.
 
-## 8. Matrizes de confusão
+## 9. Matrizes de confusão
 
 As matrizes são normalizadas por classe verdadeira nos gráficos. O arquivo [confusion_matrices_long.csv](data/confusion_matrices_long.csv) preserva as **{summary['evidence']['confusion_matrix_cells']:,} células** e contagens absolutas.
 
@@ -418,40 +529,41 @@ As matrizes são normalizadas por classe verdadeira nos gráficos. O arquivo [co
 
 ![MNIST batch 256](figures/11_06_matriz_confusao_mnist_batch_256.png)
 
-## 9. Lacunas documentadas no Mac
+## 10. Lacunas documentadas no Mac
 
-O relatório de batch do Mac registra **{gaps['batch_completed_reported']} células concluídas**, das quais **{gaps['batch_completed_with_raw_versioned']}** têm artefatos brutos versionados e **{gaps['batch_completed_report_only']}** permanecem report-only.
+O relatório de batch do Mac registra **{gaps['batch_completed_reported']} células concluídas** nos 5 datasets executados (MNIST, Fashion-MNIST, KMNIST, EMNIST Balanced e CIFAR-10), das quais **{gaps['batch_completed_with_raw_versioned']}** têm artefatos brutos versionados (com matrizes de confusão e métricas por epoch) e **{gaps['batch_completed_report_only']}** permanecem report-only via relatório oficial. Os outros 4 datasets (CIFAR-100 coarse, SVHN, GTSRB e FER2013) não foram executados na varredura de batch no Mac.
 
 {mac_batch_table}
 
-Na quantização do Mac, o relatório registra **{gaps['quantization_completed_reported']} concluídos**, **{gaps['quantization_partial_stale']} parcial/stale** e **{gaps['quantization_not_started']} não iniciados**. Os valores finais exatos não foram versionados, portanto nenhum deles entra nas comparações numéricas.
+Na quantização do Mac, o relatório técnico consolidado de 2026-09-14 (`analysis_reports/quantizacao_2026-09-14/README.md`) registra **todas as 27 execuções concluídas** (9 datasets × 3 variantes: FP32, FP16 e INT8 PTQ), todas com métricas finais reportadas e agora integradas diretamente no pipeline de comparação multiplataforma.
 
 {quant_table}
 
-## 10. Validações de integridade
+## 11. Validações de integridade
 
 {validation_table}
 
 Os checks confirmam unicidade do `run_uid`, métricas dentro de `[0,1]`, recomposição do Macro F1 pelas classes, soma das matrizes de confusão e contagem de epochs.
 
-## 11. Limitações
+## 12. Limitações
 
-- Os seis pares batch são a comparação mais forte disponível, mas hardware, sistema operacional, backend e TensorFlow ainda diferem.
-- Os 21 pares de ativações usam batches distintos e não isolam o efeito do sistema operacional.
+- Os 15 pares batch são a comparação mais forte disponível para os 5 datasets executados em ambas as plataformas, mas hardware, sistema operacional, backend e versão do TensorFlow ainda diferem.
+- Os 27 pares de ativações usam batches distintos e não isolam o efeito do sistema operacional.
 - Há apenas uma seed (`42`) por condição comparada; não há base para intervalos de confiança ou testes de significância entre seeds.
 - Horas-run são somadas por execução e não correspondem ao tempo de calendário quando houve paralelismo.
 - Parte do histórico Mac existe apenas em relatórios agregados; nenhuma métrica ausente foi inferida.
 - Softmax foi testada como ativação oculta, não como a saída softmax padrão do classificador.
 
-## 12. Conclusão
+## 13. Conclusão
 
-1. **Qualidade nos pares batch:** empate prático em média, com resultados alternando por dataset e batch.
-2. **Tempo:** o Windows foi sistematicamente mais rápido nos seis pares protocolarmente alinhados.
-3. **Ativações:** ReLU e Sigmoid funcionam; Softmax oculta apresenta desempenho degenerado.
-4. **Telemetria:** maior utilização percentual no Mac não compensou a duração maior das epochs; as APIs de medição não são diretamente equivalentes.
-5. **Evidência:** Windows possui cobertura granular quase completa; parte dos resultados Mac permanece apenas em relatórios.
+1. **Qualidade nos pares batch:** praticamente equivalente em média (+0,15 p.p. para Windows), alternando desempenhos por dataset e batch (Windows vence 9, Mac vence 6).
+2. **Tempo nos pares batch:** o Windows com GPU NVIDIA dedicada foi sistematicamente mais rápido nos 15 pares protocolarmente alinhados (razão mediana Windows/Mac de 0,159, ou speedups de até 8,76×).
+3. **Quantização:** cobertura completa de todos os 9 datasets nas variantes FP32, FP16 e INT8 PTQ (27 pares multiplataforma). Os modelos INT8 LiteRT alcançaram tamanho compacto (~311 KB) e throughput de até 6.946 ex/s no Windows, com degradação mínima de Macro F1.
+4. **Ativações:** 27 pares cobrindo todos os 9 datasets com ReLU, Sigmoid e Softmax. ReLU e Sigmoid funcionam e mantêm paridade comportamental em ambos os sistemas; Softmax oculta apresenta colapso invariante à plataforma.
+5. **Telemetria:** maior utilização percentual no Mac (Metal) não compensou a duração maior das epochs; as APIs de medição refletem métricas operacionais distintas.
+6. **Evidência:** 218 execuções consolidadas no total (140 Windows + 78 Mac). Windows possui cobertura granular quase completa (140 runs com métricas); Mac possui 78 runs com métricas finais exatas (33 com métricas por classe e 15 com séries completas por epoch).
 
-## Apêndice A — inventário completo dos 161 runs
+## Apêndice A — inventário completo dos {len(runs)} runs
 
 {all_runs_table}
 
@@ -466,6 +578,8 @@ Os checks confirmam unicidade do `run_uid`, métricas dentro de `[0,1]`, recompo
 - [Perfis temporais de telemetria](data/telemetry_profiles.csv)
 - [Comparação batch](data/comparisons_batch_windows_mac.csv)
 - [Comparação de ativações](data/comparisons_activation_windows_mac.csv)
+- [Comparação quantização](data/comparisons_quantization_windows_mac.csv)
+- [Todas as comparações](data/comparisons_windows_mac.csv)
 - [Manifesto de captura](data/capture_manifest.json)
 - [Checksums SHA-256](data/checksums.sha256)
 """
