@@ -1,0 +1,19 @@
+{
+  "report_date_local": "2026-09-30",
+  "timezone": "America/Sao_Paulo",
+  "scope": "Apenas Mac com extra_fraction=0.5, nas saídas e snapshots do projeto. INT8 PTQ vinculado à campanha; smoke em apêndice.",
+  "record_count": 99,
+  "epochs": 8118,
+  "classes": 1837,
+  "timeline_bins": 21760,
+  "excluded_non_mac": 0,
+  "status_counts": {
+    "controlled-augmentation05-activations-mac2 | activations | completed": 27,
+    "controlled-augmentation2-mac-m4-aug05 | batch | completed": 36,
+    "controlled-augmentation2-mac-m4-aug05 | smoke | completed": 9,
+    "controlled-quantization-fast-mac-m4 | ptq | completed": 9,
+    "controlled-quantization-fast-mac-m4 | quantization | completed": 18
+  },
+  "telemetry_bin_seconds": 60,
+  "sources_count": 388
+}

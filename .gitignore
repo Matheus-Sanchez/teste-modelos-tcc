@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .venv/
+.venv-report/
 venv/
 artifacts/
 outputs/
@@ -21,3 +22,5 @@ analysis_reports/investigacao_ativacoes_atualizada.json
 *.log
 .DS_Store
 node_modules
+analysis_reports/mac_training_complete_2026-09-30/figures/
+analysis_reports/mac_training_complete_2026-09-30/*.html

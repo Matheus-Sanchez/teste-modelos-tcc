@@ -1,0 +1,52 @@
+{
+  "runs": 27,
+  "completed_runs": 27,
+  "datasets": 9,
+  "activations": 3,
+  "epochs_completed": 2700,
+  "training_seconds": 358062.0830171416,
+  "training_hours": 99.46168972698378,
+  "evaluation_seconds": 390.824651376985,
+  "weighted_epoch_seconds": 132.61558630264506,
+  "best_run": "MNIST / Sigmoid",
+  "best_macro_f1": 0.9843664460956557,
+  "softmax_macro_f1_min": 0.0008865248226950355,
+  "softmax_macro_f1_max": 0.057227764805773726,
+  "activation_winners": {
+    "relu": 1,
+    "sigmoid": 8,
+    "softmax": 0
+  },
+  "paired_comparisons": 5,
+  "mean_time_reduction_pct": 47.77145417375099,
+  "mean_delta_macro_f1_pp": -0.4320082945691128,
+  "hardware_usage": {
+    "sample_count": 75999,
+    "gpu_util_mean_pct": 87.71135146515086,
+    "gpu_util_max_pct": 100.0,
+    "gpu_memory_mean_gib": 1.0408083115454232,
+    "gpu_memory_peak_gib": 3.47515869140625,
+    "process_cpu_mean_pct": 88.07613652811222,
+    "process_cpu_peak_pct": 230.9,
+    "process_rss_mean_gib": 2.891973266874618,
+    "process_rss_peak_gib": 5.1208343505859375,
+    "ram_mean_pct": 74.1444532164897,
+    "ram_peak_pct": 85.9,
+    "thermal_pressure_counts": {
+      "nominal": 27
+    }
+  },
+  "hardware": {
+    "cpu_logical_cores": 10,
+    "ram_gib": 16.0,
+    "gpu_name": "Apple M4",
+    "gpu_cores": 10,
+    "gpu_backend": "apple-metal-ioreg",
+    "gpu_memory_kind": "shared_unified_driver",
+    "metal_version": "Metal 3",
+    "macos_version": "15.5",
+    "python_version": "3.10.21 (main, Aug 14 2026, 15:25:49) [Clang 22.1.3 ]",
+    "tensorflow": "2.18.1",
+    "tensorflow_metal": "1.2.0"
+  }
+}

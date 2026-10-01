@@ -1,0 +1,1942 @@
+[
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "4fefd12b573407abbd575b20afa2837a552b22359ae423515e3085a7061ff3be"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18814,
+    "sha256": "f2d069a2323ae692f61890ee0073904ef85cfac46ad373409a1e5f5ddccb75df"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "24ac02a969719a593b8f2bd0f7a34305028a56857715da42a86ba80659e939ed"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 80466,
+    "sha256": "76ff0cf7f2140b60c8288124931bbb631811bda423a2734fffcf5204a88fb90f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 9173219,
+    "sha256": "35f68cafea3225dc2e7973a4d64edfe2fbc140f8abf3189cd29ef0cea779603a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3511,
+    "sha256": "c11ee14079d370d8efaed24acb42560d6a2cf4d4f5457c9e2b74c5af8ecd44ed"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 767,
+    "sha256": "bbfe77c2cd4e8afd815b3357eef83f31e2e3b4ef6b8c8870a2eaf0a3b44073cf"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5255,
+    "sha256": "a5d66a7891a7fe619b2a615c62537eff8bf93428bb6b13a1e9ee2535f6026017"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "a43290772010c88c61e5595c68b6d6661e348573e5cabe3469ff3133c7c9feb7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 27341,
+    "sha256": "91c1159a31fbe5e4ac1f08a40eb66d642b028f0c6d60107294052b02fe75d429"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "c33172c3ae0ace20c0ec079f206b0c715d374dd60e258c55a1229cdd96eee410"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 143206,
+    "sha256": "16e3bd1803a3e7d877164ff5108918e98e31c33766b67d58dd7b9a4d8d43b50b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 9505036,
+    "sha256": "d2845d68a8d41ced7230984d7a8030a9f8a8b5b961bae52109e2017882e4da48"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 8912,
+    "sha256": "31fc866888889a4e31d4a59dc33bab8a8abbb355bb8f5e30452c062f745c956e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 784,
+    "sha256": "800e38ccbaab508f24c81327e955ccc43058e08ccf6fb2f4bcc7b957f3788c49"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5250,
+    "sha256": "9aeb49eb4e6f1ec2d15801d78fe45e36b5b8ec3485f39630399a08386996568d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "f2b6b78b54d03d476dd8692e0ffdef72f7cf2b909282314e66c5c1a79b970e67"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 59698,
+    "sha256": "4d5c0ac493549bcbf92ca7ec2eadaf04190d86c62e7819091b0922ddaa4de5c3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "48614817acbbff0fee687e208e1626513bb2554c5d09a539a15626ce45f99cd5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 312123,
+    "sha256": "2b450ac6f8ce16dc7f5704df57a42f87c7ca63e57f6d307a0e0516e1b3e763db"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 21911267,
+    "sha256": "80e8eaf1f12a64e173a7ec6a201931e7f831fac8d42be26f2d61ad622739e9be"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 34014,
+    "sha256": "5846abc7396efdaf6cccabab72b6bece918623e43bd74a104c0428531cc7a454"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 783,
+    "sha256": "a8db397ea22d7460aecac9ac7b644ae99c85d8affc78d41bc399a14388dbe7a5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5252,
+    "sha256": "71a557b7de84dbbe444428d95df15e5595357eb485008e0cb323dfd42a44d006"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 276,
+    "sha256": "320941056a8bf76547be18297f522b62225f21af33600caff0f6427a8755ceab"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18890,
+    "sha256": "4d4c977ad13889a95df95f91531345d127bd2fcad450415c64ea6e4f8db25e44"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "3a53b4141225ebeea82e0fa3568e91821e1be2f258738c2f7b4af2fe81fc1599"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82237,
+    "sha256": "b40d2093c4bbfed8a68eecdc08564e5934a4d79606ff6616e64819d9a2c2cb28"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 12389038,
+    "sha256": "869724019605a9b8a2690faa8f6ea36f28621e543917df1a3d8b221426e6fd60"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3497,
+    "sha256": "0783fb9a0e5e0451df80d2a17d94afcd85466a9c108f374cb539db03625d446f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 780,
+    "sha256": "9b2c70141acc1f41003589b9cda6e67d8409d7ebe57c959a47ea08b975f18e7b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5295,
+    "sha256": "91e96d040997b1bab750d91bed97355df9bf2d97d3539ebf4ef2dc465a528808"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "97fc2279be3b8869c389d84de0033a03a495402e0f04644f185005d5eddd7b0b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 17281,
+    "sha256": "51e0a351c1126d3ad0e34ff0df9c4f27a8c75afe70a6c7b14464108d17ceef44"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "0908a0b2e042334785273f14f8ff82365714e8a2cda20b1207278d0663b3a4ae"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 62189,
+    "sha256": "61ef11915b806718d43a75f5f3d81194bef37b91513d5d026cc90e5546418edf"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 5129264,
+    "sha256": "0a5af050e8255f3209a980b5315e3883938c4f3b729f19f806271e360abaf112"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2354,
+    "sha256": "ea308b48c5839584dca1a8ed32a1435c59b329d74ee86602f0ca244d468eaa4d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 770,
+    "sha256": "612c2ae091e4ade35c3593758b7120dea3f8f3a8c1e8a6e6c1ed120a9c60bb6e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5259,
+    "sha256": "db38daf2c209db7284677d02b049f91f195377b6eb632a6108655295ddf27192"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "cc6d1e5139f7337d03a67759698df5a1b64a28be6f082031051377a3b1c982e0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 52151,
+    "sha256": "dceca5297afd18db463435144ad39a125e447a7b8e634df1282938332a83e2c0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1785,
+    "sha256": "888f062c507e1f2937df085f77d8a45049bc2596d572ceb2e4893c9af5755d93"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 192392,
+    "sha256": "5b3290399645e4e5c20224a30c5853986e705519c627c83a3f77ce9a01ecf714"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 8185962,
+    "sha256": "c02c959d6df5fe2315ecf2137f7505a8fe73cbbc1c8d34ff575733a9a8331d7e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 28156,
+    "sha256": "be4915bf696e680195760f539582f11e491f5a5aaf52ced9017721701d6637c8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 766,
+    "sha256": "3db6bddb0184af02a4034ed282409abebc5d908e6adbb793606f992ad4fdb9fc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5236,
+    "sha256": "0618be6f527a6c65ca2a5df1970c93f3b1e054cd7fce0a6c8498e0ea287005ed"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 269,
+    "sha256": "103666c8f30481aea4ee8975b3901f4ce35cbdb3dd0ece6bf9634ab5fcf3bd56"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18672,
+    "sha256": "5fd28d3b34c1e76cfec4a8ff93cc3c9811ecda08ec1d8211363208f4b741f0c3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "6110c9579e5ec2343321acb17baeec9010c8a070334ee8d2dcfd9ef74be0a128"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82719,
+    "sha256": "5f96434df6e85635775cd079a069e05feca00167e7a69118a06b367703e24c2f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 12577266,
+    "sha256": "449f949b4fa7d03d6ba29070e9d57b4bc778c52db5b8e279bc4b663d0821ae82"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3498,
+    "sha256": "d2fb7e7aa0e7f02df9438a2cb77e385914ac9eaf3be51127a04d7073fb943416"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 765,
+    "sha256": "1506c6e092eca99e38debfa3f7eb915b719d222a61b47a56a2345b48060361b3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5272,
+    "sha256": "6f87af894e3463c15497b1b28d58395ff40dd48a06ffefed324dcf695954edcd"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "19fd8caa441a8a0a29c0a98c14dd1fbe24a2faf5c06e298334e6b7b59b4ea260"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18781,
+    "sha256": "c17938bfb4a632ad7b2f13fb2b82a128f9c355b114ad431946a317c54bcca1d0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "8304b613ccd794108b0ac25298f39a926788c908d17894994b273e075e2aa519"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81431,
+    "sha256": "023eae078b38f04c3e846518c2ae9cc62e98a915673622770bc31fc825a03a26"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 10540450,
+    "sha256": "84dcea73a94faad107d4e030341986bf4b30ecaf1013a1af11aa14174b9d906c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3491,
+    "sha256": "92d2385a361884eb45f2922b313284586d0179dc43a54245484846591ad96e49"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 760,
+    "sha256": "587f4b334039dea2a181a4bb39ffc1123b08ae2af11eba36a82a96bc265e952d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5286,
+    "sha256": "072ef675511927d2e3e40be34fec753b1b8c9b59605182445b30a1672fa11e8a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 267,
+    "sha256": "c74b11acad8c8979045aecae43c64d18dd4f133e077e07912c189bb92baa7343"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18733,
+    "sha256": "b118f3275d3d85fe18eff7cf715448e3d1e69cd69295fbe14ddebb9b51f89d41"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "1380aff8f52673509d9754a7a8646c04f9d594204d6f77597198778c63df3fd3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82822,
+    "sha256": "702a213ecd901042180d2bb078d70b8cfe5912155d1546dd0709d94b549761d1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 17804521,
+    "sha256": "503fb6920df583a866140be3895fd71613aa3dd69f5418893dd8e850e1534d60"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3509,
+    "sha256": "221bc12f48049613bbf9479b678f7f749ca51a2845d1a4d3c8b37f11f4675800"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 759,
+    "sha256": "e8e704fa679848ac3aaf49ae8ca086bc043cbf7b24d15d098e470db36d4a441b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-032/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5248,
+    "sha256": "0f37b2964fc5298b35a0bb2b00108e23be2d811ce5e6e190ec23e4b2dd2a7d06"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "a7c9545f74b5eff2421a20f0f7acbae0c20ca6485fba5979653d57aa4f168cc0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18816,
+    "sha256": "635fe921312655aba457dd1480c7b79fd5ae6e21921243b20ecfe114d927615d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "049d2280426f38ce8aafd82c7cefc1fabcf04cb954266b30b2ba222a32e86a52"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 80140,
+    "sha256": "d3f61a57b8b7a62c9ef0aabb80f2000b76428d1497f20ce5962a8d8e91c6bced"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 6683920,
+    "sha256": "2355a057eea7f6c3e4b8ae39181939b81e86a4bdf046aef45e5e1d1e80785c15"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3540,
+    "sha256": "aef7a64b9a591aa2f2bfca7fb216b85c8752fd93bf49f1814a60d8d17b1a6671"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 768,
+    "sha256": "b13c2c70c22014d428dc741400a764ed7f3ccf0846d4b25a075d4ed62206d860"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5228,
+    "sha256": "59604344627fe6b1837b1f60dd3fe6fb2cbfdc2f3f7568b9912f508443ab13ac"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "abcb5e80b90db28e3ec37a446818bc655b5798ae4cd3f02aece254d411f8c68d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 27322,
+    "sha256": "89b4c7c1378a5577a54c5c94e1a22c79c6fc33d10976e1a15963b8a793139ab2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1787,
+    "sha256": "4c985160562532c9e835909ae4eba2a1634ed89f7893f895271157bf739c498c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 143392,
+    "sha256": "5efc01563045bcdbc8900ec9811a2a7c04740a8a6568622cb0265f56de367cdb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 6697872,
+    "sha256": "97f150cf44bb1dac93540dafdd11006f92390714b59a8663b79203e6c3de85cc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 8856,
+    "sha256": "9ff06e12ecd54607f1d760e7bd667adaa90de01ad8dea9bd04c94b3c1126bc4d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 780,
+    "sha256": "d4a76c79ef09a4174ebb354f94aa6c83564d8573c30e3a4b1e6c067f1ad46a5b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5292,
+    "sha256": "13816e758e1fc44356425d47f9ef4b7078b757aede3e5e35d566944cdc28f56f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "96683c9224fbd5d5d457248f77eca684dc9ac6dc8f4503f6d4f1b0d412fac050"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 59719,
+    "sha256": "d72c8a1921f87ed0df3bf2b6ca8eac4ffaea602fe1c4d5749465fe2111f00df7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "c01c9b98377c1d90fe3159d7a857d731eccd3b5cfb00952f60a5135c1ba15771"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 312340,
+    "sha256": "79132172c75a9a8d55a1099b08d7762a809825a0a07d91a1ddaf8890dbcd6b34"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 13874573,
+    "sha256": "cb9a9d3acc8762973bad10b910c678447336fdf2e16d5d0af0812da9dc78b0a8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 34012,
+    "sha256": "b1837b7b417b3a676ad84edca522ea2d035aa5572b2d662e35d09a4ebfa66b06"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 779,
+    "sha256": "4967956fd09139f3e3a469db51fbee31cf0c1d143e6d066907e1cde5c61b3c6e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5279,
+    "sha256": "cddb2b71785aaa86d247f64285eca8cce53e5cd6837fb94eacea2d1a804e5da5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 276,
+    "sha256": "b8e15f944871a19646c64ad2661833b13d15ad30ab87ae5ae24511415b8f3352"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18874,
+    "sha256": "15da5a531ff710bd7265166bfbd00cea14e1da64497470121e3ae8220c2699c1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "69c49976b62a03fa0282e0790dce8feb57f8ce9d286c027e0f4e39ab3565e0c1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81963,
+    "sha256": "74f5a8f044c435dec748820e40c7fe222d568f8ba64da63c8ed1f34d91eadea5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 7045026,
+    "sha256": "2ae6ae78faa478f5e18664e0a4c7cc8aa4cdf7e5b4d191de62873673694e1a31"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3513,
+    "sha256": "1add9bf3f9fa2b69e3b804b089ba4e9b6780839d4b3963497c6ef2d10a8e1277"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 779,
+    "sha256": "a6a4b7f26c3ae37ad35063bceb7d36208bf9a23f9bc5f0a84bfc19e24496ba46"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5264,
+    "sha256": "f28f9186d0a356c5c7ea2f2264de426c8f2f293574e8606a9c714e37a7bc6718"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "6365cfebb760ed38e0a88c746cd724241630e80889787106639454e7635bac00"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 17275,
+    "sha256": "fb833d1847f066973c94d84c68000578d167b934a112ca032a4f00b9f25c6052"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "20733ff3ce7c5c2d557fb21e4dac2802dd49fdba22717f4de7a1e2ec35b0b7f7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 61977,
+    "sha256": "cd88a6084bd365fa5b3a23e8a15be38cd7911154320bcba84303af1ea67bbbce"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 3778732,
+    "sha256": "476dbe8200cf208d29767768799886ae99608c21aad3e11192a76c699fc5d5c3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2359,
+    "sha256": "16498f9e5186bfc2fc074dee35a9c66d32fb6172638b451fad0ae45b6ecf64ce"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 767,
+    "sha256": "86ad5c2f8a63568484edc53182ffebad2f1e98863f9421ead26efa714aa93007"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5254,
+    "sha256": "da619999e98bcb33880ebb41d73643c97b15f84f4005e7e023286d890c0d317b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "046f199a3000d3df187971a2f8b1679f902c3372831b375511ac7b6b29ea9b48"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 52042,
+    "sha256": "36eadf6393134f4e2c40d8eba19135d058b7f961d38f37670f1db5a7661744fb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "a87baf4495c64b232ad5fe99aafb05f0775b42f83e6bf1b926d2376648a6d957"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 205569,
+    "sha256": "732b1d6d5ed2d206a6a0bea389482a7247774ebdf87d8b4d32a94b3bba0e7992"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 5430075,
+    "sha256": "4d706f64a94e6c4f0cc34ae662c101d40bc82a1978fff95b5e5d5bb89dba9c4f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 28044,
+    "sha256": "f266fa4e00e52b68e696f709efcceeb2b2c89ae5eaee44aa2b66f58c0bb2cf5e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 764,
+    "sha256": "01f0d88170aaeedb1ddb04afd471f421e6952e18550703e85bc5e7e28ce113b9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5244,
+    "sha256": "8a5de94b139132eb246a0fa09aee3d53c83897ebc9cc0dc2da913a29bef6d44b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 269,
+    "sha256": "9eb6302d63aa7bccc3ee8201a23751f1c089746003f79399bb9fec1b792210de"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18649,
+    "sha256": "08ac8b20cd164b51a6f69820151da2884ec0d363ba45186b618ec1d1a1d1a164"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "3a5c94f4ffa09d1fab5ab6cb4af643bf54cc8eec5bb2d1874c5ea84b8da94f67"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82645,
+    "sha256": "dcc3db533f64b745fff29010ecce68829bcbf2da8f36582b171707f123a03170"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 7519150,
+    "sha256": "252e8c6ce62187314dff21c2d88e09871f4a471a668610439e5f180ebe8f2c29"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3497,
+    "sha256": "6807908606ade15b8dde6e86f56350e0642d91b4ad9e60a993fa745846925c49"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 762,
+    "sha256": "6568974d836c566dd73c514ac8635904e751b54ff12ab9d7f0101c8b539930f1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5253,
+    "sha256": "d8a57ac0713e435df1c04b6b00669562dab95a5ac3b440c591ec52dde2319a0b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "a7dcd51521bae8e2e0a1210cea6e18b5c5ca95304b8ad1747c8c418489d2612a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18740,
+    "sha256": "8cff41a00cc6cdabf7a93144ee60670c3fb993e91aeb56be06f6d4b3eed66e8e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "47bd4e2df11854a5493d77b649c3ef849e2638771afe2dc6ce11aef4d0110777"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81247,
+    "sha256": "37770ffc0aaa42f69a2c8a17c776785e9eaef7f274675c34a3a8fa3aa8bc9a7a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 6245575,
+    "sha256": "bc9df8f89de0299640ffa6b9dd2202e19b4f3ab4c3481c0634e4f84bd41caf6b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3481,
+    "sha256": "fe6b060564ef663321f28daaaa5cd2837a6c165d9835804e3ec5f04e686518c7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 766,
+    "sha256": "08b90f90b7c2fc805d50219e94d97fe9e58f1b4874b4adcdd2bfa85549f45778"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5249,
+    "sha256": "2e606703cd8c09ad47e8eec22f30521759f75fa41b48701487d485e40d8886d9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 267,
+    "sha256": "d8e35b9d543a4377c7c9eb5efa8be67045561fe02c7383bfcf10c50a2e1f9cba"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18784,
+    "sha256": "6cea67ca9346c6f478afd08d447c8bae19c1986685a52087a60ecf927de948d0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "a53752c13ffc60cdacd9c719cbd2bc453218c9c665db09e12e64e1a648daf03c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82879,
+    "sha256": "e00d93ff7b8f0500950d6686e394c137b0765d01e1c6b53cb08360ac5c2db59f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 11378377,
+    "sha256": "dfd2f0d887258f0dd6cbff43562ec3cce04cb88f943aca48f1954a9816c69835"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3532,
+    "sha256": "4995877eca0d887c92e8e2b2128b19d7e575ce3a64bb60c6c7bd8c12ca7c9611"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 756,
+    "sha256": "446f532952bf645dcc84fa039ac1546161c94a775a03a545ed0d1d9eb42cd0d4"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-064/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5279,
+    "sha256": "539c98ee5e1053f122ad8007498d3c82f66ee1213b04b92fe233f2134718cef2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "8ea2fe53e23dad641e5d45dc476c171526bdbb4c52f09cbf6299b2104da800d0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18843,
+    "sha256": "700131bb4fbf12bef81d428fb51079f62d61cdf3f43c12c0512cd227d4c727b1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "d4ab9a4ab500aadd76707dbdc49ffcc3acaa24cc915af2f918f75c977e84125f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 80408,
+    "sha256": "5a97d9bf0b1a18077d01b1796f0b7263b0f6529101dacd945871007e2227ec9d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4319058,
+    "sha256": "af17735a0720287001dce378428973a5c6431374dcd42ee9a6ba0e8e5e9a977f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3539,
+    "sha256": "24c2fb29de062657c859f1677ffd9537e824e4e466b1ee4452a4425ec535a5e8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 769,
+    "sha256": "58659b67cd6ea8f8b687c0959880ecd2bc748ac1894acecafacb2fd378a93132"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5255,
+    "sha256": "91f91e82947fbb1429e30d3841a095b68ea43c24c3c30ce53168c300a539a1d9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "5986c027b8f5d944cb572e20e657f761e573621dca4a346981ceac592a2eb94b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 27355,
+    "sha256": "d690b0f9f6a62657a2500c2b1274ec0aef09357dd9beea5b32afa4ca8a982bb8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "9dd91b479f9b94412b06a7da95ac23e3187af0057cca45d04bb9a1122604ca51"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 144032,
+    "sha256": "f55f45a29f7226bb4fccc60621bd7190ebaf2c6302ee86f41654d234d9fa037a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4685192,
+    "sha256": "8fad4a68c4aa1f229d1bed6534c4fd38f200ff546416caf6ae769cd3f734d0c9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 8914,
+    "sha256": "7d6cc6096ce33a8d9a06944b82be599628a801d0b135e5b4ed06f5c23e012fc7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 787,
+    "sha256": "8e231b76bf6cc8791fb04a97906aeeb5795f9e1eeef38e64c965d8b9c3daee7c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5260,
+    "sha256": "a6a4981d6c9e1406a8f3d1ebcbcc3664962ce9cd437dc9657ebfe585e3a53288"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "d2d8c6710dd5e1533497f9cbe32a6c7d79b7068acede15b0d3a634a09eac66fb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 59618,
+    "sha256": "d474a6f10cbe838845e1afca124ba685d76cb9f60772d6ce7ce1116161b36b22"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "4303d80a21885ff41a3c632ec822f4986ed460839909e0b9b0108986b6f7bd78"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 312491,
+    "sha256": "2b01ffe06092f32fa7ade3ebd07a809d017d4b19d672c8f558c6dff9481afa5a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 9234557,
+    "sha256": "6834d3976d7f335c0ad2b56587ed966a40806f1de43fbab577412b69d8abb499"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 33924,
+    "sha256": "c0c0ca3ed21958a805688d947a9e7938021270f1906b84576aaa0490f1719733"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 780,
+    "sha256": "a459864e8b13c9a85c33f68b0131de17f54f2d047b09dab2b0116eabdd9ac6c8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5263,
+    "sha256": "22d1ec61b8718f7191768e52389737cc003289319b2f45fc33fe39fd6931aebf"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 276,
+    "sha256": "ac91b568d2ed6b46b68a0ccc593c2100abc56ed7e3cae8beca0189708c592350"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18804,
+    "sha256": "3caa4a6f877b3f7b75713a296895631be4b06c730d329004c8c5880e012fdd12"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "c85fc040738ab640c84d7b1cf4dff667495607e26a1be660169c82fda807ecb0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82109,
+    "sha256": "a53335738ef5b1644e392ae8f684353552fcdb468f317e2e7d86f0100a078f9e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4874927,
+    "sha256": "0eb4139637253b50293844468e1ba1e2640d38b7b8e58ff965fe77b14124474f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3490,
+    "sha256": "4db2702c261148959208062d6fb199f359f26d637b39ded37176d2f2b164e851"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 769,
+    "sha256": "870b1347d6683ecf72e1f4b948fab12212c3f00b70d5ef726ba98546195b846a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5228,
+    "sha256": "f05f880e94606723d20620cbb30bfbb86682f6a5bfe7a8178b4819254f0a7dc1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "a1012459f6d6a2e1c87b6f04667619f0ae26ce1fcfaf16603fb4bb88463ea142"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 17295,
+    "sha256": "1007a7ad21a3595d661ec0c8ee56585d57d39e0ba0c76f64aa04097030220366"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "170ea14b57fa73072349b30d5d0530a60f3c26aa673f69741e03648c58ff6586"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 61911,
+    "sha256": "e156e882f2d72a4e31362a5c4616bd349591677f48a6a154067cdb913fe84e9e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2625526,
+    "sha256": "f9d4ff8a67846bf2b6ed5201fbc69712d1fcea712633bede15fe5c99ecf67482"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2378,
+    "sha256": "4c4be42132aa643a0110397f923507dae6db4b8a0a5436d56e60edfb907292b7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 770,
+    "sha256": "758cb5b78d3199f0a7b043bbcc57d817c357d6472b1eddee497bef5dff34b369"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5250,
+    "sha256": "24920966ce98471a08e39386c9ccd6545ba04fd7863d773c8dd7d70be8125a9d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "d5afcff514c662ef92b17598e3d36ed1b4bca3c20bce918558771d781c54e104"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 52293,
+    "sha256": "50ad173941c42eb116fb1bd4ec9d573cbe478d88797f286961dc677574f49fcc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "01dd33abf06aeb40805e49607d4089c11123e91eae9404dea84e4088fde9ca8e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 216108,
+    "sha256": "4e547957895cf4e8b6e7be1ac1a2e3bc4f751f0b95d557d5f3af25b7aef22dfa"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 3653773,
+    "sha256": "d0d2c4d8d5bac907aff1e8559cfea324d531b5cc510bbc87b39b01b71c65ffcb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 28283,
+    "sha256": "7171b5e95101822686264c11ac587be9489f9635fc7da0c7417a7b41a64f696d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 766,
+    "sha256": "54e51fdfe4866a5bae891f6a91e1fe0a398d2a7f134110b25ee083479c619c3d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5252,
+    "sha256": "19f4cab7e7952bfd7f7d5e1072a6dccd6cc2c1490477c8e8556d8f3a027b7d53"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 269,
+    "sha256": "8d4b6c7941faa96cb0522a17823c232e6b45a046bf96ac114822770cf71a2c41"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18650,
+    "sha256": "7f05e209db9015260afa276da2bbe55cc9087e1f27e1f14087fb4b6b271d491d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "a1d47627f59b886a463a5954f89a8bdda7b89f91721ec1bb8d0206148a35a6be"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82446,
+    "sha256": "a52d0e9cd06468566bbc39b64c1e37e831107483dc172f237981942d8fc905fd"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4956750,
+    "sha256": "93424b83b01fb9dc7bca74c75ad7f8161ecf60be780fcb081d7b6fcf238dbf34"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3485,
+    "sha256": "2449ac32e4edb882856d5843437805ed03ff84d414d4e504018e72ad1dd121b2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 765,
+    "sha256": "a305fab010675096831c19e69d6b53dbac6216527bacd21e6c5375069a14566f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5264,
+    "sha256": "76ade96349c58242e7a3d1fc76f2c4e8d515597fdd676ff35ed607e13cb41e20"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "5479125d2679d6b19251235098b374d1ef0ffaa525b778620d3293da34872ba7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18747,
+    "sha256": "e72b37bd9174e86c76d7bcd3e2e5d8a4673b5c3f3a7e545bd06cb15e08be36bc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "13e75d2ba1b9b3e5f85d94dfd5fb05f5e514f7afb11c3688e0f87971868aef11"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81361,
+    "sha256": "213aab556ae8973e4748ea7a8b2f6c0ecfa01267807476ce962ceb431f53c75d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4974748,
+    "sha256": "e02e3fd6a652be4d0446e7d14fdec3a0e8ddff9bf6bbbf824b5bfe7459c84acc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3485,
+    "sha256": "1fdd033674dd18efc7f659228c8149ee22bb42ed209259797259c679cb967a91"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 765,
+    "sha256": "fffeefb9c9ace950262b30ef112fd48811dfcaa0aa631b4faa54862e166e50dc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5254,
+    "sha256": "3487e21309e36fa78d5684e4948f14c76ed15a61780e0b1d0b2f2645fb11b335"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 267,
+    "sha256": "8a43fd0be3d48972f253aa5ee32e78f82da93b1c1fc89e09281fc2c231f78ec0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18768,
+    "sha256": "3454746462e074d554b0cfbc8ee29b58e9a0bea4853c4a0efe0a9447ca8e57b1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "8b301388a82e463b33e5645bf5cdedac25f1163042954e0d76adaa6268b4d7f7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82901,
+    "sha256": "a384538607d9cc3444af9a77f3510ec0b626ee815ed887cefc582b6f493b515e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 7645832,
+    "sha256": "0ee20dc836e5b9773be07eb96cc9b1345af18f2f05ec42b308dc61a5039a195d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3533,
+    "sha256": "0b67fd0c68001978eb0592d0935bf724efadd946ee3491c78e54d99f5a7f9ed7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 759,
+    "sha256": "009ee76e468ee1d8edb3d1fc375bc468e15f5b73f9762560b96dfbcca4385408"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-128/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5258,
+    "sha256": "c76641d4ce28ca12c2494a7485ba1446f30a87529c30fd314a9b5e3078dba856"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "dea7e09043c6f546c44eb7eb432145497e14962c103f86e4a407c6c3ebc8aaf6"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18868,
+    "sha256": "e8d8d9ef3921a958c8736b4739c4535f7f515f0df800530bb8595144925c40fb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "46adc58b81faf5dbff76097ec1133c0a9f83c64eab38ed6d6062e269f4c620e8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 80305,
+    "sha256": "91d4afcad136001c83a4a1d47167c639942db10b3c0d36c59abdf3832c2e0b4b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2809207,
+    "sha256": "74bc14008296e0ccba9cd3ff327c3ebdb4261386742d88ace6bc7168957746b8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3548,
+    "sha256": "3b8234d7312f06fbdf9357b0bf267e492d7e13f1ba7541ad7ae8366066a615e7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 769,
+    "sha256": "5eca0b702de5b271a38ce67e786ebe587025375461d63eb7b93def81690d1fec"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5271,
+    "sha256": "41194e9c231eb1fc109525d1ba2c71dda9833c0655cb39e59b8acbe995eda7a7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "432c4ad2ce16e751a968fbbe8ab0b03c6dae429df201e8a8c1021fcf7039f3b3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 27281,
+    "sha256": "d7443d242adfe1b6a3e834ca318b8783043b34d1e051e1f89c81ad0df2476a95"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "75a69f5f03e29643b5a0114a4cefdf6306573bb3979519b5e7838e463f4e1e19"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 143372,
+    "sha256": "d9f216147bddbf4e46f3e2dd9dd3394d5164544a51233852076e6e8aa101ab4e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2874527,
+    "sha256": "a5ab3e5cc3fdfdc528c0f133698c66c641ef7368cc5e19ea16e60f8164ecc2fc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 8873,
+    "sha256": "50d032a65de63d614d0a2bf825f9a0d44f2119886af1334ed2d36104261d5926"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 784,
+    "sha256": "b489212625106d0d4abb11e3741eb5b5feda5af2162c3f86c0413fa4c9697ad9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5230,
+    "sha256": "29f3e75f736dd227830a407f87988a0f7d16541083e1658760490616628a78fb"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "029d0d776dc82bba39759860f1d42dd34b3ba32b3632704141b38f3fd0dbdf5e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 59676,
+    "sha256": "5a6f97777f00aaee53592a170062ddc02fa3c3f5bb6970816b2ef6871fb2e615"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "59ab8bff7e369b915c3c2f2b48a8cb3ac20b3cfce58fb646b559e84a00108ce4"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 312246,
+    "sha256": "ea1c527d9ade885a2f775cb62412ab98d929daf5402ceaa0748475893a3357a1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 5837787,
+    "sha256": "c1ce8b447348b4d05e9dbc3d40c0de5604f3d7d2e96026cd7c7480194a2d18b7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 34021,
+    "sha256": "758f3560e2c33d8a5d3ee85d474f365fd93a59f74c805c43bacc2169b0bd3f53"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 784,
+    "sha256": "26d2b937f0c70127c2f8355ee237eac529f63513182e5141315d63aba310a494"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5223,
+    "sha256": "176f7df8a14236612c902505d6adc0bf14d30a00fafd25c21795cca5dcb50f0a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 276,
+    "sha256": "ede984406a96f9d4eadd2268d02006db6f06dbd67558b7fe5d165582ee3e55c8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18854,
+    "sha256": "14254acb36c127458aaf12d574d8d832b5abc60fdbe029d52fd1927a5b70585c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "c348239232e059c6d7bb969747b10fccf1f6f03d4cca2a2c412f4bead3d63011"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81893,
+    "sha256": "44ebba58f9c52d832fa75307b5dfd847803d8db01a8b5985d3bbe2fe8846a369"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2897844,
+    "sha256": "91a2c5bb52afa152707466529c1e01700179b7a0f685a165b74d1c8924da6685"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3513,
+    "sha256": "e7e3110348e2935e2ea6193827d6efb65aaec8484529106459975b2fe3f0e2f5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 779,
+    "sha256": "2b05af4432982c231ea19f8f902a9ed46b95654c0d6b9921963c3c6f73624d71"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5245,
+    "sha256": "944ded26efefa8fd1c3785b5fdd744682f90e2662feadba33e231d6f5f64d800"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "043ae5a5ea52c67bca793cc0f9431d6a40dc8616a077949bd7cbbf67bf48337a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 17272,
+    "sha256": "d93c04821d2fa9ecff0ad8f3eadc74c33874711862735ed3a32faf7e4ba6edec"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "b1348c8a6dc3032dd5dd175878e0c566a90d40cb3a35b2a0dacded432cd507b8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 60057,
+    "sha256": "39551af18d879c5dd478c328760debb475dd43fa7a6e2908d9b26ed7726de789"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 1539796,
+    "sha256": "18b546a7fae9ee891fe9b5dba4856f2e410880dc0f744a7d53a47824d9449414"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2365,
+    "sha256": "d987a7c927aca1446cf7e3d5dc97c09dd676a9baa2fdf989635d7b066aa6a641"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 764,
+    "sha256": "d5cbba9c0970b6cee10462d2d05321331e1fcc4b44fa3dfa5467e86e14b2f1bd"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5246,
+    "sha256": "490137d0f20ebb9ac2f4ea3b8963f0d23ffa228cb3f3256ad7e34f371c7d4774"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "09edcbbebf8ff302465005a48e08e7ffd440380b7d9fb222e2a521bbd6065b8d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 52565,
+    "sha256": "20051e465118b4cbe3c56cc6ce6ea4eb1f977620444ffd965282174b331e41f2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1785,
+    "sha256": "4dbec36a7fb91201ccf3ea4d4b7661bd61d58a5838a3d7642ada1d1b5a4d73ba"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 229168,
+    "sha256": "9c98bc1760b6cd2c14ae1285ee1d3cd3c8073f62817c4b1e1be67ead4118ce29"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 3105648,
+    "sha256": "19cf40a53b06facdc93d3de8fbbf017709f8899a74b960ef50c068089746014c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 28518,
+    "sha256": "57b36148983cb5de5382d65409917f823dba463e921ad95c21c9e90e75436e56"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 757,
+    "sha256": "4a74bc6baca7f332636fd6eb596edce045aa627ab7ffec8863f9b47c46a02d9e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5298,
+    "sha256": "a56fd5623b4bda319dc7907e58d6865b3fc8862f5a21836e6607698982d78ebf"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 269,
+    "sha256": "5784cf0f0cda8fc9319c2ee39fe4898cf0df1d2e9a15e52cd5f7fdf4661c37e9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18644,
+    "sha256": "52a8da27c6210d74105b9adc2d31a195069deeb8e63e85777578010d4228317c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "d4c36d25776044ce0c96204b0c37c8ebfec5a07170ecc42ceb73eb2d3c41050e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82471,
+    "sha256": "4dee77bbb071e86d7f154557523ca1e01b6c037218839ee93770567ea4c280d8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2912547,
+    "sha256": "5fe0b9e7c134b4a75c7cbf14e4832ad521f751936594cf6036d98581e048e345"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3499,
+    "sha256": "510b66e0a95691912aa6cc2d1a97855a0b0a25450abac182e14a1eb080795533"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 767,
+    "sha256": "f1493c0e95c5b8f094bf4cc90b4f7487406c667e979ff9a1b05b68ac43b0e22e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5242,
+    "sha256": "10cc98cc595c71d817607c4cc572088dec285cca4ff7dea058ba8bfc27c22a99"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "b12c65fc1c6554577a95bf32be8828fbf1afff90d5aaf5ffe36dd57f9c8423cc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18721,
+    "sha256": "14e2b2df9f93ad00423c45379b7a4a61b983091be29df98ef2c18597e9a62250"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "a2099224ce38fa4a8366bfe30bbf58e3bd41ca8a3c555ab3c93186a41b56b7b3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 81445,
+    "sha256": "0aee56db882caa9b300879703483ec099926ecf0ba0e19c80ac4b96a04d6e5a9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 2994590,
+    "sha256": "88568af32026f5d2f8bf8f124c2ff80f87cab6fc06bdb8356649a2cc062c9bb4"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3489,
+    "sha256": "de941c2e66e691aca18fd8d1f93abfc25a2c8b3477c8b945d4b799db08637739"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 764,
+    "sha256": "cf38e2bd3f517354017485fce8f4022b56ba44a917a3fe038377e9c7d169f9f6"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5225,
+    "sha256": "d8d75a81540d97ab7ff3ff2f555799fd03bc18d0e02367420fcd22a6795d1462"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 267,
+    "sha256": "27c50fb94555675762474c157419d625500b9fccc099a889fb9157332ff353a4"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18778,
+    "sha256": "de699a396cfb5a4d25d15351d9bc20053ca5a86636ac6ce0a18819578125c2e0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "99e8f71d71e9af9005e0bae4bc1aed36edfffd1c51a26284c9c641bcc4a0c3d0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 82976,
+    "sha256": "8999af7e5faacc8335938fcd002e58fd3d8e4b7fbbee593ab6e0fd7a0b8782ef"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 4563657,
+    "sha256": "e5efacc2a77bedb753f3fdd426b6e6f59a963fb7a661b2c2674e5a37754d4732"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3540,
+    "sha256": "2c7608516135e3b684cd082177c70f5249284dd0ce7ee7e1475b882b88a802ec"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 760,
+    "sha256": "d0dad55744438690f19c09f4be7f22a58ff82da3bf37b1fbfbe12c1cbc69a2c1"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/batch/batch-256/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5262,
+    "sha256": "6f977ef19873d9bff159dd86d50491e0060660d5fb4f9c31c650c6f6d92750c7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "ef5d47c92518f495654b864d8bcfc03fdd662448a9744d29d65b280797606740"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18501,
+    "sha256": "5daa857f4f468732bd94f51f8cab51957218d357ba6a2c609775d9f6f3bd6a44"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "112551fc348497ea71919d43d3b66c2315c107ece6b83cc9087c5d59ea63d5af"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1681,
+    "sha256": "f870981d5075e69385a048e7b041308af8ccdbbadeb87ce32a3173bf8575be40"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15522,
+    "sha256": "5291ad9bc6a28cd1a6901ace6755cc3be931b32c0da86179ecb33b9a7d135805"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2997,
+    "sha256": "d93536ad3454c6cbba5ab813bd02852a1b4a392a7a64189e4246273decdfd1a9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 751,
+    "sha256": "423f915053b1baea7c46849cfab244b9a26a29673407400aa390a603efc0c400"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar10/runs/cifar10__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5124,
+    "sha256": "5d07da764b7abb26109fc9876d027343eb81c89a083aef4e43d406c6890fa98f"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "4d83edb088121c593b288338c833134eb734abdfdd9777252e472f1e8db8976d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 26287,
+    "sha256": "aab035b9bbc2ae399cc152db13783a1a9f9b0d99944999dafdd63be9d172fd43"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "45135cc4c2acec9c3e74336a0cebec20fccc334ae07ab9a56aeb3e793a963d52"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 2936,
+    "sha256": "69979cc1d97d34db47ba41de7bde5cf69373b7c132eb97d6374f67ff991b0791"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 17003,
+    "sha256": "8ad517410c146e9a7fb0bc5f25cd12e49b558ae9fb3652e4e2472e3d6f66e856"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 7745,
+    "sha256": "ab30da407d00fb1cdba9410e9d1adb3caffe3ba65784c0d51bb8009d2500047d"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 770,
+    "sha256": "273effcfad308a9de2aac3a682ee2f16faf36e846ef4a1cbcb10cb667a51c0cd"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/cifar100_coarse/runs/cifar100_coarse__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5125,
+    "sha256": "4f327072388e9769a4e8216203ef3782d19896c9f22fce28aa0990ddad973455"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 278,
+    "sha256": "7b39c02c650b5fb3595035f42bc7f2e73afff625980db1a89a8a8c3328048390"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 57397,
+    "sha256": "d5b6b088a1471628584a9da8ff6a4f0def15ecfd7441a2721915d28d370f9f02"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "5ecb4d454b13b9042f3a7b781a6d48bf8a1b00d3f2868bc5115a69c49c196fd5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 5896,
+    "sha256": "ae22e1c3ca1493d3b80ef2b48fe9a5e73d31b8dbd8fcf65001b624477abb9f30"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 19351,
+    "sha256": "ee2bc11bbe87f903ca71fb3555eef7372bc4ad7f9dfdb903698599acf2f412e9"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 31803,
+    "sha256": "4bb1f6209026d9b9ebb9ba230b64dd868bf47f8b2cf1c49a72df8d5a6bb8b539"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 766,
+    "sha256": "47187da18fdd463010114dfd183132a889f694e99f4d82f66c529d2bcf037b99"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/emnist_balanced/runs/emnist_balanced__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5204,
+    "sha256": "59b223fdd4fefada11b61da83c5ba78febdb83e47e111dcd2d30a48b5ab66638"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 276,
+    "sha256": "d37da6a2853807d470567c553ca9b8e841ffa42286126c19c219ed9ca6126152"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18511,
+    "sha256": "b06022482adc3bbfb93fd8421174c214d9489d04b5a2383038e99c5396d290e3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "d22d19e07036a4841da9172616c3a467e36ad09fdb5032b3ec4b96cec7b73af6"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1765,
+    "sha256": "5928dbc90bea037def95bec8bd694c8ee4697c620cf9a30344351f98a75d9ac8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15498,
+    "sha256": "a226bb5f360bf3e3f06f32af95e28b338485b39027bdc089023df8fc4d06ca00"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3011,
+    "sha256": "e8d3899a4f843a1ac949cd3326032e452bb31a607f9b96fc2456772a8e743a81"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 764,
+    "sha256": "7fd4b7f5bbb4abffa2b9b3f83f6c187a1cc58bd4967bf7a75edfc544e18670d5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fashion_mnist/runs/fashion_mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5098,
+    "sha256": "14f82e152d21a2645f06e4ee7cf4a408b3d2c8241b9818f60de3980c2964d2a0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 270,
+    "sha256": "57710c6162bba9c35e452d5f41d48230d4a4fd907366a12c17d050a446ba1042"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 17197,
+    "sha256": "ae1f3671abe255d37de3753c7df23a05440d7fdf55c0ff0f14e53a1dd0807ae2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "59b8592622a8d7077b652ba1d876f6360af3c753233db92a8f13237b3ce56196"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1440,
+    "sha256": "f72e9e21fbd4fb6de6cbfa4accfb4bc3b1bd3dbf2f92f51af61521adcd04ec90"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15352,
+    "sha256": "835ea3cb0dd1aafe8d5ad9c56a7f10f13fa58a0d4cae69de0c9ffbbb762f7d04"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2008,
+    "sha256": "844b43a7fdabfda81e85acbb52da010e7c58081097c051eb5b5ee9f3b6c560e2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 752,
+    "sha256": "5fc292d21cd365f950a820aa54caa1d787a0ef6bc1103c17b91fe1ccc27a8b49"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/fer2013/runs/fer2013__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5160,
+    "sha256": "1ca5da508bb09a441fb8782b1285041231793acb86b4ba111fbb251c1bc7d580"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "b572ad8f38519e333e424da70a74fd29cded84bc4820ac010951e925a77b3694"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 51239,
+    "sha256": "452948ec0acfe25d7608386fe11d01887b0aedab96ea2d87a76488fdc5e1378b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "6e262e2eb8be24f3fefa46fbd137d2a12f74c30572e5db5312d4b851e195c2e4"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 5508,
+    "sha256": "dcd31ca32a6017e5f53a5f1d0742574522de48a90a69fb149cc1497607dbc6aa"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 20134,
+    "sha256": "c1e4bb55f5bdbd0d16d73e0ee6577ed98437326747f7c977bbca4d38f4a9f221"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 27183,
+    "sha256": "b0840e001dec23da34c5fd0d7f83825f3f79e5d8a89087dea35e897e13e19b9a"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 749,
+    "sha256": "6c507d441917346ecc0d86d4728a22d6575fdb2fde205330f76ac7ed825342e0"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/gtsrb/runs/gtsrb__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5145,
+    "sha256": "0f736b9c12c8eafdd8c9e6a6f7ddb5a28ccb68422091eb94a46ce1ab4aa5d879"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 269,
+    "sha256": "5f40430dd878dc2b0f81f47f7729f6049f59db83512867c63c0a2e5c95ffec1c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18349,
+    "sha256": "907ebc3ab5327a8df1fa5cd8b2491136802e3e46139d2c9bfd93e371cd3e4d29"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "82c190ad55298a39cb4830d89ac0fd23612042845c5a1f8941e57cd7a4a6fd14"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1702,
+    "sha256": "85cc30871035bf41ecc01ac610be5aad7d6242b2a4303d2a7e7c9069d788b2c6"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15497,
+    "sha256": "47241ff0d8a5ee1a2f501a7275896f2903c85c1ad859b712eeb05ce02d596f52"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2919,
+    "sha256": "4bc74bc04d838315fdaf5b05c97cffb2d48ddb7d31c28d36b86cd0412deba0e7"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 750,
+    "sha256": "c1421fcbc821f4395633671cdeed9a6d8b6110dc443f1ca5c6320cdae1336042"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/kmnist/runs/kmnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5223,
+    "sha256": "9738d89ee56a498c66ee586293d16488ea2d6090c78efb4f48dce3f2d36ee813"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 268,
+    "sha256": "e2dd008a4335f4c3afce39628520c56bb66424a9f68513dad3f692c3e50343a5"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18477,
+    "sha256": "814b269797cda5fdd57e2a747ba88e9142efa3f7e2509ddadf04afcf6a7bb523"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1785,
+    "sha256": "fc53a3874077200f88568532cba8d26f8d8a5184000d078fe51c2f26b195cab3"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1803,
+    "sha256": "c6556fd290c45533bfbef1e2d42b022331481f7ea1d240f6e59542ebf55bd1ba"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15490,
+    "sha256": "7c0c499d62195baa1187addec96acd20ce42a887316b234fcf8d007c9209c09c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 3008,
+    "sha256": "d0ce1f9a8c05cfe2fa43d20637f34d351512fff8e6b82655b98e5d014d506a2b"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 749,
+    "sha256": "e7ccbcde0321d012115e835437fe64847095fe38dd8e83609523607c1ce157f2"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/mnist/runs/mnist__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5154,
+    "sha256": "bc3e1d7a84cebde69051bf6704dd0fdf7404004739b8005c3c77ca2e36c3b046"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/status.json",
+    "bytes": 267,
+    "sha256": "33f38974690c3f24dc5e7b32eec510bd3efff061788bd31d7e9ebbb1d4f755af"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/manifest.json",
+    "bytes": 18382,
+    "sha256": "004ac3630aaf381f1cb2fb7fb014a466cb8713abec1deba848a304e759a2d921"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/environment.json",
+    "bytes": 1782,
+    "sha256": "d9c0389b2cb8d6535950238dd5e0a314385a3ed8e75c9e29d39dbb6c22a15f5c"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/checkpoints/epoch_metrics.csv",
+    "bytes": 1767,
+    "sha256": "41fc43b5f67e6207ce71e6797bff7e609d985d12d7aa449029c21a62f2e094bc"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/samples.csv",
+    "bytes": 15508,
+    "sha256": "f93e714fcac0966ecce06d3eb50592693964a9b653f992c3c960e2452d82ea9e"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/artifacts/test_metrics.json",
+    "bytes": 2964,
+    "sha256": "dc8845617907c1bce73c159082eca03c538b54810eb6c3036b80a6900c883993"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/logs/training_summary.json",
+    "bytes": 746,
+    "sha256": "b0f819c584382664712984eb9d011c061e4c61a5f81af0453f5a2b05fa5e5ac8"
+  },
+  {
+    "path": "outputs/controlled-augmentation2-mac-m4-aug05/smoke/svhn/runs/svhn__unit_interval__all_raw__seed-42/telemetry/summary.json",
+    "bytes": 5140,
+    "sha256": "1c1a7db174c31a035f54369dd853d881aa93a99d22ed0a5318ba94532b537e61"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar10/relu/cifar10/summary.json",
+    "bytes": 2079,
+    "sha256": "e219bcdb3700be6650a6c9fa447228da7891c70f69c7b65d42f8b9e97d1648cb"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar10/sigmoid/cifar10/summary.json",
+    "bytes": 2075,
+    "sha256": "68fff2ece0dc76c2058215f22ccdf0c9f18dcb57500b2224c176317ef7300cc4"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar10/softmax/cifar10/summary.json",
+    "bytes": 2049,
+    "sha256": "854cd3431b5ca2d15dceaad4d913ed9f7d588e80e53df6c2bd3d9dd2c0ce571f"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar100_coarse/relu/cifar100_coarse/summary.json",
+    "bytes": 2503,
+    "sha256": "81aa2865f1fb32476f8ee31450831eb5eb78f9af2a65d12b7718d4039df9fcd4"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar100_coarse/sigmoid/cifar100_coarse/summary.json",
+    "bytes": 2504,
+    "sha256": "0e8a9a3f5d4346c60999a7150b45e3e4548de3b7d4671fdb647405e706c31d20"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/cifar100_coarse/softmax/cifar100_coarse/summary.json",
+    "bytes": 2478,
+    "sha256": "bcf234a429274fd4255d95773ecc5d2e5213e40da429a2aa7a2571c44d83452e"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/emnist_balanced/relu/emnist_balanced/summary.json",
+    "bytes": 3583,
+    "sha256": "e1a4948f0feb861b8b17e24d2ee109fed791f8673dd97799787a90b592050472"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/emnist_balanced/sigmoid/emnist_balanced/summary.json",
+    "bytes": 3582,
+    "sha256": "0387a8187d18634c23dad3f48534d1e0ad65758a6fc578378dbe03c78858fe5b"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/emnist_balanced/softmax/emnist_balanced/summary.json",
+    "bytes": 3590,
+    "sha256": "dfaebd4965319fff166818ef47a38a96a34bdce06ae4e2b5ab7386d39ecfd27a"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/fashion_mnist/relu/fashion_mnist/summary.json",
+    "bytes": 2098,
+    "sha256": "9404529bb1cd42fcec4a8b64ef6826b7a23b609fa2c1cffc6f0e2a9116f26fba"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/fashion_mnist/sigmoid/fashion_mnist/summary.json",
+    "bytes": 2099,
+    "sha256": "9a30c11716a7e8a517b1f447d067763faffa04c4c80d029d6557c6621177729b"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/fashion_mnist/softmax/fashion_mnist/summary.json",
+    "bytes": 2070,
+    "sha256": "438abedde77a98d7403404a41a6a4f15cc650b4e0341f5985ab061cc61f34122"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/kmnist/relu/kmnist/summary.json",
+    "bytes": 2079,
+    "sha256": "a34b0b1f33fdd8b59c3b48cd7ff55fff11b6c226ea32e04592351f0336d2299e"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/kmnist/sigmoid/kmnist/summary.json",
+    "bytes": 2075,
+    "sha256": "0fe83c2da2d4e240434f136865565756a4ddf9fe567cb950490fe736568860b9"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/kmnist/softmax/kmnist/summary.json",
+    "bytes": 2047,
+    "sha256": "3666acd2b7aeea502f1d4b08fc063f1aabf7083a776db5a1562e2a97196f705f"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/mnist/relu/mnist/summary.json",
+    "bytes": 2075,
+    "sha256": "06def51bfc98ce2bed4d6bb16b2ace4b73f5d394b29bc105e22953bc57028280"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/mnist/sigmoid/mnist/summary.json",
+    "bytes": 2073,
+    "sha256": "228371d5fa4cf1f8e5364ee77aa8b6147d0f83f74ba8757f3ae50ac17bb8b5af"
+  },
+  {
+    "path": "outputs/controlled-augmentation05-activations-mac2/activations/mnist/softmax/mnist/summary.json",
+    "bytes": 2063,
+    "sha256": "8783ab2e71026f5850a97d8af38a3621b33925db596bb83aecd89ea5e573408b"
+  },
+  {
+    "path": "analysis_reports/activation_quantization_2026-09-30/data/runs.csv",
+    "bytes": 45189,
+    "sha256": "5ba17c2a21241f2b2a381555819f81cee89b92f18d696c378efb5d0a705f9e7d"
+  },
+  {
+    "path": "analysis_reports/activation_quantization_2026-09-30/data/epoch_history.csv",
+    "bytes": 1137472,
+    "sha256": "4afa5963c8207736e1b3481fd485d28e71e67b71488c48bd27ccc4aa83398520"
+  },
+  {
+    "path": "analysis_reports/activation_quantization_2026-09-30/data/per_class_metrics.csv",
+    "bytes": 143032,
+    "sha256": "94d36fba5ed3cfd45a1397280860e98ff2be2585d6f177ef75feee689176e562"
+  },
+  {
+    "path": "analysis_reports/activation_quantization_2026-09-30/data/snapshot_manifest.json",
+    "bytes": 673,
+    "sha256": "fda1ba5f3041f24487173f78beb67c25da84d2b4e487a10a002f6ac082608d99"
+  },
+  {
+    "path": "docs/augmentation05_final/data/resumo_augmentation05.json",
+    "bytes": 1579,
+    "sha256": "0d5efa81bef0e25c44000c132c34b5cbdf573b16cd1f57dfd8b5c18e9130928b"
+  },
+  {
+    "path": "src/tcc_benchmark/model.py",
+    "bytes": 8531,
+    "sha256": "af45353fb01d1c2a395e41822a3899570d0d3c37b718ad49d4aa41cadbb58b44"
+  },
+  {
+    "path": "configs/controlled-augmentation2-mac-m4-aug05.yaml",
+    "bytes": 1115,
+    "sha256": "6833f1b9538443585e139660462cad8a02aa75f48f0a05182b77929ce06b98c1"
+  },
+  {
+    "path": "configs/controlled-augmentation05-mac-m4.yaml",
+    "bytes": 1031,
+    "sha256": "724065cfabe875f1c5ea2b9477c32552d5b41c775457ce1cb172717ef6be03c3"
+  },
+  {
+    "path": "configs/controlled-quantization-fast-mac-m4.yaml",
+    "bytes": 1207,
+    "sha256": "262a6dec3faeb2c5f5b67e52278c5ac305e5176b34874aa3d62549428d4094ce"
+  },
+  {
+    "path": "configs/controlled-augmentation2-mac-m4.yaml",
+    "bytes": 1110,
+    "sha256": "14142f37a4faef4d9d32cfe073eba4b665aecc5061d85145035e841f797e31a3"
+  }
+]

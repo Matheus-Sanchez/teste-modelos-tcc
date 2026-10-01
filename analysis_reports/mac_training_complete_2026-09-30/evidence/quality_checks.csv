@@ -1,0 +1,532 @@
+uid,check,passed,detail
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,unique_epoch,True,0 duplicadas; usa última por época
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|mnist|relu,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,snapshot_vs_local_summary,True,Macro-F1 exportado comparado ao summary.json local
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.723506638; registro = 0.723506638
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.724777778; registro = 0.724777778
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 27394.276s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.470437970; registro = 0.470437970
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.470444444; registro = 0.470444444
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 67777.924s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.875124456; registro = 0.875124456
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.877203647; registro = 0.877203647
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 1041.517s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.920414095; registro = 0.920414095
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.920571429; registro = 0.920571429
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.494743845; registro = 0.494743845
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.524526198; registro = 0.524526198
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 25752.282s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.993324996; registro = 0.993324996
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.995064670; registro = 0.995064670
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.986289604; registro = 0.986289604
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.986285714; registro = 0.986285714
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.988214973; registro = 0.988214973
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.988378739; registro = 0.988378739
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 65098.872s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,classwise_test_macro_f1,True,Recalculado por classe = 0.922343908; registro = 0.922343908
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-32,classwise_test_accuracy,True,Recalculado por classe = 0.925938360; registro = 0.925938360
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.709562817; registro = 0.709562817
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.709666667; registro = 0.709666667
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.469242570; registro = 0.469242570
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.471777778; registro = 0.471777778
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.877983577; registro = 0.877983577
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.879381966; registro = 0.879381966
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 18506.399s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.918488647; registro = 0.918488647
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.918380952; registro = 0.918380952
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.471487921; registro = 0.471487921
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.511519881; registro = 0.511519881
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.992182838; registro = 0.992182838
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.994724302; registro = 0.994724302
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.985915735; registro = 0.985915735
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.985904762; registro = 0.985904762
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.990784873; registro = 0.990784873
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.990855401; registro = 0.990855401
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,classwise_test_macro_f1,True,Recalculado por classe = 0.921260179; registro = 0.921260179
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-64,classwise_test_accuracy,True,Recalculado por classe = 0.925602632; registro = 0.925602632
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.694830351; registro = 0.694830351
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.694555556; registro = 0.694555556
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 3666.850s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.459109058; registro = 0.459109058
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.460444444; registro = 0.460444444
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.872946291; registro = 0.872946291
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.874265451; registro = 0.874265451
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.911169951; registro = 0.911169951
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.911523810; registro = 0.911523810
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.460790727; registro = 0.460790727
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.498141955; registro = 0.498141955
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.991882835; registro = 0.991882835
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.993192648; registro = 0.993192648
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.982497407; registro = 0.982497407
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.982476190; registro = 0.982476190
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 8366.517s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.990348474; registro = 0.990348474
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.990474376; registro = 0.990474376
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,classwise_test_macro_f1,True,Recalculado por classe = 0.920768700; registro = 0.920768700
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-128,classwise_test_accuracy,True,Recalculado por classe = 0.925602632; registro = 0.925602632
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.701824881; registro = 0.701824881
+controlled-augmentation2-mac-m4-aug05|batch|cifar10|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.702444444; registro = 0.702444444
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.452575162; registro = 0.452575162
+controlled-augmentation2-mac-m4-aug05|batch|cifar100_coarse|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.448111111; registro = 0.448111111
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.870436648; registro = 0.870436648
+controlled-augmentation2-mac-m4-aug05|batch|emnist_balanced|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.871681864; registro = 0.871681864
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.909732231; registro = 0.909732231
+controlled-augmentation2-mac-m4-aug05|batch|fashion_mnist|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.909904762; registro = 0.909904762
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.441402715; registro = 0.441402715
+controlled-augmentation2-mac-m4-aug05|batch|fer2013|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.481976960; registro = 0.481976960
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 7671.262s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.985788159; registro = 0.985788159
+controlled-augmentation2-mac-m4-aug05|batch|gtsrb|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.988427502; registro = 0.988427502
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.984569637; registro = 0.984569637
+controlled-augmentation2-mac-m4-aug05|batch|kmnist|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.984571429; registro = 0.984571429
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.990069156; registro = 0.990069156
+controlled-augmentation2-mac-m4-aug05|batch|mnist|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.990188607; registro = 0.990188607
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,epoch_sequence,True,100 épocas únicas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,classwise_test_macro_f1,True,Recalculado por classe = 0.906908322; registro = 0.906908322
+controlled-augmentation2-mac-m4-aug05|batch|svhn|batch-256,classwise_test_accuracy,True,Recalculado por classe = 0.911703485; registro = 0.911703485
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.090000000; registro = 0.090000000
+controlled-augmentation2-mac-m4-aug05|smoke|cifar10|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.150000000; registro = 0.150000000
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = -0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.041666667; registro = 0.041666667
+controlled-augmentation2-mac-m4-aug05|smoke|cifar100_coarse|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.050000000; registro = 0.050000000
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.026396632; registro = 0.026396632
+controlled-augmentation2-mac-m4-aug05|smoke|emnist_balanced|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.063829787; registro = 0.063829787
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.360000000; registro = 0.360000000
+controlled-augmentation2-mac-m4-aug05|smoke|fashion_mnist|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.450000000; registro = 0.450000000
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.095238095; registro = 0.095238095
+controlled-augmentation2-mac-m4-aug05|smoke|fer2013|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.142857143; registro = 0.142857143
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.014470284; registro = 0.014470284
+controlled-augmentation2-mac-m4-aug05|smoke|gtsrb|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.034883721; registro = 0.034883721
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.080000000; registro = 0.080000000
+controlled-augmentation2-mac-m4-aug05|smoke|kmnist|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.200000000; registro = 0.200000000
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.200769231; registro = 0.200769231
+controlled-augmentation2-mac-m4-aug05|smoke|mnist|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.300000000; registro = 0.300000000
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,epoch_sequence,True,2 épocas únicas
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,epoch_count,True,2 registradas / 2.0 declaradas
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,classwise_test_macro_f1,True,Recalculado por classe = 0.078571429; registro = 0.078571429
+controlled-augmentation2-mac-m4-aug05|smoke|svhn|smoke,classwise_test_accuracy,True,Recalculado por classe = 0.100000000; registro = 0.100000000
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.564455792; registro = 0.564455792
+controlled-augmentation05-activations-mac2|activations|cifar10|relu,classwise_test_accuracy,True,Recalculado por classe = 0.566444444; registro = 0.566444444
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.638977217; registro = 0.638977217
+controlled-augmentation05-activations-mac2|activations|cifar10|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.636666667; registro = 0.636666667
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.018181818; registro = 0.018181818
+controlled-augmentation05-activations-mac2|activations|cifar10|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.100000000; registro = 0.100000000
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = -0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.299781800; registro = 0.299781800
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|relu,classwise_test_accuracy,True,Recalculado por classe = 0.303222222; registro = 0.303222222
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.350154270; registro = 0.350154270
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.366111111; registro = 0.366111111
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.004761905; registro = 0.004761905
+controlled-augmentation05-activations-mac2|activations|cifar100_coarse|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.050000000; registro = 0.050000000
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 10153.324s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.844157067; registro = 0.844157067
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|relu,classwise_test_accuracy,True,Recalculado por classe = 0.848632219; registro = 0.848632219
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.849282541; registro = 0.849282541
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.852786221; registro = 0.852786221
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.000886525; registro = 0.000886525
+controlled-augmentation05-activations-mac2|activations|emnist_balanced|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.021276596; registro = 0.021276596
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.875009941; registro = 0.875009941
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|relu,classwise_test_accuracy,True,Recalculado por classe = 0.878190476; registro = 0.878190476
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.900415028; registro = 0.900415028
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.900476190; registro = 0.900476190
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.018181818; registro = 0.018181818
+controlled-augmentation05-activations-mac2|activations|fashion_mnist|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.100000000; registro = 0.100000000
+controlled-augmentation05-activations-mac2|activations|fer2013|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fer2013|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fer2013|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fer2013|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.274679260; registro = 0.274679260
+controlled-augmentation05-activations-mac2|activations|fer2013|relu,classwise_test_accuracy,True,Recalculado por classe = 0.403195838; registro = 0.403195838
+controlled-augmentation05-activations-mac2|activations|fer2013|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fer2013|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fer2013|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fer2013|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.375444086; registro = 0.375444086
+controlled-augmentation05-activations-mac2|activations|fer2013|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.474544779; registro = 0.474544779
+controlled-augmentation05-activations-mac2|activations|fer2013|softmax,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 2612.388s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|fer2013|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|fer2013|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|fer2013|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.057227765; registro = 0.057227765
+controlled-augmentation05-activations-mac2|activations|fer2013|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.250464511; registro = 0.250464511
+controlled-augmentation05-activations-mac2|activations|gtsrb|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|gtsrb|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|gtsrb|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|gtsrb|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.577541983; registro = 0.577541983
+controlled-augmentation05-activations-mac2|activations|gtsrb|relu,classwise_test_accuracy,True,Recalculado por classe = 0.687571266; registro = 0.687571266
+controlled-augmentation05-activations-mac2|activations|gtsrb|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|gtsrb|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|gtsrb|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|gtsrb|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.453146847; registro = 0.453146847
+controlled-augmentation05-activations-mac2|activations|gtsrb|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.753705815; registro = 0.753705815
+controlled-augmentation05-activations-mac2|activations|gtsrb|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|gtsrb|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|gtsrb|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|gtsrb|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.009569221; registro = 0.009569221
+controlled-augmentation05-activations-mac2|activations|gtsrb|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.123432155; registro = 0.123432155
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.970159630; registro = 0.970159630
+controlled-augmentation05-activations-mac2|activations|kmnist|relu,classwise_test_accuracy,True,Recalculado por classe = 0.970190476; registro = 0.970190476
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 2435.969s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.971143229; registro = 0.971143229
+controlled-augmentation05-activations-mac2|activations|kmnist|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.971142857; registro = 0.971142857
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.018181818; registro = 0.018181818
+controlled-augmentation05-activations-mac2|activations|kmnist|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.100000000; registro = 0.100000000
+controlled-augmentation05-activations-mac2|activations|mnist|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|mnist|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|mnist|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|mnist|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.983603280; registro = 0.983603280
+controlled-augmentation05-activations-mac2|activations|mnist|relu,classwise_test_accuracy,True,Recalculado por classe = 0.983711183; registro = 0.983711183
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.984366446; registro = 0.984366446
+controlled-augmentation05-activations-mac2|activations|mnist|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.984568489; registro = 0.984568489
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.020224334; registro = 0.020224334
+controlled-augmentation05-activations-mac2|activations|mnist|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.112497619; registro = 0.112497619
+controlled-augmentation05-activations-mac2|activations|svhn|relu,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|svhn|relu,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|svhn|relu,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|svhn|relu,classwise_test_macro_f1,True,Recalculado por classe = 0.868626780; registro = 0.868626780
+controlled-augmentation05-activations-mac2|activations|svhn|relu,classwise_test_accuracy,True,Recalculado por classe = 0.864432955; registro = 0.864432955
+controlled-augmentation05-activations-mac2|activations|svhn|sigmoid,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|svhn|sigmoid,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|svhn|sigmoid,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|svhn|sigmoid,classwise_test_macro_f1,True,Recalculado por classe = 0.870655205; registro = 0.870655205
+controlled-augmentation05-activations-mac2|activations|svhn|sigmoid,classwise_test_accuracy,True,Recalculado por classe = 0.877593500; registro = 0.877593500
+controlled-augmentation05-activations-mac2|activations|svhn|softmax,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-augmentation05-activations-mac2|activations|svhn|softmax,epoch_sequence,True,100 épocas únicas
+controlled-augmentation05-activations-mac2|activations|svhn|softmax,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-augmentation05-activations-mac2|activations|svhn|softmax,classwise_test_macro_f1,True,Recalculado por classe = 0.032068557; registro = 0.032068557
+controlled-augmentation05-activations-mac2|activations|svhn|softmax,classwise_test_accuracy,True,Recalculado por classe = 0.190962197; registro = 0.190962197
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp16,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = -0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.701824881; registro = 0.701824881
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.702444444; registro = 0.702444444
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.697778940; registro = 0.697778940
+controlled-quantization-fast-mac-m4|quantization|cifar10|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.698111111; registro = 0.698111111
+controlled-quantization-fast-mac-m4|ptq|cifar10|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.684445718; registro = 0.684445718
+controlled-quantization-fast-mac-m4|ptq|cifar10|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.687333333; registro = 0.687333333
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp16,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.452575162; registro = 0.452575162
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.448111111; registro = 0.448111111
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 3618.419s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.446267582; registro = 0.446267582
+controlled-quantization-fast-mac-m4|quantization|cifar100_coarse|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.444777778; registro = 0.444777778
+controlled-quantization-fast-mac-m4|ptq|cifar100_coarse|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.415045065; registro = 0.415045065
+controlled-quantization-fast-mac-m4|ptq|cifar100_coarse|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.415666667; registro = 0.415666667
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp16,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 19457.628s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.870121728; registro = 0.870121728
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.871732523; registro = 0.871732523
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.871440116; registro = 0.871440116
+controlled-quantization-fast-mac-m4|quantization|emnist_balanced|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.873100304; registro = 0.873100304
+controlled-quantization-fast-mac-m4|ptq|emnist_balanced|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.867163657; registro = 0.867163657
+controlled-quantization-fast-mac-m4|ptq|emnist_balanced|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.869148936; registro = 0.869148936
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp16,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.909732231; registro = 0.909732231
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.909904762; registro = 0.909904762
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.909472784; registro = 0.909472784
+controlled-quantization-fast-mac-m4|quantization|fashion_mnist|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.909904762; registro = 0.909904762
+controlled-quantization-fast-mac-m4|ptq|fashion_mnist|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.718003632; registro = 0.718003632
+controlled-quantization-fast-mac-m4|ptq|fashion_mnist|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.720095238; registro = 0.720095238
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp16,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.441402715; registro = 0.441402715
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.481976960; registro = 0.481976960
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.436844729; registro = 0.436844729
+controlled-quantization-fast-mac-m4|quantization|fer2013|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.487551096; registro = 0.487551096
+controlled-quantization-fast-mac-m4|ptq|fer2013|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.378075092; registro = 0.378075092
+controlled-quantization-fast-mac-m4|ptq|fer2013|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.428836864; registro = 0.428836864
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp16,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 10974.939s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.980250068; registro = 0.980250068
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.981755986; registro = 0.981755986
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 1266.395s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.976167329; registro = 0.976167329
+controlled-quantization-fast-mac-m4|quantization|gtsrb|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.984891676; registro = 0.984891676
+controlled-quantization-fast-mac-m4|ptq|gtsrb|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.791900860; registro = 0.791900860
+controlled-quantization-fast-mac-m4|ptq|gtsrb|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.821550741; registro = 0.821550741
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp16,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.984569637; registro = 0.984569637
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.984571429; registro = 0.984571429
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.981915107; registro = 0.981915107
+controlled-quantization-fast-mac-m4|quantization|kmnist|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.981904762; registro = 0.981904762
+controlled-quantization-fast-mac-m4|ptq|kmnist|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.965458174; registro = 0.965458174
+controlled-quantization-fast-mac-m4|ptq|kmnist|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.965428571; registro = 0.965428571
+controlled-quantization-fast-mac-m4|quantization|mnist|fp16,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 8132.581s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|mnist|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|mnist|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|mnist|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.988228843; registro = 0.988228843
+controlled-quantization-fast-mac-m4|quantization|mnist|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.988378739; registro = 0.988378739
+controlled-quantization-fast-mac-m4|quantization|mnist|fp32,epoch_sum_vs_reported,True,"Soma de épocas menos resumo = 0.000s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|mnist|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|mnist|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|mnist|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.989420960; registro = 0.989420960
+controlled-quantization-fast-mac-m4|quantization|mnist|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.989521814; registro = 0.989521814
+controlled-quantization-fast-mac-m4|ptq|mnist|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.983248519; registro = 0.983248519
+controlled-quantization-fast-mac-m4|ptq|mnist|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.983425414; registro = 0.983425414
+controlled-quantization-fast-mac-m4|quantization|svhn|fp16,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 253.365s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|svhn|fp16,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|svhn|fp16,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|svhn|fp16,classwise_test_macro_f1,True,Recalculado por classe = 0.906420109; registro = 0.906420109
+controlled-quantization-fast-mac-m4|quantization|svhn|fp16,classwise_test_accuracy,True,Recalculado por classe = 0.912374941; registro = 0.912374941
+controlled-quantization-fast-mac-m4|quantization|svhn|fp32,epoch_sum_vs_reported,False,"Soma de épocas menos resumo = 441.664s; conservar ambas as medidas, usar histórico completo"
+controlled-quantization-fast-mac-m4|quantization|svhn|fp32,epoch_sequence,True,100 épocas únicas
+controlled-quantization-fast-mac-m4|quantization|svhn|fp32,epoch_count,True,100 registradas / 100.0 declaradas
+controlled-quantization-fast-mac-m4|quantization|svhn|fp32,classwise_test_macro_f1,True,Recalculado por classe = 0.909514574; registro = 0.909514574
+controlled-quantization-fast-mac-m4|quantization|svhn|fp32,classwise_test_accuracy,True,Recalculado por classe = 0.914456456; registro = 0.914456456
+controlled-quantization-fast-mac-m4|ptq|svhn|int8_ptq,classwise_test_macro_f1,True,Recalculado por classe = 0.904730890; registro = 0.904730890
+controlled-quantization-fast-mac-m4|ptq|svhn|int8_ptq,classwise_test_accuracy,True,Recalculado por classe = 0.909756261; registro = 0.909756261

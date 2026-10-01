@@ -1,0 +1,15 @@
+{
+  "code_cells": 122,
+  "executed_cells": 122,
+  "errors": 0,
+  "figures": 110,
+  "format_valid": true,
+  "scope": "Mac / extra_fraction=0.5",
+  "main_training_runs": 81,
+  "main_epochs": 8100,
+  "ptq_evaluations": 9,
+  "smoke_runs": 9,
+  "visual_review": "All chart contact sheets reviewed; representative charts at full size; final HTML environment tables inspected in browser",
+  "training_hours_recorded": 505.09779181,
+  "notebook_sha256": "d8ff72209811a074dcf70b125667c6dd6e1e1fc7543b7c67d00e488272074500"
+}
