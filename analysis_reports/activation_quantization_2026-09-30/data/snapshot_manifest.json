@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-30",
+  "source_scope": {
+    "activation": "outputs/controlled-augmentation05-activations-mac2/activations",
+    "quantization": "outputs/controlled-quantization-fast-mac-m4/quantization"
+  },
+  "campaign_counts": {
+    "activation": 27,
+    "quantization": 27
+  },
+  "full_training_runs": 45,
+  "full_training_epochs": 4500,
+  "ptq_evaluation_runs": 9,
+  "classwise_test_rows": 1002,
+  "exported_files": [
+    "runs.csv",
+    "epoch_history.csv",
+    "per_class_metrics.csv"
+  ],
+  "excluded_artifacts": [
+    "model checkpoints",
+    "predictions/logits",
+    "raw telemetry samples",
+    "local absolute paths"
+  ]
+}
